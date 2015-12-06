@@ -13,23 +13,25 @@ const STARTING_POSITION = [
   [R,N,B,K,Q,B,N,R]
 ];
 
-const game = {
-  state: {
-    position: STARTING_POSITION,
-    move: 0,
-    computerColor: COLORS[1]
-  },
+class Game {
+  constructor() {
+    this.state = {
+      position: STARTING_POSITION,
+      move: 0,
+      computerColor: COLORS[1]
+    }
+  }
 
   get() {
     return this.state;
-  },
+  }
 
   set(updates) {
     this.state = Object.assign({}, this.state, updates);
     this.emitter.emit('gameChange', this.state);
-  },
+  }
 
-  emitter: EventEmitter({})
+  emitter = EventEmitter({})
 }
 
-export default game;
+export default new Game();

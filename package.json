@@ -1,5 +1,5 @@
 {
-  "name": "chess",
+  "name": "cow-chess",
   "version": "0.0.1",
   "description": "A game of chess",
   "author": "Angus Croll <anguscroll@gmail.com>",
@@ -22,6 +22,6 @@
   "dependencies": {
     "event-emitter": "^0.3.4",
     "react": "^0.14.3",
-    "react-dom": "^0.14.3",
-  },
+    "react-dom": "^0.14.3"
+  }
 }

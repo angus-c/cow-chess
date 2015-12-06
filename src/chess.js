@@ -8,7 +8,6 @@ import game from './data/game';
 import Board from './views/board';
 
 class Chess extends React.Component {
-  
   constructor(props) {
     super(props);
     this.state = {...game.get()}
