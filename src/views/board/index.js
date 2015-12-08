@@ -7,13 +7,16 @@ class Board extends React.Component {
   }
   
   render() {
+    debugger;
     const renderCells = (position) =>
       <table>
         <tbody>
           {position.map(function(row, i) {
             return (
               <tr key={i}>
-                {row.map(function(sq, j) {return <td key={j}>{sq}</td>})}
+                {row.map(function(sq, j) {
+                  return <td key={j}>{sq ? sq.render() : '.'}</td>
+                })}
               </tr>
             )
           })}

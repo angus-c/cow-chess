@@ -62,7 +62,7 @@
 
 	var _game2 = _interopRequireDefault(_game);
 
-	var _board = __webpack_require__(175);
+	var _board = __webpack_require__(179);
 
 	var _board2 = _interopRequireDefault(_board);
 
@@ -19713,6 +19713,38 @@
 
 	var _eventEmitter2 = _interopRequireDefault(_eventEmitter);
 
+	var _computer = __webpack_require__(175);
+
+	var _computer2 = _interopRequireDefault(_computer);
+
+	var _human = __webpack_require__(176);
+
+	var _human2 = _interopRequireDefault(_human);
+
+	var _Pawn = __webpack_require__(181);
+
+	var _Pawn2 = _interopRequireDefault(_Pawn);
+
+	var _Rook = __webpack_require__(182);
+
+	var _Rook2 = _interopRequireDefault(_Rook);
+
+	var _Knight = __webpack_require__(180);
+
+	var _Knight2 = _interopRequireDefault(_Knight);
+
+	var _Bishop = __webpack_require__(177);
+
+	var _Bishop2 = _interopRequireDefault(_Bishop);
+
+	var _King = __webpack_require__(183);
+
+	var _King2 = _interopRequireDefault(_King);
+
+	var _Queen = __webpack_require__(184);
+
+	var _Queen2 = _interopRequireDefault(_Queen);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -19724,18 +19756,36 @@
 	var K = 'K';
 	var Q = 'Q';
 	var P = 'P';
-	var _ = '.';
+	var r = 'r';
+	var n = 'n';
+	var b = 'b';
+	var k = 'k';
+	var q = 'q';
+	var p = 'p';
 
-	var STARTING_POSITION = [[R, N, B, K, Q, B, N, R], [P, P, P, P, P, P, P, P], [_, _, _, _, _, _, _, _], [_, _, _, _, _, _, _, _], [_, _, _, _, _, _, _, _], [_, _, _, _, _, _, _, _], [P, P, P, P, P, P, P, P], [R, N, B, K, Q, B, N, R]];
+	var _ = null;
+	var STARTING_MAP = [[r, n, b, k, q, b, n, r], [p, p, p, p, p, p, p, p], [_, _, _, _, _, _, _, _], [_, _, _, _, _, _, _, _], [_, _, _, _, _, _, _, _], [_, _, _, _, _, _, _, _], [P, P, P, P, P, P, P, P], [R, N, B, K, Q, B, N, R]];
+	var pieceTypes = {
+	  p: _Pawn2.default,
+	  r: _Rook2.default,
+	  n: _Knight2.default,
+	  b: _Bishop2.default,
+	  k: _King2.default,
+	  q: _Queen2.default
+	};
 
 	var Game = (function () {
 	  function Game() {
 	    _classCallCheck(this, Game);
 
 	    this.emitter = (0, _eventEmitter2.default)({});
+	    this.pieces = {
+	      human: [],
+	      computer: []
+	    };
 
 	    this.state = {
-	      position: STARTING_POSITION,
+	      position: this.instantiatePieces(STARTING_MAP),
 	      move: 0,
 	      computerColor: COLORS[1]
 	    };
@@ -19751,6 +19801,21 @@
 	    value: function set(updates) {
 	      this.state = Object.assign({}, this.state, updates);
 	      this.emitter.emit('gameChange', this.state);
+	    }
+	  }, {
+	    key: 'instantiatePieces',
+	    value: function instantiatePieces(map) {
+	      var PieceType = undefined;
+	      return map.map(function (row, rowNumber) {
+	        return row.map(function (symbol, columnNumber) {
+	          if (!symbol) {
+	            return null;
+	          }
+	          var player = symbol == symbol.toLowerCase() ? _computer2.default : _human2.default;
+	          PieceType = pieceTypes[symbol.toLowerCase()];
+	          return new PieceType(columnNumber + 1, rowNumber + 1, player);
+	        });
+	      });
 	    }
 	  }]);
 
@@ -20156,6 +20221,128 @@
 
 /***/ },
 /* 175 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var computer = {
+	  symbolForPlayer: function symbolForPlayer(symbol) {
+	    return symbol.toLowerCase();
+	  }
+	};
+
+	exports.default = computer;
+
+/***/ },
+/* 176 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var human = {
+	  symbolForPlayer: function symbolForPlayer(symbol) {
+	    return symbol.toUpperCase();
+	  }
+	};
+
+	exports.default = human;
+
+/***/ },
+/* 177 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _Piece2 = __webpack_require__(178);
+
+	var _Piece3 = _interopRequireDefault(_Piece2);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Bishop = (function (_Piece) {
+	  _inherits(Bishop, _Piece);
+
+	  function Bishop() {
+	    var _Object$getPrototypeO;
+
+	    var _temp, _this, _ret;
+
+	    _classCallCheck(this, Bishop);
+
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+
+	    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_Object$getPrototypeO = Object.getPrototypeOf(Bishop)).call.apply(_Object$getPrototypeO, [this].concat(args))), _this), _this.symbol = 'b', _temp), _possibleConstructorReturn(_this, _ret);
+	  }
+
+	  return Bishop;
+	})(_Piece3.default);
+
+	exports.default = Bishop;
+
+/***/ },
+/* 178 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _computer = __webpack_require__(175);
+
+	var _computer2 = _interopRequireDefault(_computer);
+
+	var _human = __webpack_require__(176);
+
+	var _human2 = _interopRequireDefault(_human);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var Piece = (function () {
+	  function Piece(x, y, player) {
+	    _classCallCheck(this, Piece);
+
+	    this.position = [x, y];
+	    this.owner = player;
+	  }
+
+	  _createClass(Piece, [{
+	    key: 'render',
+	    value: function render() {
+	      return this.owner === _human2.default ? this.symbol.toUpperCase() : this.symbol.toLowerCase();
+	    }
+	  }]);
+
+	  return Piece;
+	})();
+
+	exports.default = Piece;
+
+/***/ },
+/* 179 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20190,6 +20377,7 @@
 	  _createClass(Board, [{
 	    key: 'render',
 	    value: function render() {
+	      debugger;
 	      var renderCells = function renderCells(position) {
 	        return _react2.default.createElement(
 	          'table',
@@ -20205,7 +20393,7 @@
 	                  return _react2.default.createElement(
 	                    'td',
 	                    { key: j },
-	                    sq
+	                    sq ? sq.render() : '.'
 	                  );
 	                })
 	              );
@@ -20229,6 +20417,226 @@
 	  position: _react2.default.PropTypes.arrayOf(_react2.default.PropTypes.array)
 	};
 	exports.default = Board;
+
+/***/ },
+/* 180 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _Piece2 = __webpack_require__(178);
+
+	var _Piece3 = _interopRequireDefault(_Piece2);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Knight = (function (_Piece) {
+	  _inherits(Knight, _Piece);
+
+	  function Knight() {
+	    var _Object$getPrototypeO;
+
+	    var _temp, _this, _ret;
+
+	    _classCallCheck(this, Knight);
+
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+
+	    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_Object$getPrototypeO = Object.getPrototypeOf(Knight)).call.apply(_Object$getPrototypeO, [this].concat(args))), _this), _this.symbol = 'n', _temp), _possibleConstructorReturn(_this, _ret);
+	  }
+
+	  return Knight;
+	})(_Piece3.default);
+
+	exports.default = Knight;
+
+/***/ },
+/* 181 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _Piece2 = __webpack_require__(178);
+
+	var _Piece3 = _interopRequireDefault(_Piece2);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Pawn = (function (_Piece) {
+	  _inherits(Pawn, _Piece);
+
+	  function Pawn() {
+	    var _Object$getPrototypeO;
+
+	    var _temp, _this, _ret;
+
+	    _classCallCheck(this, Pawn);
+
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+
+	    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_Object$getPrototypeO = Object.getPrototypeOf(Pawn)).call.apply(_Object$getPrototypeO, [this].concat(args))), _this), _this.symbol = 'p', _temp), _possibleConstructorReturn(_this, _ret);
+	  }
+
+	  return Pawn;
+	})(_Piece3.default);
+
+	exports.default = Pawn;
+
+/***/ },
+/* 182 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _Piece2 = __webpack_require__(178);
+
+	var _Piece3 = _interopRequireDefault(_Piece2);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Rook = (function (_Piece) {
+	  _inherits(Rook, _Piece);
+
+	  function Rook() {
+	    var _Object$getPrototypeO;
+
+	    var _temp, _this, _ret;
+
+	    _classCallCheck(this, Rook);
+
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+
+	    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_Object$getPrototypeO = Object.getPrototypeOf(Rook)).call.apply(_Object$getPrototypeO, [this].concat(args))), _this), _this.symbol = 'r', _temp), _possibleConstructorReturn(_this, _ret);
+	  }
+
+	  return Rook;
+	})(_Piece3.default);
+
+	exports.default = Rook;
+
+/***/ },
+/* 183 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _Piece2 = __webpack_require__(178);
+
+	var _Piece3 = _interopRequireDefault(_Piece2);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var King = (function (_Piece) {
+	  _inherits(King, _Piece);
+
+	  function King() {
+	    var _Object$getPrototypeO;
+
+	    var _temp, _this, _ret;
+
+	    _classCallCheck(this, King);
+
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+
+	    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_Object$getPrototypeO = Object.getPrototypeOf(King)).call.apply(_Object$getPrototypeO, [this].concat(args))), _this), _this.symbol = 'k', _temp), _possibleConstructorReturn(_this, _ret);
+	  }
+
+	  return King;
+	})(_Piece3.default);
+
+	exports.default = King;
+
+/***/ },
+/* 184 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _Piece2 = __webpack_require__(178);
+
+	var _Piece3 = _interopRequireDefault(_Piece2);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Queen = (function (_Piece) {
+	  _inherits(Queen, _Piece);
+
+	  function Queen() {
+	    var _Object$getPrototypeO;
+
+	    var _temp, _this, _ret;
+
+	    _classCallCheck(this, Queen);
+
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+
+	    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_Object$getPrototypeO = Object.getPrototypeOf(Queen)).call.apply(_Object$getPrototypeO, [this].concat(args))), _this), _this.symbol = 'q', _temp), _possibleConstructorReturn(_this, _ret);
+	  }
+
+	  return Queen;
+	})(_Piece3.default);
+
+	exports.default = Queen;
 
 /***/ }
 /******/ ]);
