@@ -7,7 +7,6 @@ class Board extends React.Component {
   }
   
   render() {
-    debugger;
     const renderCells = (position) =>
       <table>
         <tbody>
