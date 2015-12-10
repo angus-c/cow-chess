@@ -41,6 +41,7 @@ class Game {
       move: 0,
       computerColor: COLORS[1]
     }
+    console.log(human.pieces[0].possibleMoves(this.state.position));
   }
 
   get() {
@@ -61,7 +62,9 @@ class Game {
         }
         const player = (symbol == symbol.toLowerCase()) ? computer : human;
         PieceType = pieceTypes[symbol.toLowerCase()];
-        return new PieceType(columnNumber + 1, rowNumber + 1, player);
+        const piece = new PieceType(columnNumber + 1, rowNumber + 1, player);
+        player.pieces.push(piece);
+        return piece;
       });
     });
   }

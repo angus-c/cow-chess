@@ -5,7 +5,7 @@ class Pawn extends Piece {
   static moveDescriptor = {
     diagonal: isCapture => isCapture,
     cardinal: isCapture => !isCapture,
-    projectable: true,
+    projectable: false, /* TODO */
     knightwards: false,
     jumps: false
   }

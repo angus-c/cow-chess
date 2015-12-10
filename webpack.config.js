@@ -4,6 +4,8 @@ module.exports = {
         path: 'bundle',
         filename: 'chess.js'
     },
+    debug: true,
+    devtool: 'source-map',
     module: {
       loaders: [
         // {
