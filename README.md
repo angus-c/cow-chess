@@ -1,3 +1,3 @@
 ## Cow-Chess
 
-Nothing to see yet. Move along.
+Work in Prgress. Nothing to see yet.
