@@ -19764,7 +19764,7 @@
 	var p = 'p';
 	
 	var _ = null;
-	var STARTING_MAP = [r, n, b, k, q, b, n, r, p, p, p, p, p, p, p, p, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, P, P, P, P, P, P, P, P, R, N, B, K, Q, B, N, R];
+	var STARTING_MAP = [r, n, b, q, k, b, n, r, p, p, p, p, _, p, p, p, _, _, _, _, p, _, _, _, _, _, _, _, _, _, _, _, _, _, _, P, _, _, _, _, _, _, _, _, _, _, P, _, P, P, P, _, P, P, _, P, R, N, B, Q, K, B, N, R];
 	var pieceTypes = {
 	  p: _Pawn2.default,
 	  r: _Rook2.default,
@@ -19776,6 +19776,8 @@
 	
 	var Game = (function () {
 	  function Game() {
+	    var _this = this;
+	
 	    _classCallCheck(this, Game);
 	
 	    this.emitter = (0, _eventEmitter2.default)({});
@@ -19789,9 +19791,11 @@
 	      move: 0,
 	      computerColor: COLORS[1]
 	    };
-	    console.log(_south2.default.pieces[8].possibleMoves(this.state.position).map(function (move) {
-	      return move.toString();
-	    }));
+	    _south2.default.pieces.forEach(function (piece) {
+	      console.log(piece.constructor.symbol, piece.squareId, piece.possibleMoves(_this.state.position).map(function (move) {
+	        return move.toString();
+	      }));
+	    });
 	  }
 	
 	  _createClass(Game, [{
@@ -20311,7 +20315,7 @@
 	  cardinal: function cardinal(isCapture, forwards) {
 	    return !isCapture && forwards;
 	  },
-	  projectable: false, /* TODO */
+	  projectable: true, /* TODO */
 	  knightwards: false,
 	  jumps: false
 	};
@@ -20325,6 +20329,8 @@
 	
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 	
+	// TODO: remove subclass reference
+	
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
@@ -20336,6 +20342,10 @@
 	var _south = __webpack_require__(176);
 	
 	var _south2 = _interopRequireDefault(_south);
+	
+	var _Pawn = __webpack_require__(177);
+	
+	var _Pawn2 = _interopRequireDefault(_Pawn);
 	
 	var _Move = __webpack_require__(179);
 	
@@ -20370,6 +20380,9 @@
 	      // knightwards && moves.push(...this.possibleKinghtMoves(position));
 	      return moves;
 	    }
+	
+	    // TODO: genericize some of this
+	
 	  }, {
 	    key: 'possibleDiagonalMoves',
 	    value: function possibleDiagonalMoves(position) {
@@ -20386,7 +20399,7 @@
 	          while ((column += columnDir, row += rowDir, _this.isOnBoard(row, column))) {
 	            destinationId = column + row * 8;
 	            var destinationPiece = position[destinationId];
-	            var isCapture = destinationPiece && destinationPiece.player != _this.owner;
+	            var isCapture = destinationPiece && destinationPiece.owner != _this.owner;
 	            var diagonal = _this.constructor.moveDescriptor.diagonal;
 	            var forwards = _this.owner.relativeDirection(rowDir) == 1;
 	            if (destinationPiece && !isCapture || typeof diagonal == 'function' && !diagonal(isCapture, forwards)) {
@@ -20401,6 +20414,9 @@
 	      });
 	      return moves;
 	    }
+	
+	    // TODO: genericize some of this
+	
 	  }, {
 	    key: 'possibleCardinalMoves',
 	    value: function possibleCardinalMoves(position) {
@@ -20426,7 +20442,7 @@
 	                break;
 	              }
 	              moves.push(new _Move2.default(_this2.squareId, destinationId));
-	              if (destinationPiece || !_this2.constructor.moveDescriptor.projectable) {
+	              if (destinationPiece || !_this2.constructor.moveDescriptor.projectable || _this2 instanceof _Pawn2.default && Math.abs(_this2.squareId - destinationId) == 16) {
 	                break;
 	              }
 	            }

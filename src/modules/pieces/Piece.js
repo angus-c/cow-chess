@@ -1,6 +1,8 @@
 import north from '../players/north';
 import south from '../players/south';
 
+// TODO: remove subclass reference
+import Pawn from './Pawn';
 import Move from '../Move';
 
 class Piece {
@@ -18,6 +20,7 @@ class Piece {
     return moves;
   }
   
+  // TODO: genericize some of this
   possibleDiagonalMoves(position) {
     let column, row, destinationId, moves = [];
     [-1, 1].forEach(columnDir => {
@@ -27,7 +30,7 @@ class Piece {
         while(column += columnDir, row += rowDir, this.isOnBoard(row, column)) {
           destinationId = column + row * 8;
           const destinationPiece = position[destinationId];
-          const isCapture = destinationPiece && (destinationPiece.player != this.owner);
+          const isCapture = destinationPiece && (destinationPiece.owner != this.owner);
           const diagonal = this.constructor.moveDescriptor.diagonal;
           const forwards = this.owner.relativeDirection(rowDir) == 1;
           if (
@@ -46,6 +49,7 @@ class Piece {
     return moves;
   }
   
+  // TODO: genericize some of this
   possibleCardinalMoves(position) {
     let column, row, destinationId, moves = [];
     [-1, 0, 1].forEach(columnDir => {
@@ -67,7 +71,11 @@ class Piece {
               break;
             }
             moves.push(new Move(this.squareId, destinationId));
-            if (destinationPiece || !this.constructor.moveDescriptor.projectable) {
+            if (
+              destinationPiece ||
+              !this.constructor.moveDescriptor.projectable ||
+              (this instanceof Pawn) && (Math.abs(this.squareId - destinationId) == 16)
+            ) {
               break;
             }
           }

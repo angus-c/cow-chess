@@ -17,12 +17,12 @@ const [r, n, b, k, q, p] = ['r', 'n', 'b', 'k', 'q', 'p'];
 const _ = null;
 const STARTING_MAP = [
   r,n,b,q,k,b,n,r,
-  p,p,p,p,p,p,p,p,
+  p,p,p,p,_,p,p,p,
+  _,_,_,_,p,_,_,_,
   _,_,_,_,_,_,_,_,
-  _,_,_,_,_,_,_,_,
-  _,_,_,_,_,_,_,_,
-  _,_,_,_,_,_,_,_,
-  P,P,P,P,P,P,P,P,
+  _,_,_,P,_,_,_,_,
+  _,_,_,_,_,_,P,_,
+  P,P,P,_,P,P,_,P,
   R,N,B,Q,K,B,N,R
 ];
 const pieceTypes = {
@@ -41,7 +41,12 @@ class Game {
       move: 0,
       computerColor: COLORS[1]
     }
-    console.log(south.pieces[8].possibleMoves(this.state.position).map(move => move.toString()));
+    south.pieces.forEach(piece => {
+      console.log(
+        piece.constructor.symbol,
+        piece.squareId,
+        piece.possibleMoves(this.state.position).map(move => move.toString()));
+    });
   }
 
   get() {
