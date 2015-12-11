@@ -16,14 +16,14 @@ const [R, N, B, K, Q, P] = ['R', 'N', 'B', 'K', 'Q', 'P'];
 const [r, n, b, k, q, p] = ['r', 'n', 'b', 'k', 'q', 'p'];
 const _ = null;
 const STARTING_MAP = [
-  r,n,b,k,q,b,n,r,
+  r,n,b,q,k,b,n,r,
   p,p,p,p,p,p,p,p,
   _,_,_,_,_,_,_,_,
   _,_,_,_,_,_,_,_,
   _,_,_,_,_,_,_,_,
   _,_,_,_,_,_,_,_,
   P,P,P,P,P,P,P,P,
-  R,N,B,K,Q,B,N,R
+  R,N,B,Q,K,B,N,R
 ];
 const pieceTypes = {
   p: Pawn,
