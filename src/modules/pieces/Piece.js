@@ -1,11 +1,11 @@
-import computer from '../players/computer';
-import human from '../players/human';
+import north from '../players/north';
+import south from '../players/south';
 
 import Move from '../Move';
 
 class Piece {
-  constructor(x, y, player) {
-    this.square = [x, y];
+  constructor(squareId, player) {
+    this.squareId = squareId;
     this.owner = player;
   }
   
@@ -19,18 +19,24 @@ class Piece {
   }
   
   possibleDiagonalMoves(position) {
-    let col, row, moves = [];
+    let column, row, destinationId, moves = [];
     [-1, 1].forEach(columnDir => {
       [-1, 1].forEach(rowDir => {
-        [col, row] = this.square;
-        while(col += columnDir, row += rowDir, this.isOnBoard(col, row)) {
-          const isCapture = position[col][row] && (position[col][row].player != this.owner);
-          let diagonal = this.constructor.moveDescriptor.diagonal;
-          debugger;
-          if (typeof diagonal == 'function' && !diagonal(isCapture)) {
+        column = this.squareId % 8;
+        row = Math.floor(this.squareId / 8);
+        while(column += columnDir, row += rowDir, this.isOnBoard(row, column)) {
+          destinationId = column + row * 8;
+          const destinationPiece = position[destinationId];
+          const isCapture = destinationPiece && (destinationPiece.player != this.owner);
+          const diagonal = this.constructor.moveDescriptor.diagonal;
+          const forwards = this.owner.relativeDirection(rowDir) == 1;
+          if (
+            (destinationPiece && !isCapture) ||
+            (typeof diagonal == 'function' && !diagonal(isCapture, forwards))
+          ) {
             break;
           }
-          moves.push(new Move(this.square, [col, row]));
+          moves.push(new Move(this.squareId, destinationId));
           if (!this.constructor.moveDescriptor.projectable) {
             break;
           }
@@ -41,22 +47,25 @@ class Piece {
   }
   
   possibleCardinalMoves(position) {
-    let col, row, moves = [];
+    let column, row, destinationId, moves = [];
     [-1, 0, 1].forEach(columnDir => {
       [-1, 0, 1].forEach(rowDir => {
-        if (columnDir == 0 || rowDir == 0) {
-          [col, row] = this.square;
-          while(col += columnDir, row += rowDir, this.isOnBoard(col, row)) {
-            const destinationPiece = position[col][row];
+        if (columnDir == 0 || rowDir == 0 && (columnDir != rowDir)) {
+          column = this.squareId % 8;
+          row = Math.floor(this.squareId / 8);
+          while(column += columnDir, row += rowDir, this.isOnBoard(row, column)) {
+            destinationId = column + row * 8;
+            const destinationPiece = position[destinationId];
             const isCapture = destinationPiece && (destinationPiece.player != this.owner);
-            let cardinal = this.constructor.moveDescriptor.cardinal;
+            const cardinal = this.constructor.moveDescriptor.cardinal;
+            const forwards = this.owner.relativeDirection(rowDir) == 1;
             if (
               (destinationPiece && !isCapture) ||
-              (typeof cardinal == 'function' && !cardinal(isCapture))
+              (typeof cardinal == 'function' && !cardinal(isCapture, forwards))
             ) {
               break;
             }
-            moves.push(new Move(this.square, [col, row]));
+            moves.push(new Move(this.squareId, destinationId));
             if (destinationPiece || !this.constructor.moveDescriptor.projectable) {
               break;
             }
@@ -69,12 +78,12 @@ class Piece {
   
   possibleKinghtMoves(position) {}
   
-  isOnBoard(col, row) {
-    return (1 <= col) && (col <= 8) && (1 <= row) && (row <= 8);
+  isOnBoard(column, row) {
+    return (0 <= column) && (column <= 7) && (0 <= row) && (row <= 7);
   }
   
   render() {
-    return (this.owner === human) ?
+    return (this.owner === north) ?
       this.constructor.symbol.toUpperCase() :
       this.constructor.symbol.toLowerCase();
   }

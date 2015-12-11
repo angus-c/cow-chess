@@ -1,7 +1,7 @@
 import EventEmitter from 'event-emitter';
 
-import computer from '../modules/players/computer';
-import human from '../modules/players/human';
+import north from '../modules/players/north';
+import south from '../modules/players/south';
 
 import Pawn from '../modules/pieces/Pawn';
 import Rook from '../modules/pieces/Rook';
@@ -16,14 +16,14 @@ const [R, N, B, K, Q, P] = ['R', 'N', 'B', 'K', 'Q', 'P'];
 const [r, n, b, k, q, p] = ['r', 'n', 'b', 'k', 'q', 'p'];
 const _ = null;
 const STARTING_MAP = [
-  [r,n,b,k,q,b,n,r],
-  [p,p,p,p,p,p,p,p],
-  [_,_,_,_,_,_,_,_],
-  [_,_,_,_,_,_,_,_],
-  [_,_,_,_,_,_,_,_],
-  [_,_,_,_,_,_,_,_],
-  [P,P,P,P,P,P,P,P],
-  [R,N,B,K,Q,B,N,R]
+  r,n,b,k,q,b,n,r,
+  p,p,p,p,p,p,p,p,
+  _,_,_,_,_,_,_,_,
+  _,_,_,_,_,_,_,_,
+  _,_,_,_,_,_,_,_,
+  _,_,_,_,_,_,_,_,
+  P,P,P,P,P,P,P,P,
+  R,N,B,K,Q,B,N,R
 ];
 const pieceTypes = {
   p: Pawn,
@@ -41,7 +41,7 @@ class Game {
       move: 0,
       computerColor: COLORS[1]
     }
-    console.log(human.pieces[0].possibleMoves(this.state.position));
+    console.log(south.pieces[8].possibleMoves(this.state.position).map(move => move.toString()));
   }
 
   get() {
@@ -55,24 +55,23 @@ class Game {
 
   instantiatePieces(map) {
     let PieceType;
-    return map.map((row, rowNumber) => {
-      return row.map((symbol, columnNumber) => {
-        if (!symbol) {
-          return null;
-        }
-        const player = (symbol == symbol.toLowerCase()) ? computer : human;
-        PieceType = pieceTypes[symbol.toLowerCase()];
-        const piece = new PieceType(columnNumber + 1, rowNumber + 1, player);
-        player.pieces.push(piece);
-        return piece;
-      });
+    // squeareIds range from 0 (NW) to 63 (SE)
+    return map.map((symbol, squareId) => {
+      if (!symbol) {
+        return null;
+      }
+      const player = (symbol == symbol.toLowerCase()) ? north : south;
+      PieceType = pieceTypes[symbol.toLowerCase()];
+      const piece = new PieceType(squareId, player);
+      player.pieces.push(piece);
+      return piece;
     });
   }
 
   emitter = EventEmitter({})
   pieces = {
-    human: [],
-    computer: []
+    south: [],
+    north: []
   }
 }
 
