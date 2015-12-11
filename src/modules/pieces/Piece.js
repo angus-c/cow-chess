@@ -51,12 +51,13 @@ class Piece {
     [-1, 0, 1].forEach(columnDir => {
       [-1, 0, 1].forEach(rowDir => {
         if (columnDir == 0 || rowDir == 0 && (columnDir != rowDir)) {
+          debugger;
           column = this.squareId % 8;
           row = Math.floor(this.squareId / 8);
           while(column += columnDir, row += rowDir, this.isOnBoard(row, column)) {
             destinationId = column + row * 8;
             const destinationPiece = position[destinationId];
-            const isCapture = destinationPiece && (destinationPiece.player != this.owner);
+            const isCapture = destinationPiece && (destinationPiece.owner != this.owner);
             const cardinal = this.constructor.moveDescriptor.cardinal;
             const forwards = this.owner.relativeDirection(rowDir) == 1;
             if (

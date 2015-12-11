@@ -20413,12 +20413,13 @@
 	      [-1, 0, 1].forEach(function (columnDir) {
 	        [-1, 0, 1].forEach(function (rowDir) {
 	          if (columnDir == 0 || rowDir == 0 && columnDir != rowDir) {
+	            debugger;
 	            column = _this2.squareId % 8;
 	            row = Math.floor(_this2.squareId / 8);
 	            while ((column += columnDir, row += rowDir, _this2.isOnBoard(row, column))) {
 	              destinationId = column + row * 8;
 	              var destinationPiece = position[destinationId];
-	              var isCapture = destinationPiece && destinationPiece.player != _this2.owner;
+	              var isCapture = destinationPiece && destinationPiece.owner != _this2.owner;
 	              var cardinal = _this2.constructor.moveDescriptor.cardinal;
 	              var forwards = _this2.owner.relativeDirection(rowDir) == 1;
 	              if (destinationPiece && !isCapture || typeof cardinal == 'function' && !cardinal(isCapture, forwards)) {
