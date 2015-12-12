@@ -55,7 +55,6 @@ class Piece {
     [-1, 0, 1].forEach(columnDir => {
       [-1, 0, 1].forEach(rowDir => {
         if (columnDir == 0 || rowDir == 0 && (columnDir != rowDir)) {
-          debugger;
           column = this.squareId % 8;
           row = Math.floor(this.squareId / 8);
           while(column += columnDir, row += rowDir, this.isOnBoard(row, column)) {

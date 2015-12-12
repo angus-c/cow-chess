@@ -10,6 +10,7 @@ import Bishop from '../modules/pieces/Bishop';
 import King from '../modules/pieces/King';
 import Queen from '../modules/pieces/Queen';
 
+import nextMove from '../modules/nextMove';
 
 const COLORS = ['#FFF', '#000'];
 const [R, N, B, K, Q, P] = ['R', 'N', 'B', 'K', 'Q', 'P'];
@@ -17,12 +18,12 @@ const [r, n, b, k, q, p] = ['r', 'n', 'b', 'k', 'q', 'p'];
 const _ = null;
 const STARTING_MAP = [
   r,n,b,q,k,b,n,r,
-  p,p,p,p,_,p,p,p,
-  _,_,_,_,p,_,_,_,
+  p,p,p,p,p,p,p,p,
   _,_,_,_,_,_,_,_,
-  _,_,_,P,_,_,_,_,
-  _,_,_,_,_,_,P,_,
-  P,P,P,_,P,P,_,P,
+  _,_,_,_,_,_,_,_,
+  _,_,_,_,_,_,_,_,
+  _,_,_,_,_,_,_,_,
+  P,P,P,P,P,P,P,P,
   R,N,B,Q,K,B,N,R
 ];
 const pieceTypes = {
@@ -47,6 +48,18 @@ class Game {
         piece.squareId,
         piece.possibleMoves(this.state.position).map(move => move.toString()));
     });
+    
+    // autoplay test
+    let nextPlayer = south, moves = 0;
+    const play = setInterval(() => {
+      this.generateMove(nextPlayer);
+      nextPlayer = (nextPlayer == south) ? north: south;
+      moves++;
+      if (moves > 10) {
+        window.clearInterval(play);
+      }
+    }, 1000);
+    
   }
 
   get() {
@@ -71,6 +84,21 @@ class Game {
       player.pieces.push(piece);
       return piece;
     });
+  }
+
+  applyMove(move) {
+    const position = this.state.position;
+    const fromSquare = position[move.from];
+    if (position[move.to]) {
+      // TODO: capture
+    }
+    position[move.to] = position[move.from];
+    position[move.from] = null;
+    this.emitter.emit('gameChange', this.state);
+  }
+
+  generateMove(player) {
+    this.applyMove(nextMove(this.state.position, player));
   }
 
   emitter = EventEmitter({})

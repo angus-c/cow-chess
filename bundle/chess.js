@@ -62,7 +62,7 @@
 	
 	var _game2 = _interopRequireDefault(_game);
 	
-	var _board = __webpack_require__(185);
+	var _board = __webpack_require__(186);
 	
 	var _board2 = _interopRequireDefault(_board);
 	
@@ -19745,6 +19745,10 @@
 	
 	var _Queen2 = _interopRequireDefault(_Queen);
 	
+	var _nextMove = __webpack_require__(185);
+	
+	var _nextMove2 = _interopRequireDefault(_nextMove);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -19764,7 +19768,7 @@
 	var p = 'p';
 	
 	var _ = null;
-	var STARTING_MAP = [r, n, b, q, k, b, n, r, p, p, p, p, _, p, p, p, _, _, _, _, p, _, _, _, _, _, _, _, _, _, _, _, _, _, _, P, _, _, _, _, _, _, _, _, _, _, P, _, P, P, P, _, P, P, _, P, R, N, B, Q, K, B, N, R];
+	var STARTING_MAP = [r, n, b, q, k, b, n, r, p, p, p, p, p, p, p, p, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, P, P, P, P, P, P, P, P, R, N, B, Q, K, B, N, R];
 	var pieceTypes = {
 	  p: _Pawn2.default,
 	  r: _Rook2.default,
@@ -19796,6 +19800,18 @@
 	        return move.toString();
 	      }));
 	    });
+	
+	    // autoplay test
+	    var nextPlayer = _south2.default,
+	        moves = 0;
+	    var play = setInterval(function () {
+	      _this.generateMove(nextPlayer);
+	      nextPlayer = nextPlayer == _south2.default ? _north2.default : _south2.default;
+	      moves++;
+	      if (moves > 10) {
+	        window.clearInterval(play);
+	      }
+	    }, 1000);
 	  }
 	
 	  _createClass(Game, [{
@@ -19824,6 +19840,23 @@
 	        player.pieces.push(piece);
 	        return piece;
 	      });
+	    }
+	  }, {
+	    key: 'applyMove',
+	    value: function applyMove(move) {
+	      var position = this.state.position;
+	      var fromSquare = position[move.from];
+	      if (position[move.to]) {
+	        // TODO: capture
+	      }
+	      position[move.to] = position[move.from];
+	      position[move.from] = null;
+	      this.emitter.emit('gameChange', this.state);
+	    }
+	  }, {
+	    key: 'generateMove',
+	    value: function generateMove(player) {
+	      this.applyMove((0, _nextMove2.default)(this.state.position, player));
 	    }
 	  }]);
 	
@@ -20429,7 +20462,6 @@
 	      [-1, 0, 1].forEach(function (columnDir) {
 	        [-1, 0, 1].forEach(function (rowDir) {
 	          if (columnDir == 0 || rowDir == 0 && columnDir != rowDir) {
-	            debugger;
 	            column = _this2.squareId % 8;
 	            row = Math.floor(_this2.squareId / 8);
 	            while ((column += columnDir, row += rowDir, _this2.isOnBoard(row, column))) {
@@ -20736,6 +20768,28 @@
 
 /***/ },
 /* 185 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var nextMove = function nextMove(position, player) {
+	  var possibleMoves = undefined;
+	  var pieces = player.pieces;
+	  // TODO: random for now - get best move
+	  do {
+	    possibleMoves = pieces[Math.floor(pieces.length * Math.random())].possibleMoves(position);
+	  } while (!possibleMoves.length);
+	
+	  return possibleMoves[Math.floor(possibleMoves.length * Math.random())];
+	};
+	
+	exports.default = nextMove;
+
+/***/ },
+/* 186 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
