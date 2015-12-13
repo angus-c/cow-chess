@@ -28,7 +28,56 @@
   background-color: #eee;
 }
 
-.w-king {
-  background-image: url("../../../bundle/w-king.png");
+.piece {
   background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.w-pawn {
+  background-image: url("../../../bundle/images/w-pawn.png");
+
+}
+
+.w-knight {
+  background-image: url("../../../bundle/images/w-knight.png");
+}
+
+.w-bishop {
+  background-image: url("../../../bundle/images/w-bishop.png");
+}
+
+.w-rook {
+  background-image: url("../../../bundle/images/w-rook.png");
+}
+
+.w-queen {
+  background-image: url("../../../bundle/images/w-queen.png");
+}
+
+.w-king {
+  background-image: url("../../../bundle/images/w-king.png");
+}
+
+.b-pawn {
+  background-image: url("../../../bundle/images/b-pawn.png");
+}
+
+.b-knight {
+  background-image: url("../../../bundle/images/b-knight.png");
+}
+
+.b-bishop {
+  background-image: url("../../../bundle/images/b-bishop.png");
+}
+
+.b-rook {
+  background-image: url("../../../bundle/images/b-rook.png");
+}
+
+.b-queen {
+  background-image: url("../../../bundle/images/b-queen.png");
+}
+
+.b-king {
+  background-image: url("../../../bundle/images/b-king.png");
 }

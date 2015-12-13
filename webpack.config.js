@@ -1,7 +1,22 @@
 module.exports = {
-    entry: './src/views/chess',
+    entry: [
+      './src/views/chess',
+      './src/images/w-pawn.png',
+      './src/images/w-knight.png',
+      './src/images/w-bishop.png',
+      './src/images/w-rook.png',
+      './src/images/w-queen.png',
+      './src/images/w-king.png',
+      './src/images/b-pawn.png',
+      './src/images/b-knight.png',
+      './src/images/b-bishop.png',
+      './src/images/b-rook.png',
+      './src/images/b-queen.png',
+      './src/images/b-king.png'
+    ],
     output: {
         path: 'bundle',
+        publicPath: './bundle/',
         filename: 'chess.js'
     },
     debug: true,
@@ -34,7 +49,7 @@ module.exports = {
         {
           // images
           test: /\.png$/,
-          loader: "file-loader"
+          loader: "file-loader?name=./images/[name].[ext]"
         }
       ]
     }

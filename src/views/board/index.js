@@ -16,11 +16,12 @@ class Board extends React.Component {
           return (
             <div className='row' key={`r${i}`}>
               {[0,1,2,3,4,5,6,7].map((columnId, j) => {
-                const sq = position[rowId*8 + columnId];
+                const piece = position[rowId*8 + columnId];
                 const squareClass = classnames(
                   'square',
                   {shaded: ((i + j) % 2) == 1},
-                  {[sq && sq.getClassName()]: sq}
+                  {piece: piece},
+                  {[piece && piece.getClassName()]: piece}
                 )
                 return <div className={squareClass} key={j}></div>
               })}

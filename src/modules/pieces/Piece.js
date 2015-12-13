@@ -12,7 +12,6 @@ class Piece {
   }
   
   getClassName() {
-    debugger;
     return this.constructor.classStub ?
       `${this.getColor() == 'white' ? 'w' : 'b'}-${this.constructor.classStub}` :
       null
