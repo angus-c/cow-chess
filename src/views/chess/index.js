@@ -1,11 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-// data
-import game from './data/game';
-
-// views
-import Board from './views/board';
+import game from '../../data/game';
+import Board from '../board';
+import './chess.css'
 
 class Chess extends React.Component {
   constructor(props) {
@@ -15,7 +13,11 @@ class Chess extends React.Component {
   }
 
   render() {
-    return <Board position={this.state.position}/>
+    return (
+      <div className='chess'>
+        <Board position={this.state.position}/>
+      </div>
+    );
   }
   
   _update(data) {

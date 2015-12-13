@@ -11,6 +11,18 @@ class Piece {
     this.owner = player;
   }
   
+  getClassName() {
+    debugger;
+    return this.constructor.classStub ?
+      `${this.getColor() == 'white' ? 'w' : 'b'}-${this.constructor.classStub}` :
+      null
+  }
+  
+  getColor() {
+    // TODO: support color switch
+    return this.owner === south ? 'white' : 'black';
+  }
+  
   possibleMoves(position) {
     let moves = [];
     let {diagonal, cardinal, knightwards, jumps} = this.constructor.moveDescriptor;

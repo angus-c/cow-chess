@@ -1,5 +1,5 @@
 module.exports = {
-    entry: './src/chess.js',
+    entry: './src/views/chess',
     output: {
         path: 'bundle',
         filename: 'chess.js'
@@ -30,6 +30,11 @@ module.exports = {
           // extract CSS into separate files
           test: /\.css$/,
           loader: "style!css"
+        },
+        {
+          // images
+          test: /\.png$/,
+          loader: "file-loader"
         }
       ]
     }

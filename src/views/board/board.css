@@ -1,0 +1,34 @@
+.board {
+  display: flex;
+  flex-grow: 1;
+  height: 100%
+}
+
+.grid {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 0.125;
+}
+
+.square {
+  flex-grow: 0.125;
+  text-align: center;
+  vertical-align: middle;
+  height: 37.5px; /* TODO */
+  width: 0;
+}
+
+.square.shaded {
+  background-color: #eee;
+}
+
+.w-king {
+  background-image: url("../../../bundle/w-king.png");
+  background-repeat: no-repeat;
+}

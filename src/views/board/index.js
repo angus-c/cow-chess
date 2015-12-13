@@ -1,4 +1,7 @@
 import React from 'react';
+import classnames from 'classnames';
+
+import './board.css';
 
 class Board extends React.Component {
 
@@ -8,23 +11,26 @@ class Board extends React.Component {
   
   render() {
     const renderCells = (position) =>
-      <table>
-        <tbody>
-          {[0,1,2,3,4,5,6,7].map((rowId, i) => {
-            return (
-              <tr key={`r${i}`}>
-                {[0,1,2,3,4,5,6,7].map((columnId, j) => {
-                  const sq = position[rowId*8 + columnId];
-                  return <td key={j}>{sq ? sq.render() : '.'}</td>
-                })}
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+      <div className='grid'>
+        {[0,1,2,3,4,5,6,7].map((rowId, i) => {
+          return (
+            <div className='row' key={`r${i}`}>
+              {[0,1,2,3,4,5,6,7].map((columnId, j) => {
+                const sq = position[rowId*8 + columnId];
+                const squareClass = classnames(
+                  'square',
+                  {shaded: ((i + j) % 2) == 1},
+                  {[sq && sq.getClassName()]: sq}
+                )
+                return <div className={squareClass} key={j}></div>
+              })}
+            </div>
+          );
+        })}
+      </div>
 
     return (
-      <div>
+      <div className='board'>
         {renderCells(this.props.position)}
       </div>
     )
