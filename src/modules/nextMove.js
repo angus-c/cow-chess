@@ -5,8 +5,8 @@ const nextMove = (position, player) => {
   do {
     possibleMoves = pieces[Math.floor(pieces.length * Math.random())].possibleMoves(position);
   } while (!possibleMoves.length);
-    
+
   return possibleMoves[Math.floor(possibleMoves.length * Math.random())];
-}
+};
 
 export default nextMove;

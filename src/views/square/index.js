@@ -1,19 +1,21 @@
 import React from 'react';
 import classnames from 'classnames';
 
+import Piece from '../../modules/pieces/Piece';
+
 import './square.css';
 
 class Square extends React.Component {
 
   static propTypes = {
-    shaded: React.PropTypes.bool,
-    piece: React.PropTypes.object
+    piece: React.PropTypes.instanceOf(Piece),
+    shaded: React.PropTypes.bool
   }
 
   static defaultValues = {
     shaded: false
   }
-  
+
   render() {
     const { shaded, piece } = this.props;
     const className = classnames(

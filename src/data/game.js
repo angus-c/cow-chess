@@ -16,6 +16,7 @@ const COLORS = ['#FFF', '#000'];
 const [R, N, B, K, Q, P] = ['R', 'N', 'B', 'K', 'Q', 'P'];
 const [r, n, b, k, q, p] = ['r', 'n', 'b', 'k', 'q', 'p'];
 const _ = null;
+/*eslint-disable */
 const STARTING_MAP = [
   r,n,b,q,k,b,n,r,
   p,p,p,p,p,p,p,p,
@@ -26,6 +27,7 @@ const STARTING_MAP = [
   P,P,P,P,P,P,P,P,
   R,N,B,Q,K,B,N,R
 ];
+/*eslint-enable */
 const pieceTypes = {
   p: Pawn,
   r: Rook,
@@ -33,7 +35,7 @@ const pieceTypes = {
   b: Bishop,
   k: King,
   q: Queen
-}
+};
 
 class Game {
   constructor() {
@@ -41,25 +43,24 @@ class Game {
       position: this.instantiatePieces(STARTING_MAP),
       move: 0,
       computerColor: COLORS[1]
-    }
+    };
     south.pieces.forEach(piece => {
       console.log(
         piece.constructor.symbol,
         piece.squareId,
         piece.possibleMoves(this.state.position).map(move => move.toString()));
     });
-    
+
     // autoplay test
     let nextPlayer = south, moves = 0;
     const play = setInterval(() => {
       this.generateMove(nextPlayer);
-      nextPlayer = (nextPlayer == south) ? north: south;
+      nextPlayer = (nextPlayer == south) ? north : south;
       moves++;
       if (moves > 10) {
         window.clearInterval(play);
       }
     }, 1000);
-    
   }
 
   get() {
@@ -88,7 +89,6 @@ class Game {
 
   applyMove(move) {
     const position = this.state.position;
-    const fromSquare = position[move.from];
     if (position[move.to]) {
       // TODO: capture
     }

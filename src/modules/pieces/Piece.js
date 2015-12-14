@@ -10,27 +10,27 @@ class Piece {
     this.squareId = squareId;
     this.owner = player;
   }
-  
+
   getClassName() {
     return this.constructor.classStub ?
       `${this.getColor() == 'white' ? 'w' : 'b'}-${this.constructor.classStub}` :
-      null
+      null;
   }
-  
+
   getColor() {
     // TODO: support color switch
     return this.owner === south ? 'white' : 'black';
   }
-  
+
   possibleMoves(position) {
     let moves = [];
-    let {diagonal, cardinal, knightwards, jumps} = this.constructor.moveDescriptor;
+    let {diagonal, cardinal/* , knightwards, jumps */ } = this.constructor.moveDescriptor;
     diagonal && moves.push(...this.possibleDiagonalMoves(position));
     cardinal && moves.push(...this.possibleCardinalMoves(position));
     // knightwards && moves.push(...this.possibleKinghtMoves(position));
     return moves;
   }
-  
+
   // TODO: genericize some of this
   possibleDiagonalMoves(position) {
     let column, row, destinationId, moves = [];
@@ -38,7 +38,7 @@ class Piece {
       [-1, 1].forEach(rowDir => {
         column = this.squareId % 8;
         row = Math.floor(this.squareId / 8);
-        while(column += columnDir, row += rowDir, this.isOnBoard(row, column)) {
+        while (column += columnDir, row += rowDir, this.isOnBoard(row, column)) {
           destinationId = column + row * 8;
           const destinationPiece = position[destinationId];
           const isCapture = destinationPiece && (destinationPiece.owner != this.owner);
@@ -59,7 +59,7 @@ class Piece {
     });
     return moves;
   }
-  
+
   // TODO: genericize some of this
   possibleCardinalMoves(position) {
     let column, row, destinationId, moves = [];
@@ -68,7 +68,7 @@ class Piece {
         if (columnDir == 0 || rowDir == 0 && (columnDir != rowDir)) {
           column = this.squareId % 8;
           row = Math.floor(this.squareId / 8);
-          while(column += columnDir, row += rowDir, this.isOnBoard(row, column)) {
+          while (column += columnDir, row += rowDir, this.isOnBoard(row, column)) {
             destinationId = column + row * 8;
             const destinationPiece = position[destinationId];
             const isCapture = destinationPiece && (destinationPiece.owner != this.owner);
@@ -94,13 +94,13 @@ class Piece {
     });
     return moves;
   }
-  
+
   possibleKinghtMoves(position) {}
-  
+
   isOnBoard(column, row) {
     return (0 <= column) && (column <= 7) && (0 <= row) && (row <= 7);
   }
-  
+
   render() {
     return (this.owner === north) ?
       this.constructor.symbol.toUpperCase() :

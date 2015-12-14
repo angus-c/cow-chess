@@ -14,6 +14,8 @@
     "babel-preset-stage-1": "^6.3.13",
     "babel-runtime": "^6.3.13",
     "css-loader": "^0.23.0",
+    "eslint": "^1.10.3",
+    "eslint-plugin-react": "^3.11.3",
     "file-loader": "^0.8.5",
     "json-loader": "^0.5.1",
     "jsx-loader": "^0.13.2",
@@ -21,6 +23,7 @@
     "webpack": "^1.7.3"
   },
   "dependencies": {
+    "babel-eslint": "^4.1.6",
     "classnames": "^2.2.1",
     "event-emitter": "^0.3.4",
     "react": "^0.14.3",

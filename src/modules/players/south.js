@@ -7,6 +7,6 @@ const south = {
     return -actualDirection;
   },
   computer: false /* default */
-}
+};
 
-export default south
+export default south;
