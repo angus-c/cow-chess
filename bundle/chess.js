@@ -85,6 +85,10 @@
 	
 	var _board2 = _interopRequireDefault(_board);
 	
+	var _info = __webpack_require__(222);
+	
+	var _info2 = _interopRequireDefault(_info);
+	
 	__webpack_require__(208);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -116,7 +120,8 @@
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'chess' },
-	        _react2.default.createElement(_board2.default, { position: this.state.position, selected: this.state.selectedSquare })
+	        _react2.default.createElement(_board2.default, { position: this.state.position, selected: this.state.selectedSquare }),
+	        _react2.default.createElement(_info2.default, { lastMove: this.state.lastMove })
 	      );
 	    }
 	  }, {
@@ -19819,12 +19824,12 @@
 	
 	    this.state = {
 	      position: this.instantiatePieces(STARTING_MAP),
-	      move: 0,
+	      lastMove: null,
 	      computerColor: COLORS[1],
 	      selectedSquare: null
 	    };
-	    _south2.default.pieces.forEach(function (piece) {
-	      console.log(piece.constructor.symbol, piece.squareId, piece.possibleMoves(_this.state.position).map(function (move) {
+	    _north2.default.pieces.forEach(function (piece) {
+	      console.log(piece.constructor.classStub, piece.getRank(), piece.squareId, piece.possibleMoves(_this.state.position).map(function (move) {
 	        return move.toString();
 	      }));
 	    });
@@ -19873,10 +19878,15 @@
 	    value: function applyMove(move) {
 	      var position = this.state.position;
 	      if (position[move.to]) {
-	        // TODO: capture
+	        var otherPlayer = position[move.to].owner;
+	        otherPlayer.pieces = otherPlayer.pieces.filter(function (piece) {
+	          return piece != position[move.to];
+	        });
 	      }
 	      position[move.to] = position[move.from];
 	      position[move.from] = null;
+	      position[move.to].afterMove();
+	      this.state.lastMove = move;
 	      this.emitter.emit('gameChange', this.state);
 	    }
 	  }, {
@@ -19885,11 +19895,11 @@
 	      this.applyMove((0, _nextMove2.default)(this.state.position, player));
 	    }
 	  }, {
-	    key: 'tryMove',
-	    value: function tryMove(from, to) {
-	      this.state.selectedSquare = null;
+	    key: 'manualMove',
+	    value: function manualMove(from, to) {
+	      // TODO: verify legal move
 	      this.applyMove(new _Move2.default(from, to));
-	
+	      // computer move
 	      this.generateMove(this.state.position[to].owner == _north2.default ? _south2.default : _north2.default);
 	    }
 	  }, {
@@ -19906,7 +19916,9 @@
 	        if (piece && !piece.owner.computer) {
 	          // clicked own piece as destination - assume they want to move this one instead
 	        } else {
-	            return this.tryMove(this.state.selectedSquare, location);
+	            var from = this.state.selectedSquare;
+	            this.state.selectedSquare = null;
+	            return this.manualMove(from, location);
 	          }
 	      }
 	      this.state.selectedSquare = location;
@@ -20366,6 +20378,8 @@
 
 	'use strict';
 	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
@@ -20386,10 +20400,25 @@
 	  _inherits(Pawn, _Piece);
 	
 	  function Pawn() {
+	    var _Object$getPrototypeO;
+	
+	    var _temp, _this, _ret;
+	
 	    _classCallCheck(this, Pawn);
 	
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(Pawn).apply(this, arguments));
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+	
+	    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_Object$getPrototypeO = Object.getPrototypeOf(Pawn)).call.apply(_Object$getPrototypeO, [this].concat(args))), _this), _this.hasMoved = false, _temp), _possibleConstructorReturn(_this, _ret);
 	  }
+	
+	  _createClass(Pawn, [{
+	    key: 'afterMove',
+	    value: function afterMove() {
+	      this.hasMoved = true;
+	    }
+	  }]);
 	
 	  return Pawn;
 	})(_Piece3.default);
@@ -20403,7 +20432,9 @@
 	  cardinal: function cardinal(isCapture, forwards) {
 	    return !isCapture && forwards;
 	  },
-	  projectable: true, /* TODO */
+	  projectable: function projectable(rank) {
+	    return rank == 2;
+	  },
 	  knightwards: false,
 	  jumps: false
 	};
@@ -20465,6 +20496,11 @@
 	      return this.owner === _south2.default ? 'white' : 'black';
 	    }
 	  }, {
+	    key: 'getRank',
+	    value: function getRank(id) {
+	      return this.owner === _south2.default ? 8 - Math.floor((id || this.squareId) / 8) : 1 + Math.floor((id || this.squareId) / 8);
+	    }
+	  }, {
 	    key: 'possibleMoves',
 	    value: function possibleMoves(position) {
 	      var moves = [];
@@ -20499,11 +20535,14 @@
 	            var isCapture = destinationPiece && destinationPiece.owner != _this.owner;
 	            var diagonal = _this.constructor.moveDescriptor.diagonal;
 	            var forwards = _this.owner.relativeDirection(rowDir) == 1;
+	            var projectable = _this.constructor.moveDescriptor.projectable;
+	            typeof projectable == 'function' && (projectable = projectable(_this.getRank()));
+	
 	            if (destinationPiece && !isCapture || typeof diagonal == 'function' && !diagonal(isCapture, forwards)) {
 	              break;
 	            }
 	            moves.push(new _Move2.default(_this.squareId, destinationId));
-	            if (!_this.constructor.moveDescriptor.projectable) {
+	            if (!projectable) {
 	              break;
 	            }
 	          }
@@ -20534,13 +20573,16 @@
 	              var isCapture = destinationPiece && destinationPiece.owner != _this2.owner;
 	              var cardinal = _this2.constructor.moveDescriptor.cardinal;
 	              var forwards = _this2.owner.relativeDirection(rowDir) == 1;
+	              var projectable = _this2.constructor.moveDescriptor.projectable;
+	              typeof projectable == 'function' && (projectable = projectable(_this2.getRank()));
 	              if (destinationPiece && !isCapture || typeof cardinal == 'function' && !cardinal(isCapture, forwards)) {
 	                break;
 	              }
 	              moves.push(new _Move2.default(_this2.squareId, destinationId));
-	              if (destinationPiece || !_this2.constructor.moveDescriptor.projectable || _this2 instanceof _Pawn2.default && Math.abs(_this2.squareId - destinationId) == 16) {
-	                break;
-	              }
+	              if (destinationPiece || !projectable || _this2 instanceof _Pawn2.default && _this2.getRank(destinationId) == 4 /* TODO */
+	              ) {
+	                  break;
+	                }
 	            }
 	          }
 	        });
@@ -20550,6 +20592,11 @@
 	  }, {
 	    key: 'possibleKinghtMoves',
 	    value: function possibleKinghtMoves(position) {}
+	  }, {
+	    key: 'afterMove',
+	    value: function afterMove() {
+	      // nothing by default
+	    }
 	  }, {
 	    key: 'isOnBoard',
 	    value: function isOnBoard(column, row) {
@@ -20593,7 +20640,7 @@
 	  _createClass(Move, [{
 	    key: "toString",
 	    value: function toString() {
-	      return "[" + (1 + this.from % 8) + "," + (1 + Math.floor(this.from / 8)) + "\n->[" + (1 + this.to % 8) + "," + (1 + Math.floor(this.to / 8)) + "]";
+	      return "[" + (1 + this.from % 8) + "," + (1 + Math.floor(this.from / 8)) + "]\n-> [" + (1 + this.to % 8) + "," + (1 + Math.floor(this.to / 8)) + "]";
 	    }
 	  }]);
 	
@@ -21538,7 +21585,7 @@
 	
 	
 	// module
-	exports.push([module.id, ".board {\n  display: flex;\n  flex-grow: 1;\n  height: 100%\n}\n\n.grid {\n  display: flex;\n  flex-direction: column;\n  flex-grow: 1;\n}\n\n.row {\n  display: flex;\n  flex-direction: row;\n  flex-grow: 0.125;\n}\n", ""]);
+	exports.push([module.id, ".board {\n  display: flex;\n  flex: 1;\n  height: 100%\n}\n\n.grid {\n  display: flex;\n  flex-direction: column;\n  flex-grow: 1;\n}\n\n.row {\n  display: flex;\n  flex-direction: row;\n  flex-grow: 0.125;\n}\n", ""]);
 	
 	// exports
 
@@ -21578,7 +21625,7 @@
 	
 	
 	// module
-	exports.push([module.id, ".chess {\n  display: flex;\n  height: 300px;\n  width: 300px;\n}\n", ""]);
+	exports.push([module.id, ".chess {\n  display: flex;\n  height: 300px;\n  width: 600px;\n}\n", ""]);
 	
 	// exports
 
@@ -21654,6 +21701,109 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__.p + "./images/b-king.png";
+
+/***/ },
+/* 222 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _react = __webpack_require__(2);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _Move = __webpack_require__(180);
+	
+	var _Move2 = _interopRequireDefault(_Move);
+	
+	__webpack_require__(223);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var Info = (function (_React$Component) {
+	  _inherits(Info, _React$Component);
+	
+	  function Info() {
+	    _classCallCheck(this, Info);
+	
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(Info).apply(this, arguments));
+	  }
+	
+	  _createClass(Info, [{
+	    key: 'render',
+	    value: function render() {
+	      var lastMove = this.props.lastMove;
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'info' },
+	        _react2.default.createElement(
+	          'span',
+	          null,
+	          lastMove ? lastMove.toString() : null
+	        )
+	      );
+	    }
+	  }]);
+	
+	  return Info;
+	})(_react2.default.Component);
+	
+	Info.propTypes = {
+	  lastMove: _react2.default.PropTypes.instanceOf(_Move2.default)
+	};
+	exports.default = Info;
+
+/***/ },
+/* 223 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+	
+	// load the styles
+	var content = __webpack_require__(224);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(205)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../../node_modules/css-loader/index.js!./info.css", function() {
+				var newContent = require("!!./../../../node_modules/css-loader/index.js!./info.css");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 224 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(192)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, ".info {\n  flex: 1;\n  height: 100%;\n  text-align: center;\n}\n", ""]);
+	
+	// exports
+
 
 /***/ }
 /******/ ]);

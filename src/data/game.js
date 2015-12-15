@@ -42,13 +42,14 @@ class Game {
   constructor() {
     this.state = {
       position: this.instantiatePieces(STARTING_MAP),
-      move: 0,
+      lastMove: null,
       computerColor: COLORS[1],
       selectedSquare: null
     };
-    south.pieces.forEach(piece => {
+    north.pieces.forEach(piece => {
       console.log(
-        piece.constructor.symbol,
+        piece.constructor.classStub,
+        piece.getRank(),
         piece.squareId,
         piece.possibleMoves(this.state.position).map(move => move.toString()));
     });
@@ -92,10 +93,13 @@ class Game {
   applyMove(move) {
     const position = this.state.position;
     if (position[move.to]) {
-      // TODO: capture
+      const otherPlayer = position[move.to].owner;
+      otherPlayer.pieces = otherPlayer.pieces.filter(piece => piece != position[move.to]);
     }
     position[move.to] = position[move.from];
     position[move.from] = null;
+    position[move.to].afterMove();
+    this.state.lastMove = move;
     this.emitter.emit('gameChange', this.state);
   }
 
@@ -103,10 +107,10 @@ class Game {
     this.applyMove(nextMove(this.state.position, player));
   }
 
-  tryMove(from, to) {
-    this.state.selectedSquare = null;
+  manualMove(from, to) {
+    // TODO: verify legal move
     this.applyMove(new Move(from, to));
-
+    // computer move
     this.generateMove(this.state.position[to].owner == north ? south : north);
   }
 
@@ -122,7 +126,9 @@ class Game {
       if (piece && !piece.owner.computer) {
         // clicked own piece as destination - assume they want to move this one instead
       } else {
-        return this.tryMove(this.state.selectedSquare, location);
+        const from = this.state.selectedSquare;
+        this.state.selectedSquare = null;
+        return this.manualMove(from, location);
       }
     }
     this.state.selectedSquare = location;

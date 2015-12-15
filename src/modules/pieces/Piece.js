@@ -22,6 +22,12 @@ class Piece {
     return this.owner === south ? 'white' : 'black';
   }
 
+  getRank(id) {
+    return this.owner === south ?
+      8 - Math.floor((id || this.squareId) / 8) :
+      1 + Math.floor((id || this.squareId) / 8);
+  }
+
   possibleMoves(position) {
     let moves = [];
     let {diagonal, cardinal/* , knightwards, jumps */ } = this.constructor.moveDescriptor;
@@ -44,6 +50,9 @@ class Piece {
           const isCapture = destinationPiece && (destinationPiece.owner != this.owner);
           const diagonal = this.constructor.moveDescriptor.diagonal;
           const forwards = this.owner.relativeDirection(rowDir) == 1;
+          let projectable = this.constructor.moveDescriptor.projectable;
+          (typeof projectable == 'function') && (projectable = projectable(this.getRank()));
+
           if (
             (destinationPiece && !isCapture) ||
             (typeof diagonal == 'function' && !diagonal(isCapture, forwards))
@@ -51,7 +60,7 @@ class Piece {
             break;
           }
           moves.push(new Move(this.squareId, destinationId));
-          if (!this.constructor.moveDescriptor.projectable) {
+          if (!projectable) {
             break;
           }
         }
@@ -74,6 +83,8 @@ class Piece {
             const isCapture = destinationPiece && (destinationPiece.owner != this.owner);
             const cardinal = this.constructor.moveDescriptor.cardinal;
             const forwards = this.owner.relativeDirection(rowDir) == 1;
+            let projectable = this.constructor.moveDescriptor.projectable;
+            (typeof projectable == 'function') && (projectable = projectable(this.getRank()));
             if (
               (destinationPiece && !isCapture) ||
               (typeof cardinal == 'function' && !cardinal(isCapture, forwards))
@@ -83,8 +94,8 @@ class Piece {
             moves.push(new Move(this.squareId, destinationId));
             if (
               destinationPiece ||
-              !this.constructor.moveDescriptor.projectable ||
-              (this instanceof Pawn) && (Math.abs(this.squareId - destinationId) == 16)
+              !projectable ||
+              (this instanceof Pawn) && (this.getRank(destinationId) == 4) /* TODO */
             ) {
               break;
             }
@@ -96,6 +107,10 @@ class Piece {
   }
 
   possibleKinghtMoves(position) {}
+
+  afterMove() {
+    // nothing by default
+  }
 
   isOnBoard(column, row) {
     return (0 <= column) && (column <= 7) && (0 <= row) && (row <= 7);

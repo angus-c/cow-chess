@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 
 import game from '../../data/game';
 import Board from '../board';
+import Info from '../info';
 import './chess.css';
 
 class Chess extends React.Component {
@@ -16,6 +17,7 @@ class Chess extends React.Component {
     return (
       <div className='chess'>
         <Board position={this.state.position} selected={this.state.selectedSquare} />
+        <Info lastMove={this.state.lastMove} />
       </div>
     );
   }
