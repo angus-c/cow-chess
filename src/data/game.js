@@ -42,7 +42,7 @@ class Game {
   constructor() {
     this.state = {
       position: this.instantiatePieces(STARTING_MAP),
-      lastMove: null,
+      moves: [],
       computerColor: COLORS[1],
       selectedSquare: null
     };
@@ -98,8 +98,8 @@ class Game {
     }
     position[move.to] = position[move.from];
     position[move.from] = null;
-    position[move.to].afterMove();
-    this.state.lastMove = move;
+    position[move.to].afterMove(move.to);
+    this.state.moves.push(move);
     this.emitter.emit('gameChange', this.state);
   }
 

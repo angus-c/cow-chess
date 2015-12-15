@@ -15,6 +15,7 @@ class Pawn extends Piece {
 
   afterMove() {
     this.hasMoved = true;
+    super.afterMove();
   }
 }
 

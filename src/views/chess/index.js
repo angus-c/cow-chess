@@ -17,7 +17,7 @@ class Chess extends React.Component {
     return (
       <div className='chess'>
         <Board position={this.state.position} selected={this.state.selectedSquare} />
-        <Info lastMove={this.state.lastMove} />
+        <Info moves={this.state.moves} />
       </div>
     );
   }

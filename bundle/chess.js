@@ -45,9 +45,6 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(1);
-	__webpack_require__(210);
-	__webpack_require__(211);
-	__webpack_require__(212);
 	__webpack_require__(213);
 	__webpack_require__(214);
 	__webpack_require__(215);
@@ -56,7 +53,10 @@
 	__webpack_require__(218);
 	__webpack_require__(219);
 	__webpack_require__(220);
-	module.exports = __webpack_require__(221);
+	__webpack_require__(221);
+	__webpack_require__(222);
+	__webpack_require__(223);
+	module.exports = __webpack_require__(224);
 
 
 /***/ },
@@ -85,11 +85,11 @@
 	
 	var _board2 = _interopRequireDefault(_board);
 	
-	var _info = __webpack_require__(222);
+	var _info = __webpack_require__(208);
 	
 	var _info2 = _interopRequireDefault(_info);
 	
-	__webpack_require__(208);
+	__webpack_require__(211);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -121,7 +121,7 @@
 	        'div',
 	        { className: 'chess' },
 	        _react2.default.createElement(_board2.default, { position: this.state.position, selected: this.state.selectedSquare }),
-	        _react2.default.createElement(_info2.default, { lastMove: this.state.lastMove })
+	        _react2.default.createElement(_info2.default, { moves: this.state.moves })
 	      );
 	    }
 	  }, {
@@ -19824,7 +19824,7 @@
 	
 	    this.state = {
 	      position: this.instantiatePieces(STARTING_MAP),
-	      lastMove: null,
+	      moves: [],
 	      computerColor: COLORS[1],
 	      selectedSquare: null
 	    };
@@ -19885,8 +19885,8 @@
 	      }
 	      position[move.to] = position[move.from];
 	      position[move.from] = null;
-	      position[move.to].afterMove();
-	      this.state.lastMove = move;
+	      position[move.to].afterMove(move.to);
+	      this.state.moves.push(move);
 	      this.emitter.emit('gameChange', this.state);
 	    }
 	  }, {
@@ -20380,6 +20380,8 @@
 	
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 	
+	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+	
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
@@ -20417,6 +20419,7 @@
 	    key: 'afterMove',
 	    value: function afterMove() {
 	      this.hasMoved = true;
+	      _get(Object.getPrototypeOf(Pawn.prototype), 'afterMove', this).call(this);
 	    }
 	  }]);
 	
@@ -20594,8 +20597,8 @@
 	    value: function possibleKinghtMoves(position) {}
 	  }, {
 	    key: 'afterMove',
-	    value: function afterMove() {
-	      // nothing by default
+	    value: function afterMove(destination) {
+	      this.squareId = destination;
 	    }
 	  }, {
 	    key: 'isOnBoard',
@@ -21594,118 +21597,6 @@
 /* 208 */
 /***/ function(module, exports, __webpack_require__) {
 
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-	
-	// load the styles
-	var content = __webpack_require__(209);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(205)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!./../../../node_modules/css-loader/index.js!./chess.css", function() {
-				var newContent = require("!!./../../../node_modules/css-loader/index.js!./chess.css");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ },
-/* 209 */
-/***/ function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(192)();
-	// imports
-	
-	
-	// module
-	exports.push([module.id, ".chess {\n  display: flex;\n  height: 300px;\n  width: 600px;\n}\n", ""]);
-	
-	// exports
-
-
-/***/ },
-/* 210 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "./images/w-pawn.png";
-
-/***/ },
-/* 211 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "./images/w-knight.png";
-
-/***/ },
-/* 212 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "./images/w-bishop.png";
-
-/***/ },
-/* 213 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "./images/w-rook.png";
-
-/***/ },
-/* 214 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "./images/w-queen.png";
-
-/***/ },
-/* 215 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "./images/w-king.png";
-
-/***/ },
-/* 216 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "./images/b-pawn.png";
-
-/***/ },
-/* 217 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "./images/b-knight.png";
-
-/***/ },
-/* 218 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "./images/b-bishop.png";
-
-/***/ },
-/* 219 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "./images/b-rook.png";
-
-/***/ },
-/* 220 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "./images/b-queen.png";
-
-/***/ },
-/* 221 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "./images/b-king.png";
-
-/***/ },
-/* 222 */
-/***/ function(module, exports, __webpack_require__) {
-
 	'use strict';
 	
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -21718,11 +21609,7 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _Move = __webpack_require__(180);
-	
-	var _Move2 = _interopRequireDefault(_Move);
-	
-	__webpack_require__(223);
+	__webpack_require__(209);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -21743,15 +21630,22 @@
 	
 	  _createClass(Info, [{
 	    key: 'render',
+	    /* TODO */
 	    value: function render() {
-	      var lastMove = this.props.lastMove;
+	      var moves = this.props.moves;
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'info' },
 	        _react2.default.createElement(
-	          'span',
+	          'ul',
 	          null,
-	          lastMove ? lastMove.toString() : null
+	          moves.map(function (move, i) {
+	            return _react2.default.createElement(
+	              'li',
+	              { key: i },
+	              move.toString()
+	            );
+	          })
 	        )
 	      );
 	    }
@@ -21761,18 +21655,17 @@
 	})(_react2.default.Component);
 	
 	Info.propTypes = {
-	  lastMove: _react2.default.PropTypes.instanceOf(_Move2.default)
-	};
+	  moves: _react2.default.PropTypes.arrayOf(_react2.default.object) };
 	exports.default = Info;
 
 /***/ },
-/* 223 */
+/* 209 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
 	// load the styles
-	var content = __webpack_require__(224);
+	var content = __webpack_require__(210);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(205)(content, {});
@@ -21792,7 +21685,7 @@
 	}
 
 /***/ },
-/* 224 */
+/* 210 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(192)();
@@ -21800,10 +21693,122 @@
 	
 	
 	// module
-	exports.push([module.id, ".info {\n  flex: 1;\n  height: 100%;\n  text-align: center;\n}\n", ""]);
+	exports.push([module.id, ".info {\n  flex: 1;\n  height: 100%;\n  text-align: center;\n}\n\nli {\n  list-style-type: none;\n}\n", ""]);
 	
 	// exports
 
+
+/***/ },
+/* 211 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+	
+	// load the styles
+	var content = __webpack_require__(212);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(205)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../../node_modules/css-loader/index.js!./chess.css", function() {
+				var newContent = require("!!./../../../node_modules/css-loader/index.js!./chess.css");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 212 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(192)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, ".chess {\n  display: flex;\n  height: 300px;\n  width: 600px;\n}\n", ""]);
+	
+	// exports
+
+
+/***/ },
+/* 213 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "./images/w-pawn.png";
+
+/***/ },
+/* 214 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "./images/w-knight.png";
+
+/***/ },
+/* 215 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "./images/w-bishop.png";
+
+/***/ },
+/* 216 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "./images/w-rook.png";
+
+/***/ },
+/* 217 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "./images/w-queen.png";
+
+/***/ },
+/* 218 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "./images/w-king.png";
+
+/***/ },
+/* 219 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "./images/b-pawn.png";
+
+/***/ },
+/* 220 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "./images/b-knight.png";
+
+/***/ },
+/* 221 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "./images/b-bishop.png";
+
+/***/ },
+/* 222 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "./images/b-rook.png";
+
+/***/ },
+/* 223 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "./images/b-queen.png";
+
+/***/ },
+/* 224 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "./images/b-king.png";
 
 /***/ }
 /******/ ]);

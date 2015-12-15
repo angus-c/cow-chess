@@ -108,8 +108,8 @@ class Piece {
 
   possibleKinghtMoves(position) {}
 
-  afterMove() {
-    // nothing by default
+  afterMove(destination) {
+    this.squareId = destination;
   }
 
   isOnBoard(column, row) {

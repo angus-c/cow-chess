@@ -1,20 +1,22 @@
 import React from 'react';
 
-import Move from '../../modules/Move';
-
 import './info.css';
 
 class Info extends React.Component {
 
   static propTypes = {
-    lastMove: React.PropTypes.instanceOf(Move)
+    moves: React.PropTypes.arrayOf(React.object) /* TODO */
   }
 
   render() {
-    const lastMove = this.props.lastMove;
+    const moves = this.props.moves;
     return (
       <div className='info'>
-        <span>{lastMove ? lastMove.toString() : null}</span>
+        <ul>
+          {moves.map((move, i) => {
+            return <li key={i}>{move.toString()}</li>;
+          })}
+        </ul>
       </div>
     );
   }
