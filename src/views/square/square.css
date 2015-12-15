@@ -1,4 +1,6 @@
 .square {
+  border: 2px solid;
+  border-color: transparent;
   flex-grow: 0.125;
   text-align: center;
   vertical-align: middle;
@@ -8,6 +10,10 @@
 
 .square.shaded {
   background-color: #eee;
+}
+
+.selected {
+  border-color: #CC0;
 }
 
 .piece {

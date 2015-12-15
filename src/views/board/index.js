@@ -7,7 +7,8 @@ import './board.css';
 class Board extends React.Component {
 
   static propTypes = {
-    position: React.PropTypes.arrayOf(React.PropTypes.object)
+    position: React.PropTypes.arrayOf(React.PropTypes.object),
+    selected: React.PropTypes.number
   }
 
   render() {
@@ -18,7 +19,16 @@ class Board extends React.Component {
             <div className='row' key={`r${i}`}>
               {[0, 1, 2, 3, 4, 5, 6, 7].map((columnId, j) => {
                 const piece = position[rowId * 8 + columnId];
-                return <Square key={j} piece={piece} shaded={((i + j) % 2) == 1} />;
+                const location = i * 8 + j;
+                return (
+                  <Square
+                    key={j}
+                    location={location}
+                    piece={piece}
+                    selected={this.props.selected == location}
+                    shaded={((i + j) % 2) == 1}
+                  />
+                );
               })}
             </div>
           );

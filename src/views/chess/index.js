@@ -15,7 +15,7 @@ class Chess extends React.Component {
   render() {
     return (
       <div className='chess'>
-        <Board position={this.state.position} />
+        <Board position={this.state.position} selected={this.state.selectedSquare} />
       </div>
     );
   }

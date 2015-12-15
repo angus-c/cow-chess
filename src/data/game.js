@@ -10,6 +10,7 @@ import Bishop from '../modules/pieces/Bishop';
 import King from '../modules/pieces/King';
 import Queen from '../modules/pieces/Queen';
 
+import Move from '../modules/Move';
 import nextMove from '../modules/nextMove';
 
 const COLORS = ['#FFF', '#000'];
@@ -42,7 +43,8 @@ class Game {
     this.state = {
       position: this.instantiatePieces(STARTING_MAP),
       move: 0,
-      computerColor: COLORS[1]
+      computerColor: COLORS[1],
+      selectedSquare: null
     };
     south.pieces.forEach(piece => {
       console.log(
@@ -51,16 +53,16 @@ class Game {
         piece.possibleMoves(this.state.position).map(move => move.toString()));
     });
 
-    // autoplay test
-    let nextPlayer = south, moves = 0;
-    const play = setInterval(() => {
-      this.generateMove(nextPlayer);
-      nextPlayer = (nextPlayer == south) ? north : south;
-      moves++;
-      if (moves > 10) {
-        window.clearInterval(play);
-      }
-    }, 1000);
+    // // autoplay test
+    // let nextPlayer = south, moves = 0;
+    // const play = setInterval(() => {
+    //   this.generateMove(nextPlayer);
+    //   nextPlayer = (nextPlayer == south) ? north : south;
+    //   moves++;
+    //   if (moves > 10) {
+    //     window.clearInterval(play);
+    //   }
+    // }, 1000);
   }
 
   get() {
@@ -99,6 +101,32 @@ class Game {
 
   generateMove(player) {
     this.applyMove(nextMove(this.state.position, player));
+  }
+
+  tryMove(from, to) {
+    this.state.selectedSquare = null;
+    this.applyMove(new Move(from, to));
+
+    this.generateMove(this.state.position[to].owner == north ? south : north);
+  }
+
+  squareSelected(location) {
+    const piece = this.state.position[location];
+    if (location && !this.state.selectedSquare) {
+      if (!piece || piece.owner.computer) {
+        // valid piece not selected
+        return;
+      }
+    }
+    if (location && this.state.selectedSquare) {
+      if (piece && !piece.owner.computer) {
+        // clicked own piece as destination - assume they want to move this one instead
+      } else {
+        return this.tryMove(this.state.selectedSquare, location);
+      }
+    }
+    this.state.selectedSquare = location;
+    this.emitter.emit('gameChange', this.state);
   }
 
   emitter = EventEmitter({})

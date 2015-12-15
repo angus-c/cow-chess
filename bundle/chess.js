@@ -116,7 +116,7 @@
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'chess' },
-	        _react2.default.createElement(_board2.default, { position: this.state.position })
+	        _react2.default.createElement(_board2.default, { position: this.state.position, selected: this.state.selectedSquare })
 	      );
 	    }
 	  }, {
@@ -19766,6 +19766,10 @@
 	
 	var _Queen2 = _interopRequireDefault(_Queen);
 	
+	var _Move = __webpack_require__(180);
+	
+	var _Move2 = _interopRequireDefault(_Move);
+	
 	var _nextMove = __webpack_require__(186);
 	
 	var _nextMove2 = _interopRequireDefault(_nextMove);
@@ -19789,7 +19793,9 @@
 	var p = 'p';
 	
 	var _ = null;
+	/*eslint-disable */
 	var STARTING_MAP = [r, n, b, q, k, b, n, r, p, p, p, p, p, p, p, p, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, P, P, P, P, P, P, P, P, R, N, B, Q, K, B, N, R];
+	/*eslint-enable */
 	var pieceTypes = {
 	  p: _Pawn2.default,
 	  r: _Rook2.default,
@@ -19814,7 +19820,8 @@
 	    this.state = {
 	      position: this.instantiatePieces(STARTING_MAP),
 	      move: 0,
-	      computerColor: COLORS[1]
+	      computerColor: COLORS[1],
+	      selectedSquare: null
 	    };
 	    _south2.default.pieces.forEach(function (piece) {
 	      console.log(piece.constructor.symbol, piece.squareId, piece.possibleMoves(_this.state.position).map(function (move) {
@@ -19822,17 +19829,16 @@
 	      }));
 	    });
 	
-	    // autoplay test
-	    var nextPlayer = _south2.default,
-	        moves = 0;
-	    var play = setInterval(function () {
-	      _this.generateMove(nextPlayer);
-	      nextPlayer = nextPlayer == _south2.default ? _north2.default : _south2.default;
-	      moves++;
-	      if (moves > 10) {
-	        window.clearInterval(play);
-	      }
-	    }, 1000);
+	    // // autoplay test
+	    // let nextPlayer = south, moves = 0;
+	    // const play = setInterval(() => {
+	    //   this.generateMove(nextPlayer);
+	    //   nextPlayer = (nextPlayer == south) ? north : south;
+	    //   moves++;
+	    //   if (moves > 10) {
+	    //     window.clearInterval(play);
+	    //   }
+	    // }, 1000);
 	  }
 	
 	  _createClass(Game, [{
@@ -19866,7 +19872,6 @@
 	    key: 'applyMove',
 	    value: function applyMove(move) {
 	      var position = this.state.position;
-	      var fromSquare = position[move.from];
 	      if (position[move.to]) {
 	        // TODO: capture
 	      }
@@ -19878,6 +19883,34 @@
 	    key: 'generateMove',
 	    value: function generateMove(player) {
 	      this.applyMove((0, _nextMove2.default)(this.state.position, player));
+	    }
+	  }, {
+	    key: 'tryMove',
+	    value: function tryMove(from, to) {
+	      this.state.selectedSquare = null;
+	      this.applyMove(new _Move2.default(from, to));
+	
+	      this.generateMove(this.state.position[to].owner == _north2.default ? _south2.default : _north2.default);
+	    }
+	  }, {
+	    key: 'squareSelected',
+	    value: function squareSelected(location) {
+	      var piece = this.state.position[location];
+	      if (location && !this.state.selectedSquare) {
+	        if (!piece || piece.owner.computer) {
+	          // valid piece not selected
+	          return;
+	        }
+	      }
+	      if (location && this.state.selectedSquare) {
+	        if (piece && !piece.owner.computer) {
+	          // clicked own piece as destination - assume they want to move this one instead
+	        } else {
+	            return this.tryMove(this.state.selectedSquare, location);
+	          }
+	      }
+	      this.state.selectedSquare = location;
+	      this.emitter.emit('gameChange', this.state);
 	    }
 	  }]);
 	
@@ -20435,11 +20468,9 @@
 	    key: 'possibleMoves',
 	    value: function possibleMoves(position) {
 	      var moves = [];
-	      var _constructor$moveDesc = this.constructor.moveDescriptor;
+	      var _constructor$moveDesc = /* , knightwards, jumps */this.constructor.moveDescriptor;
 	      var diagonal = _constructor$moveDesc.diagonal;
 	      var cardinal = _constructor$moveDesc.cardinal;
-	      var knightwards = _constructor$moveDesc.knightwards;
-	      var jumps = _constructor$moveDesc.jumps;
 	
 	      diagonal && moves.push.apply(moves, _toConsumableArray(this.possibleDiagonalMoves(position)));
 	      cardinal && moves.push.apply(moves, _toConsumableArray(this.possibleCardinalMoves(position)));
@@ -20842,11 +20873,7 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _classnames = __webpack_require__(188);
-	
-	var _classnames2 = _interopRequireDefault(_classnames);
-	
-	var _square = __webpack_require__(189);
+	var _square = __webpack_require__(188);
 	
 	var _square2 = _interopRequireDefault(_square);
 	
@@ -20872,6 +20899,8 @@
 	  _createClass(Board, [{
 	    key: 'render',
 	    value: function render() {
+	      var _this2 = this;
+	
 	      var renderCells = function renderCells(position) {
 	        return _react2.default.createElement(
 	          'div',
@@ -20882,7 +20911,14 @@
 	              { className: 'row', key: 'r' + i },
 	              [0, 1, 2, 3, 4, 5, 6, 7].map(function (columnId, j) {
 	                var piece = position[rowId * 8 + columnId];
-	                return _react2.default.createElement(_square2.default, { piece: piece, shaded: (i + j) % 2 == 1, key: j });
+	                var location = i * 8 + j;
+	                return _react2.default.createElement(_square2.default, {
+	                  key: j,
+	                  location: location,
+	                  piece: piece,
+	                  selected: _this2.props.selected == location,
+	                  shaded: (i + j) % 2 == 1
+	                });
 	              })
 	            );
 	          })
@@ -20901,12 +20937,98 @@
 	})(_react2.default.Component);
 	
 	Board.propTypes = {
-	  position: _react2.default.PropTypes.arrayOf(_react2.default.PropTypes.object)
+	  position: _react2.default.PropTypes.arrayOf(_react2.default.PropTypes.object),
+	  selected: _react2.default.PropTypes.number
 	};
 	exports.default = Board;
 
 /***/ },
 /* 188 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _react = __webpack_require__(2);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _classnames2 = __webpack_require__(189);
+	
+	var _classnames3 = _interopRequireDefault(_classnames2);
+	
+	var _game = __webpack_require__(160);
+	
+	var _game2 = _interopRequireDefault(_game);
+	
+	var _Piece = __webpack_require__(179);
+	
+	var _Piece2 = _interopRequireDefault(_Piece);
+	
+	__webpack_require__(190);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var Square = (function (_React$Component) {
+	  _inherits(Square, _React$Component);
+	
+	  function Square() {
+	    _classCallCheck(this, Square);
+	
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(Square).apply(this, arguments));
+	  }
+	
+	  _createClass(Square, [{
+	    key: 'render',
+	    value: function render() {
+	      var _this2 = this;
+	
+	      var _props = this.props;
+	      var selected = _props.selected;
+	      var shaded = _props.shaded;
+	      var piece = _props.piece;
+	
+	      var className = (0, _classnames3.default)('square', { shaded: shaded }, { piece: piece }, _defineProperty({}, piece && piece.getClassName(), piece), { selected: selected });
+	      return _react2.default.createElement('div', { className: className, onClick: function onClick(e) {
+	          return _this2.squareClicked(e);
+	        } });
+	    }
+	  }, {
+	    key: 'squareClicked',
+	    value: function squareClicked(e) {
+	      _game2.default.squareSelected(this.props.selected ? null : this.props.location);
+	    }
+	  }]);
+	
+	  return Square;
+	})(_react2.default.Component);
+	
+	Square.propTypes = {
+	  location: _react2.default.PropTypes.number,
+	  piece: _react2.default.PropTypes.instanceOf(_Piece2.default),
+	  selected: _react2.default.PropTypes.bool,
+	  shaded: _react2.default.PropTypes.bool
+	};
+	Square.defaultValues = {
+	  shaded: false
+	};
+	exports.default = Square;
+
+/***/ },
+/* 189 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -20960,71 +21082,6 @@
 
 
 /***/ },
-/* 189 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _react = __webpack_require__(2);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _classnames2 = __webpack_require__(188);
-	
-	var _classnames3 = _interopRequireDefault(_classnames2);
-	
-	__webpack_require__(190);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	
-	var Square = (function (_React$Component) {
-	  _inherits(Square, _React$Component);
-	
-	  function Square() {
-	    _classCallCheck(this, Square);
-	
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(Square).apply(this, arguments));
-	  }
-	
-	  _createClass(Square, [{
-	    key: 'render',
-	    value: function render() {
-	      var _props = this.props;
-	      var shaded = _props.shaded;
-	      var piece = _props.piece;
-	
-	      var className = (0, _classnames3.default)('square', { shaded: shaded }, { piece: piece }, _defineProperty({}, piece && piece.getClassName(), piece));
-	      return _react2.default.createElement('div', { className: className });
-	    }
-	  }]);
-	
-	  return Square;
-	})(_react2.default.Component);
-	
-	Square.propTypes = {
-	  shaded: _react2.default.PropTypes.bool,
-	  piece: _react2.default.PropTypes.object
-	};
-	Square.defaultValues = {
-	  shaded: false
-	};
-	exports.default = Square;
-
-/***/ },
 /* 190 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -21059,7 +21116,7 @@
 	
 	
 	// module
-	exports.push([module.id, ".square {\n  flex-grow: 0.125;\n  text-align: center;\n  vertical-align: middle;\n  height: 37.5px; /* TODO */\n  width: 0;\n}\n\n.square.shaded {\n  background-color: #eee;\n}\n\n.piece {\n  background-repeat: no-repeat;\n  background-size: contain;\n}\n\n.w-pawn {\n  background-image: url(" + __webpack_require__(193) + ");\n\n}\n\n.w-knight {\n  background-image: url(" + __webpack_require__(194) + ");\n}\n\n.w-bishop {\n  background-image: url(" + __webpack_require__(195) + ");\n}\n\n.w-rook {\n  background-image: url(" + __webpack_require__(196) + ");\n}\n\n.w-queen {\n  background-image: url(" + __webpack_require__(197) + ");\n}\n\n.w-king {\n  background-image: url(" + __webpack_require__(198) + ");\n}\n\n.b-pawn {\n  background-image: url(" + __webpack_require__(199) + ");\n}\n\n.b-knight {\n  background-image: url(" + __webpack_require__(200) + ");\n}\n\n.b-bishop {\n  background-image: url(" + __webpack_require__(201) + ");\n}\n\n.b-rook {\n  background-image: url(" + __webpack_require__(202) + ");\n}\n\n.b-queen {\n  background-image: url(" + __webpack_require__(203) + ");\n}\n\n.b-king {\n  background-image: url(" + __webpack_require__(204) + ");\n}\n", ""]);
+	exports.push([module.id, ".square {\n  border: 2px solid;\n  border-color: transparent;\n  flex-grow: 0.125;\n  text-align: center;\n  vertical-align: middle;\n  height: 37.5px; /* TODO */\n  width: 0;\n}\n\n.square.shaded {\n  background-color: #eee;\n}\n\n.selected {\n  border-color: #CC0;\n}\n\n.piece {\n  background-repeat: no-repeat;\n  background-size: contain;\n}\n\n.w-pawn {\n  background-image: url(" + __webpack_require__(193) + ");\n}\n\n.w-knight {\n  background-image: url(" + __webpack_require__(194) + ");\n}\n\n.w-bishop {\n  background-image: url(" + __webpack_require__(195) + ");\n}\n\n.w-rook {\n  background-image: url(" + __webpack_require__(196) + ");\n}\n\n.w-queen {\n  background-image: url(" + __webpack_require__(197) + ");\n}\n\n.w-king {\n  background-image: url(" + __webpack_require__(198) + ");\n}\n\n.b-pawn {\n  background-image: url(" + __webpack_require__(199) + ");\n}\n\n.b-knight {\n  background-image: url(" + __webpack_require__(200) + ");\n}\n\n.b-bishop {\n  background-image: url(" + __webpack_require__(201) + ");\n}\n\n.b-rook {\n  background-image: url(" + __webpack_require__(202) + ");\n}\n\n.b-queen {\n  background-image: url(" + __webpack_require__(203) + ");\n}\n\n.b-king {\n  background-image: url(" + __webpack_require__(204) + ");\n}\n", ""]);
 	
 	// exports
 
