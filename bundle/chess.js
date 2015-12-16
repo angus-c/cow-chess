@@ -19886,7 +19886,7 @@
 	      position[move.to] = position[move.from];
 	      position[move.from] = null;
 	      position[move.to].afterMove(move.to);
-	      this.state.moves.push(move);
+	      this.state.moves.unshift(move);
 	      this.emitter.emit('gameChange', this.state);
 	    }
 	  }, {
@@ -19906,6 +19906,7 @@
 	    key: 'squareSelected',
 	    value: function squareSelected(location) {
 	      var piece = this.state.position[location];
+	      piece && console.log(piece, piece.possibleMoves(this.state.position));
 	      if (location && !this.state.selectedSquare) {
 	        if (!piece || piece.owner.computer) {
 	          // valid piece not selected
@@ -20378,10 +20379,6 @@
 
 	'use strict';
 	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-	
-	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-	
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
@@ -20402,26 +20399,10 @@
 	  _inherits(Pawn, _Piece);
 	
 	  function Pawn() {
-	    var _Object$getPrototypeO;
-	
-	    var _temp, _this, _ret;
-	
 	    _classCallCheck(this, Pawn);
 	
-	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-	      args[_key] = arguments[_key];
-	    }
-	
-	    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_Object$getPrototypeO = Object.getPrototypeOf(Pawn)).call.apply(_Object$getPrototypeO, [this].concat(args))), _this), _this.hasMoved = false, _temp), _possibleConstructorReturn(_this, _ret);
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(Pawn).apply(this, arguments));
 	  }
-	
-	  _createClass(Pawn, [{
-	    key: 'afterMove',
-	    value: function afterMove() {
-	      this.hasMoved = true;
-	      _get(Object.getPrototypeOf(Pawn.prototype), 'afterMove', this).call(this);
-	    }
-	  }]);
 	
 	  return Pawn;
 	})(_Piece3.default);
@@ -20485,6 +20466,7 @@
 	
 	    this.squareId = squareId;
 	    this.owner = player;
+	    this.hasMoved = false;
 	  }
 	
 	  _createClass(Piece, [{
@@ -20513,7 +20495,7 @@
 	
 	      diagonal && moves.push.apply(moves, _toConsumableArray(this.possibleDiagonalMoves(position)));
 	      cardinal && moves.push.apply(moves, _toConsumableArray(this.possibleCardinalMoves(position)));
-	      // knightwards && moves.push(...this.possibleKinghtMoves(position));
+	      // knightwards && moves.push(...this.possibleKnightMoves(position));
 	      return moves;
 	    }
 	
@@ -20593,12 +20575,13 @@
 	      return moves;
 	    }
 	  }, {
-	    key: 'possibleKinghtMoves',
-	    value: function possibleKinghtMoves(position) {}
+	    key: 'possibleKnightMoves',
+	    value: function possibleKnightMoves(position) {}
 	  }, {
 	    key: 'afterMove',
 	    value: function afterMove(destination) {
 	      this.squareId = destination;
+	      this.hasMoved = true;
 	    }
 	  }, {
 	    key: 'isOnBoard',
@@ -20894,14 +20877,14 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	var nextMove = function nextMove(position, player) {
-	  var possibleMoves = undefined;
-	  var pieces = player.pieces;
-	  // TODO: random for now - get best move
-	  do {
-	    possibleMoves = pieces[Math.floor(pieces.length * Math.random())].possibleMoves(position);
-	  } while (!possibleMoves.length);
 	
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+	
+	var nextMove = function nextMove(position, player) {
+	  var possibleMoves = player.pieces.reduce(function (moves, piece) {
+	    moves.push.apply(moves, _toConsumableArray(piece.possibleMoves(position)));
+	    return moves;
+	  }, []);
 	  return possibleMoves[Math.floor(possibleMoves.length * Math.random())];
 	};
 	
@@ -21637,15 +21620,19 @@
 	        'div',
 	        { className: 'info' },
 	        _react2.default.createElement(
-	          'ul',
-	          null,
-	          moves.map(function (move, i) {
-	            return _react2.default.createElement(
-	              'li',
-	              { key: i },
-	              move.toString()
-	            );
-	          })
+	          'div',
+	          { className: 'recentMoves' },
+	          _react2.default.createElement(
+	            'ul',
+	            null,
+	            moves.map(function (move, i) {
+	              return _react2.default.createElement(
+	                'li',
+	                { key: i },
+	                move.toString()
+	              );
+	            })
+	          )
 	        )
 	      );
 	    }
@@ -21693,7 +21680,7 @@
 	
 	
 	// module
-	exports.push([module.id, ".info {\n  flex: 1;\n  height: 100%;\n  text-align: center;\n}\n\nli {\n  list-style-type: none;\n}\n", ""]);
+	exports.push([module.id, ".info {\n  flex: 1;\n  height: 100%;\n  text-align: center;\n}\n\n.recentMoves {\n  height: 10em;\n  overflow: auto;\n}\n\nli {\n  list-style-type: none;\n}\n", ""]);
 	
 	// exports
 

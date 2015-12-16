@@ -99,7 +99,7 @@ class Game {
     position[move.to] = position[move.from];
     position[move.from] = null;
     position[move.to].afterMove(move.to);
-    this.state.moves.push(move);
+    this.state.moves.unshift(move);
     this.emitter.emit('gameChange', this.state);
   }
 
@@ -116,6 +116,7 @@ class Game {
 
   squareSelected(location) {
     const piece = this.state.position[location];
+    piece && console.log(piece, piece.possibleMoves(this.state.position));
     if (location && !this.state.selectedSquare) {
       if (!piece || piece.owner.computer) {
         // valid piece not selected

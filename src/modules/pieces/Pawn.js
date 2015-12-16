@@ -10,13 +10,6 @@ class Pawn extends Piece {
     knightwards: false,
     jumps: false
   }
-
-  hasMoved = false;
-
-  afterMove() {
-    this.hasMoved = true;
-    super.afterMove();
-  }
 }
 
 export default Pawn;

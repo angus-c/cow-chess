@@ -4,6 +4,11 @@
   text-align: center;
 }
 
+.recentMoves {
+  height: 10em;
+  overflow: auto;
+}
+
 li {
   list-style-type: none;
 }

@@ -1,11 +1,8 @@
 const nextMove = (position, player) => {
-  let possibleMoves;
-  const pieces = player.pieces;
-  // TODO: random for now - get best move
-  do {
-    possibleMoves = pieces[Math.floor(pieces.length * Math.random())].possibleMoves(position);
-  } while (!possibleMoves.length);
-
+  const possibleMoves = player.pieces.reduce((moves, piece) => {
+    moves.push(...piece.possibleMoves(position));
+    return moves;
+  }, []);
   return possibleMoves[Math.floor(possibleMoves.length * Math.random())];
 };
 

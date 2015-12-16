@@ -12,11 +12,13 @@ class Info extends React.Component {
     const moves = this.props.moves;
     return (
       <div className='info'>
-        <ul>
-          {moves.map((move, i) => {
-            return <li key={i}>{move.toString()}</li>;
-          })}
-        </ul>
+        <div className='recentMoves'>
+          <ul>
+            {moves.map((move, i) => {
+              return <li key={i}>{move.toString()}</li>;
+            })}
+          </ul>
+        </div>
       </div>
     );
   }

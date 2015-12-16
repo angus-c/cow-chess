@@ -9,6 +9,7 @@ class Piece {
   constructor(squareId, player) {
     this.squareId = squareId;
     this.owner = player;
+    this.hasMoved = false;
   }
 
   getClassName() {
@@ -33,7 +34,7 @@ class Piece {
     let {diagonal, cardinal/* , knightwards, jumps */ } = this.constructor.moveDescriptor;
     diagonal && moves.push(...this.possibleDiagonalMoves(position));
     cardinal && moves.push(...this.possibleCardinalMoves(position));
-    // knightwards && moves.push(...this.possibleKinghtMoves(position));
+    // knightwards && moves.push(...this.possibleKnightMoves(position));
     return moves;
   }
 
@@ -106,10 +107,11 @@ class Piece {
     return moves;
   }
 
-  possibleKinghtMoves(position) {}
+  possibleKnightMoves(position) {}
 
   afterMove(destination) {
     this.squareId = destination;
+    this.hasMoved = true;
   }
 
   isOnBoard(column, row) {
