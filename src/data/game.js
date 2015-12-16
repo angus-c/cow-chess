@@ -43,9 +43,10 @@ class Game {
     this.state = {
       position: this.instantiatePieces(STARTING_MAP),
       moves: [],
-      computerColor: COLORS[1],
       selectedSquare: null
     };
+    south.color = COLORS[0];
+    north.color = COLORS[1];
     north.pieces.forEach(piece => {
       console.log(
         piece.constructor.classStub,
@@ -104,14 +105,15 @@ class Game {
   }
 
   generateMove(player) {
-    this.applyMove(nextMove(this.state.position, player));
+    this.applyMove(nextMove(player, this.state.position));
   }
 
   manualMove(from, to) {
     // TODO: verify legal move
-    this.applyMove(new Move(from, to));
+    const player = this.state.position[from].owner;
+    this.applyMove(new Move(from, to, player));
     // computer move
-    this.generateMove(this.state.position[to].owner == north ? south : north);
+    this.generateMove(player.owner == north ? south : north);
   }
 
   squareSelected(location) {

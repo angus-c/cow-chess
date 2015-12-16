@@ -60,7 +60,7 @@ class Piece {
           ) {
             break;
           }
-          moves.push(new Move(this.squareId, destinationId));
+          moves.push(new Move(this.squareId, destinationId, this.owner));
           if (!projectable) {
             break;
           }
@@ -92,7 +92,7 @@ class Piece {
             ) {
               break;
             }
-            moves.push(new Move(this.squareId, destinationId));
+            moves.push(new Move(this.squareId, destinationId, this.owner));
             if (
               destinationPiece ||
               !projectable ||

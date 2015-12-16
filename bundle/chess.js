@@ -19825,9 +19825,10 @@
 	    this.state = {
 	      position: this.instantiatePieces(STARTING_MAP),
 	      moves: [],
-	      computerColor: COLORS[1],
 	      selectedSquare: null
 	    };
+	    _south2.default.color = COLORS[0];
+	    _north2.default.color = COLORS[1];
 	    _north2.default.pieces.forEach(function (piece) {
 	      console.log(piece.constructor.classStub, piece.getRank(), piece.squareId, piece.possibleMoves(_this.state.position).map(function (move) {
 	        return move.toString();
@@ -19892,15 +19893,16 @@
 	  }, {
 	    key: 'generateMove',
 	    value: function generateMove(player) {
-	      this.applyMove((0, _nextMove2.default)(this.state.position, player));
+	      this.applyMove((0, _nextMove2.default)(player, this.state.position));
 	    }
 	  }, {
 	    key: 'manualMove',
 	    value: function manualMove(from, to) {
 	      // TODO: verify legal move
-	      this.applyMove(new _Move2.default(from, to));
+	      var player = this.state.position[from].owner;
+	      this.applyMove(new _Move2.default(from, to, player));
 	      // computer move
-	      this.generateMove(this.state.position[to].owner == _north2.default ? _south2.default : _north2.default);
+	      this.generateMove(player.owner == _north2.default ? _south2.default : _north2.default);
 	    }
 	  }, {
 	    key: 'squareSelected',
@@ -20526,7 +20528,7 @@
 	            if (destinationPiece && !isCapture || typeof diagonal == 'function' && !diagonal(isCapture, forwards)) {
 	              break;
 	            }
-	            moves.push(new _Move2.default(_this.squareId, destinationId));
+	            moves.push(new _Move2.default(_this.squareId, destinationId, _this.owner));
 	            if (!projectable) {
 	              break;
 	            }
@@ -20563,7 +20565,7 @@
 	              if (destinationPiece && !isCapture || typeof cardinal == 'function' && !cardinal(isCapture, forwards)) {
 	                break;
 	              }
-	              moves.push(new _Move2.default(_this2.squareId, destinationId));
+	              moves.push(new _Move2.default(_this2.squareId, destinationId, _this2.owner));
 	              if (destinationPiece || !projectable || _this2 instanceof _Pawn2.default && _this2.getRank(destinationId) == 4 /* TODO */
 	              ) {
 	                  break;
@@ -20615,18 +20617,19 @@
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
 	var Move = (function () {
-	  function Move(from, to) {
+	  function Move(from, to, player) {
 	    _classCallCheck(this, Move);
 	
 	    // squares range from 0 (NW) to 63 (SE)
 	    this.from = from;
 	    this.to = to;
+	    this.player = player;
 	  }
 	
 	  _createClass(Move, [{
 	    key: "toString",
 	    value: function toString() {
-	      return "[" + (1 + this.from % 8) + "," + (1 + Math.floor(this.from / 8)) + "]\n-> [" + (1 + this.to % 8) + "," + (1 + Math.floor(this.to / 8)) + "]";
+	      return this.player.color + " [" + (1 + this.from % 8) + "," + (1 + Math.floor(this.from / 8)) + "]\n-> [" + (1 + this.to % 8) + "," + (1 + Math.floor(this.to / 8)) + "]";
 	    }
 	  }]);
 	
@@ -20880,12 +20883,21 @@
 	
 	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 	
-	var nextMove = function nextMove(position, player) {
-	  var possibleMoves = player.pieces.reduce(function (moves, piece) {
-	    moves.push.apply(moves, _toConsumableArray(piece.possibleMoves(position)));
-	    return moves;
-	  }, []);
-	  return possibleMoves[Math.floor(possibleMoves.length * Math.random())];
+	var nextMove = function nextMove(player, position) {
+	  var getPossibleMoves = function getPossibleMoves(player) {
+	    return player.pieces.reduce(function (moves, piece) {
+	      moves.push.apply(moves, _toConsumableArray(piece.possibleMoves(position)));
+	      return moves;
+	    }, []);
+	  };
+	
+	  var score = function score(move) {
+	    return Math.random();
+	  };
+	
+	  return getPossibleMoves(player).sort(function (a, b) {
+	    return score(a) > score(b) ? 1 : -1;
+	  })[0];
 	};
 	
 	exports.default = nextMove;
