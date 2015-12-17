@@ -101,7 +101,7 @@ class Game {
   }
 
   generateMove(player) {
-    this.applyMove(nextMove(player, this.state.position, 2));
+    this.applyMove(nextMove(player, this.state.position, 4));
   }
 
   manualMove(from, to) {

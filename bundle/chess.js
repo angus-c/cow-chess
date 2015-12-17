@@ -19886,7 +19886,7 @@
 	  }, {
 	    key: 'generateMove',
 	    value: function generateMove(player) {
-	      this.applyMove((0, _nextMove2.default)(player, this.state.position, 2));
+	      this.applyMove((0, _nextMove2.default)(player, this.state.position, 4));
 	    }
 	  }, {
 	    key: 'manualMove',
@@ -20610,7 +20610,9 @@
 	  _createClass(Move, [{
 	    key: "toString",
 	    value: function toString() {
-	      return this.player.color + " [" + (1 + this.from % 8) + "," + (1 + Math.floor(this.from / 8)) + "]\n-> [" + (1 + this.to % 8) + "," + (1 + Math.floor(this.to / 8)) + "]";
+	      var from = this.player.color + " [" + (1 + this.from % 8) + "," + (1 + Math.floor(this.from / 8)) + "]";
+	      var to = "[" + (1 + this.to % 8) + "," + (1 + Math.floor(this.to / 8)) + "]";
+	      return from + " -> " + to;
 	    }
 	  }]);
 	
@@ -20888,14 +20890,15 @@
 	
 	  var deepScore = function deepScore(move, depth) {
 	    var counterScore = 0;
+	    // console.log(' '.repeat((3 - depth) * 4) + move.toString());
 	    if (depth > 0) {
-	      counterScore = deepScore(nextMove(_game2.default.getOtherPlayer(move.owner), simulateMove(position, move), depth - 1));
+	      counterScore = nextMove(_game2.default.getOtherPlayer(move.player), simulateMove(position, move), depth - 1).score;
 	    }
 	    return score(move) - counterScore;
 	  };
 	
 	  var score = function score(move) {
-	    return 1;
+	    return Math.floor(Math.random() * 100);
 	  };
 	
 	  // TODO: merge with game.applyMove?
@@ -20906,9 +20909,13 @@
 	    return tempPosition;
 	  };
 	
-	  return getPossibleMoves(player).sort(function (a, b) {
-	    return deepScore(a, depth) > deepScore(b, depth) ? 1 : -1;
+	  var scoredMoves = getPossibleMoves(player).map(function (move) {
+	    return { move: move, score: deepScore(move, depth) };
+	  });
+	  var bestMoveWrapper = scoredMoves.sort(function (a, b) {
+	    return a.score > b.score ? 1 : -1;
 	  })[0];
+	  return bestMoveWrapper.move;
 	};
 	
 	exports.default = nextMove;

@@ -18,18 +18,19 @@ const nextMove = (player, position, depth) => {
 
   const deepScore = (move, depth) => {
     let counterScore = 0;
+    // console.log(' '.repeat((3 - depth) * 4) + move.toString());
     if (depth > 0) {
-      counterScore = deepScore(nextMove(
-        game.getOtherPlayer(move.owner),
+      counterScore = nextMove(
+        game.getOtherPlayer(move.player),
         simulateMove(position, move),
         depth - 1
-      ));
+      ).score;
     }
     return score(move) - counterScore;
   };
 
   const score = (move) => {
-    return 1;
+    return Math.floor(Math.random() * 100);
   };
 
   // TODO: merge with game.applyMove?
@@ -40,8 +41,10 @@ const nextMove = (player, position, depth) => {
     return tempPosition;
   };
 
-  return getPossibleMoves(player).sort(
-    (a, b) => deepScore(a, depth) > deepScore(b, depth) ? 1 : -1)[0];
+  const scoredMoves = getPossibleMoves(player).map(move => ({move, score: deepScore(move, depth)}));
+  const bestMoveWrapper = scoredMoves.sort(
+    (a, b) => a.score > b.score ? 1 : -1)[0];
+  return bestMoveWrapper.move;
 };
 
 export default nextMove;
