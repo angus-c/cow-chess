@@ -40,20 +40,15 @@ const pieceTypes = {
 
 class Game {
   constructor() {
+    this.players = [north, south];
+    south.color = COLORS[0];
+    north.color = COLORS[1];
+
     this.state = {
       position: this.instantiatePieces(STARTING_MAP),
       moves: [],
       selectedSquare: null
     };
-    south.color = COLORS[0];
-    north.color = COLORS[1];
-    north.pieces.forEach(piece => {
-      console.log(
-        piece.constructor.classStub,
-        piece.getRank(),
-        piece.squareId,
-        piece.possibleMoves(this.state.position).map(move => move.toString()));
-    });
 
     // // autoplay test
     // let nextPlayer = south, moves = 0;
@@ -76,6 +71,10 @@ class Game {
     this.emitter.emit('gameChange', this.state);
   }
 
+  getOtherPlayer(player) {
+    return player == this.players[0] ? this.players[1] : this.players[0];
+  }
+
   instantiatePieces(map) {
     let PieceType;
     // squeareIds range from 0 (NW) to 63 (SE)
@@ -83,10 +82,9 @@ class Game {
       if (!symbol) {
         return null;
       }
-      const player = (symbol == symbol.toLowerCase()) ? north : south;
+      const player = (symbol == symbol.toLowerCase()) ? this.players[0] : this.players[1];
       PieceType = pieceTypes[symbol.toLowerCase()];
-      const piece = new PieceType(squareId, player);
-      player.pieces.push(piece);
+      const piece = new PieceType(player);
       return piece;
     });
   }
@@ -94,18 +92,16 @@ class Game {
   applyMove(move) {
     const position = this.state.position;
     if (position[move.to]) {
-      const otherPlayer = position[move.to].owner;
-      otherPlayer.pieces = otherPlayer.pieces.filter(piece => piece != position[move.to]);
+      move.isCapture = true;
     }
     position[move.to] = position[move.from];
     position[move.from] = null;
-    position[move.to].afterMove(move.to);
     this.state.moves.unshift(move);
     this.emitter.emit('gameChange', this.state);
   }
 
   generateMove(player) {
-    this.applyMove(nextMove(player, this.state.position));
+    this.applyMove(nextMove(player, this.state.position, 2));
   }
 
   manualMove(from, to) {
@@ -113,12 +109,11 @@ class Game {
     const player = this.state.position[from].owner;
     this.applyMove(new Move(from, to, player));
     // computer move
-    this.generateMove(player.owner == north ? south : north);
+    this.generateMove(this.getOtherPlayer(player));
   }
 
   squareSelected(location) {
     const piece = this.state.position[location];
-    piece && console.log(piece, piece.possibleMoves(this.state.position));
     if (location && !this.state.selectedSquare) {
       if (!piece || piece.owner.computer) {
         // valid piece not selected
@@ -139,10 +134,6 @@ class Game {
   }
 
   emitter = EventEmitter({})
-  pieces = {
-    south: [],
-    north: []
-  }
 }
 
 export default new Game();

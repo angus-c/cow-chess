@@ -19812,28 +19812,19 @@
 	
 	var Game = (function () {
 	  function Game() {
-	    var _this = this;
-	
 	    _classCallCheck(this, Game);
 	
 	    this.emitter = (0, _eventEmitter2.default)({});
-	    this.pieces = {
-	      south: [],
-	      north: []
-	    };
+	
+	    this.players = [_north2.default, _south2.default];
+	    _south2.default.color = COLORS[0];
+	    _north2.default.color = COLORS[1];
 	
 	    this.state = {
 	      position: this.instantiatePieces(STARTING_MAP),
 	      moves: [],
 	      selectedSquare: null
 	    };
-	    _south2.default.color = COLORS[0];
-	    _north2.default.color = COLORS[1];
-	    _north2.default.pieces.forEach(function (piece) {
-	      console.log(piece.constructor.classStub, piece.getRank(), piece.squareId, piece.possibleMoves(_this.state.position).map(function (move) {
-	        return move.toString();
-	      }));
-	    });
 	
 	    // // autoplay test
 	    // let nextPlayer = south, moves = 0;
@@ -19859,18 +19850,24 @@
 	      this.emitter.emit('gameChange', this.state);
 	    }
 	  }, {
+	    key: 'getOtherPlayer',
+	    value: function getOtherPlayer(player) {
+	      return player == this.players[0] ? this.players[1] : this.players[0];
+	    }
+	  }, {
 	    key: 'instantiatePieces',
 	    value: function instantiatePieces(map) {
+	      var _this = this;
+	
 	      var PieceType = undefined;
 	      // squeareIds range from 0 (NW) to 63 (SE)
 	      return map.map(function (symbol, squareId) {
 	        if (!symbol) {
 	          return null;
 	        }
-	        var player = symbol == symbol.toLowerCase() ? _north2.default : _south2.default;
+	        var player = symbol == symbol.toLowerCase() ? _this.players[0] : _this.players[1];
 	        PieceType = pieceTypes[symbol.toLowerCase()];
-	        var piece = new PieceType(squareId, player);
-	        player.pieces.push(piece);
+	        var piece = new PieceType(player);
 	        return piece;
 	      });
 	    }
@@ -19879,21 +19876,17 @@
 	    value: function applyMove(move) {
 	      var position = this.state.position;
 	      if (position[move.to]) {
-	        var otherPlayer = position[move.to].owner;
-	        otherPlayer.pieces = otherPlayer.pieces.filter(function (piece) {
-	          return piece != position[move.to];
-	        });
+	        move.isCapture = true;
 	      }
 	      position[move.to] = position[move.from];
 	      position[move.from] = null;
-	      position[move.to].afterMove(move.to);
 	      this.state.moves.unshift(move);
 	      this.emitter.emit('gameChange', this.state);
 	    }
 	  }, {
 	    key: 'generateMove',
 	    value: function generateMove(player) {
-	      this.applyMove((0, _nextMove2.default)(player, this.state.position));
+	      this.applyMove((0, _nextMove2.default)(player, this.state.position, 2));
 	    }
 	  }, {
 	    key: 'manualMove',
@@ -19902,13 +19895,12 @@
 	      var player = this.state.position[from].owner;
 	      this.applyMove(new _Move2.default(from, to, player));
 	      // computer move
-	      this.generateMove(player.owner == _north2.default ? _south2.default : _north2.default);
+	      this.generateMove(this.getOtherPlayer(player));
 	    }
 	  }, {
 	    key: 'squareSelected',
 	    value: function squareSelected(location) {
 	      var piece = this.state.position[location];
-	      piece && console.log(piece, piece.possibleMoves(this.state.position));
 	      if (location && !this.state.selectedSquare) {
 	        if (!piece || piece.owner.computer) {
 	          // valid piece not selected
@@ -20440,10 +20432,6 @@
 	  value: true
 	});
 	
-	var _north = __webpack_require__(176);
-	
-	var _north2 = _interopRequireDefault(_north);
-	
 	var _south = __webpack_require__(177);
 	
 	var _south2 = _interopRequireDefault(_south);
@@ -20463,10 +20451,9 @@
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
 	var Piece = (function () {
-	  function Piece(squareId, player) {
+	  function Piece(player) {
 	    _classCallCheck(this, Piece);
 	
-	    this.squareId = squareId;
 	    this.owner = player;
 	    this.hasMoved = false;
 	  }
@@ -20551,7 +20538,7 @@
 	          moves = [];
 	      [-1, 0, 1].forEach(function (columnDir) {
 	        [-1, 0, 1].forEach(function (rowDir) {
-	          if (columnDir == 0 || rowDir == 0 && columnDir != rowDir) {
+	          if ((columnDir == 0 || rowDir == 0) && columnDir != rowDir) {
 	            column = _this2.squareId % 8;
 	            row = Math.floor(_this2.squareId / 8);
 	            while ((column += columnDir, row += rowDir, _this2.isOnBoard(row, column))) {
@@ -20582,18 +20569,12 @@
 	  }, {
 	    key: 'afterMove',
 	    value: function afterMove(destination) {
-	      this.squareId = destination;
 	      this.hasMoved = true;
 	    }
 	  }, {
 	    key: 'isOnBoard',
 	    value: function isOnBoard(column, row) {
 	      return 0 <= column && column <= 7 && 0 <= row && row <= 7;
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      return this.owner === _north2.default ? this.constructor.symbol.toUpperCase() : this.constructor.symbol.toLowerCase();
 	    }
 	  }]);
 	
@@ -20873,30 +20854,60 @@
 
 /***/ },
 /* 186 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
 	
+	var _game = __webpack_require__(160);
+	
+	var _game2 = _interopRequireDefault(_game);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
 	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 	
-	var nextMove = function nextMove(player, position) {
+	var nextMove = function nextMove(player, position, depth) {
 	  var getPossibleMoves = function getPossibleMoves(player) {
-	    return player.pieces.reduce(function (moves, piece) {
+	    var pieces = [];
+	    // excuse the mutation...
+	    position.forEach(function (sq, id) {
+	      if (sq && sq.owner == player) {
+	        sq.squareId = id;
+	        pieces.push(sq);
+	      }
+	    });
+	    return pieces.reduce(function (moves, piece) {
 	      moves.push.apply(moves, _toConsumableArray(piece.possibleMoves(position)));
 	      return moves;
 	    }, []);
 	  };
 	
+	  var deepScore = function deepScore(move, depth) {
+	    var counterScore = 0;
+	    if (depth > 0) {
+	      counterScore = deepScore(nextMove(_game2.default.getOtherPlayer(move.owner), simulateMove(position, move), depth - 1));
+	    }
+	    return score(move) - counterScore;
+	  };
+	
 	  var score = function score(move) {
-	    return Math.random();
+	    return 1;
+	  };
+	
+	  // TODO: merge with game.applyMove?
+	  var simulateMove = function simulateMove(position, move) {
+	    var tempPosition = [].concat(_toConsumableArray(position));
+	    tempPosition[move.to] = tempPosition[move.from];
+	    tempPosition[move.from] = null;
+	    return tempPosition;
 	  };
 	
 	  return getPossibleMoves(player).sort(function (a, b) {
-	    return score(a) > score(b) ? 1 : -1;
+	    return deepScore(a, depth) > deepScore(b, depth) ? 1 : -1;
 	  })[0];
 	};
 	

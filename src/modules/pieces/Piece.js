@@ -1,4 +1,3 @@
-import north from '../players/north';
 import south from '../players/south';
 
 // TODO: remove subclass reference
@@ -6,8 +5,7 @@ import Pawn from './Pawn';
 import Move from '../Move';
 
 class Piece {
-  constructor(squareId, player) {
-    this.squareId = squareId;
+  constructor(player) {
     this.owner = player;
     this.hasMoved = false;
   }
@@ -75,7 +73,7 @@ class Piece {
     let column, row, destinationId, moves = [];
     [-1, 0, 1].forEach(columnDir => {
       [-1, 0, 1].forEach(rowDir => {
-        if (columnDir == 0 || rowDir == 0 && (columnDir != rowDir)) {
+        if ((columnDir == 0 || rowDir == 0) && (columnDir != rowDir)) {
           column = this.squareId % 8;
           row = Math.floor(this.squareId / 8);
           while (column += columnDir, row += rowDir, this.isOnBoard(row, column)) {
@@ -110,18 +108,11 @@ class Piece {
   possibleKnightMoves(position) {}
 
   afterMove(destination) {
-    this.squareId = destination;
     this.hasMoved = true;
   }
 
   isOnBoard(column, row) {
     return (0 <= column) && (column <= 7) && (0 <= row) && (row <= 7);
-  }
-
-  render() {
-    return (this.owner === north) ?
-      this.constructor.symbol.toUpperCase() :
-      this.constructor.symbol.toLowerCase();
   }
 }
 
