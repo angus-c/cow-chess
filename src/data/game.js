@@ -13,6 +13,7 @@ import Queen from '../modules/pieces/Queen';
 import Move from '../modules/Move';
 import nextMove from '../modules/nextMove';
 
+const PROBE_DEPTH = 4;
 const COLORS = ['#FFF', '#000'];
 const [R, N, B, K, Q, P] = ['R', 'N', 'B', 'K', 'Q', 'P'];
 const [r, n, b, k, q, p] = ['r', 'n', 'b', 'k', 'q', 'p'];
@@ -99,7 +100,7 @@ class Game {
 
   generateMove(player) {
     // TODO: tighten up syntax
-    this.applyMove(nextMove(player, this.state.position, 2).move);
+    this.applyMove(nextMove(player, this.state.position, PROBE_DEPTH));
   }
 
   manualMove(from, to) {

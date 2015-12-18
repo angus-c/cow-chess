@@ -26,13 +26,14 @@ const nextMove = (player, position, depth) => {
         depth - 1
       ).score;
     }
-    return score(move, position) - counterScore;
+    return score(move, depth, position) - counterScore;
   };
 
-  const score = (move, position) => {
+  const score = (move, depth, position) => {
     let score = 1;
     move.captures && (score += move.captures.getValue());
-    return score;
+    // negatively weight according to look ahead
+    return score * Math.floor((depth + 1) / 2);
   };
 
   const simulateMove = (position, move) => {
@@ -42,11 +43,13 @@ const nextMove = (player, position, depth) => {
     return tempPosition;
   };
 
-  // TODO: tighten this up
-  const scoredMoves = getPossibleMoves(player).map(move => ({move, score: deepScore(move, depth)}));
-  const bestMoveWrapper = scoredMoves.sort(
+  const scoredMoves = getPossibleMoves(player).map(move => {
+    move.score = deepScore(move, depth);
+    return move;
+  });
+  const bestMove = scoredMoves.sort(
     (a, b) => a.score < b.score ? 1 : -1)[0];
-  return bestMoveWrapper;
+  return bestMove;
 };
 
 export default nextMove;
