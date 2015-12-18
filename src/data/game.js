@@ -91,9 +91,6 @@ class Game {
 
   applyMove(move) {
     const position = this.state.position;
-    if (position[move.to]) {
-      move.isCapture = true;
-    }
     position[move.to] = position[move.from];
     position[move.from] = null;
     this.state.moves.unshift(move);
@@ -101,7 +98,8 @@ class Game {
   }
 
   generateMove(player) {
-    this.applyMove(nextMove(player, this.state.position, 4));
+    // TODO: tighten up syntax
+    this.applyMove(nextMove(player, this.state.position, 2).move);
   }
 
   manualMove(from, to) {

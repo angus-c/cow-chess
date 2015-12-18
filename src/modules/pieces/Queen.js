@@ -10,6 +10,9 @@ class Queen extends Piece {
     knightwards: false,
     jumps: false
   }
+  getValue() {
+    return 10;
+  }
 }
 
 export default Queen;

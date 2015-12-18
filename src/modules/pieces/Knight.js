@@ -10,6 +10,9 @@ class Knight extends Piece {
     knightwards: true,
     jumps: true
   }
+  getValue() {
+    return 3;
+  }
 }
 
 export default Knight;

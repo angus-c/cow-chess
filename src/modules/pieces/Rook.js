@@ -10,6 +10,9 @@ class Rook extends Piece {
     knightwards: false,
     jumps: false
   }
+  getValue() {
+    return 5;
+  }
 }
 
 export default Rook;

@@ -10,6 +10,9 @@ class Pawn extends Piece {
     knightwards: false,
     jumps: false
   }
+  getValue() {
+    return 1;
+  }
 }
 
 export default Pawn;

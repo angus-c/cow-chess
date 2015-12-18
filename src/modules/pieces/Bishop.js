@@ -10,6 +10,9 @@ class Bishop extends Piece {
     knightwards: false,
     jumps: false
   }
+  getValue() {
+    return 3;
+  }
 }
 
 export default Bishop;

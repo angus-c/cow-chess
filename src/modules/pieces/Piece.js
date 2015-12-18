@@ -58,7 +58,12 @@ class Piece {
           ) {
             break;
           }
-          moves.push(new Move(this.squareId, destinationId, this.owner));
+          const move = new Move(this.squareId, destinationId, this.owner);
+          if (destinationPiece) {
+            // TODO: make more visible
+            move.captures = destinationPiece;
+          }
+          moves.push(move);
           if (!projectable) {
             break;
           }

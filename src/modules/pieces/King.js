@@ -10,6 +10,9 @@ class King extends Piece {
     knightwards: false,
     jumps: false
   }
+  getValue() {
+    return Number.INFINITY;
+  }
 }
 
 export default King;
