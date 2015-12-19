@@ -13,7 +13,7 @@ import Queen from '../modules/pieces/Queen';
 import Move from '../modules/Move';
 import nextMove from '../modules/nextMove';
 
-const PROBE_DEPTH = 4;
+const PROBE_DEPTH = 2;
 const COLORS = ['#FFF', '#000'];
 const [R, N, B, K, Q, P] = ['R', 'N', 'B', 'K', 'Q', 'P'];
 const [r, n, b, k, q, p] = ['r', 'n', 'b', 'k', 'q', 'p'];
@@ -29,6 +29,16 @@ const STARTING_MAP = [
   P,P,P,P,P,P,P,P,
   R,N,B,Q,K,B,N,R
 ];
+// const STARTING_MAP = [
+//   _,_,_,_,_,_,_,_,
+//   _,_,_,_,_,_,_,_,
+//   _,_,_,_,_,_,_,_,
+//   _,_,p,_,_,_,_,_,
+//   _,_,_,N,_,_,_,_,
+//   _,P,_,_,_,_,_,_,
+//   _,_,_,_,_,_,_,_,
+//   _,_,_,_,_,_,_,_,
+// ];
 /*eslint-enable */
 const pieceTypes = {
   p: Pawn,

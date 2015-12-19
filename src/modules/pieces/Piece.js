@@ -64,7 +64,7 @@ class Piece {
             move.captures = destinationPiece;
           }
           moves.push(move);
-          if (!projectable) {
+          if (destinationPiece || !projectable) {
             break;
           }
         }
