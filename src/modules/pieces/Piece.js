@@ -27,17 +27,17 @@ class Piece {
       1 + Math.floor((id || this.squareId) / 8);
   }
 
-  possibleMoves(position) {
+  possibleMoves(pieceMap) {
     let moves = [];
     let {diagonal, cardinal/* , knightwards, jumps */ } = this.constructor.moveDescriptor;
-    diagonal && moves.push(...this.possibleDiagonalMoves(position));
-    cardinal && moves.push(...this.possibleCardinalMoves(position));
-    // knightwards && moves.push(...this.possibleKnightMoves(position));
+    diagonal && moves.push(...this.possibleDiagonalMoves(pieceMap));
+    cardinal && moves.push(...this.possibleCardinalMoves(pieceMap));
+    // knightwards && moves.push(...this.possibleKnightMoves(pieceMap));
     return moves;
   }
 
   // TODO: genericize some of this
-  possibleDiagonalMoves(position) {
+  possibleDiagonalMoves(pieceMap) {
     let column, row, destinationId, moves = [];
     [-1, 1].forEach(columnDir => {
       [-1, 1].forEach(rowDir => {
@@ -45,7 +45,7 @@ class Piece {
         row = Math.floor(this.squareId / 8);
         while (column += columnDir, row += rowDir, this.isOnBoard(row, column)) {
           destinationId = column + row * 8;
-          const destinationPiece = position[destinationId];
+          const destinationPiece = pieceMap[destinationId];
           const isCapture = destinationPiece && (destinationPiece.owner != this.owner);
           const diagonal = this.constructor.moveDescriptor.diagonal;
           const forwards = this.owner.relativeDirection(rowDir) == 1;
@@ -74,7 +74,7 @@ class Piece {
   }
 
   // TODO: genericize some of this
-  possibleCardinalMoves(position) {
+  possibleCardinalMoves(pieceMap) {
     let column, row, destinationId, moves = [];
     [-1, 0, 1].forEach(columnDir => {
       [-1, 0, 1].forEach(rowDir => {
@@ -83,7 +83,7 @@ class Piece {
           row = Math.floor(this.squareId / 8);
           while (column += columnDir, row += rowDir, this.isOnBoard(row, column)) {
             destinationId = column + row * 8;
-            const destinationPiece = position[destinationId];
+            const destinationPiece = pieceMap[destinationId];
             const isCapture = destinationPiece && (destinationPiece.owner != this.owner);
             const cardinal = this.constructor.moveDescriptor.cardinal;
             const forwards = this.owner.relativeDirection(rowDir) == 1;
@@ -95,7 +95,12 @@ class Piece {
             ) {
               break;
             }
-            moves.push(new Move(this.squareId, destinationId, this.owner));
+            const move = new Move(this.squareId, destinationId, this.owner);
+            if (destinationPiece) {
+              // TODO: make more visible
+              move.captures = destinationPiece;
+            }
+            moves.push(move);
             if (
               destinationPiece ||
               !projectable ||
@@ -110,7 +115,7 @@ class Piece {
     return moves;
   }
 
-  possibleKnightMoves(position) {}
+  possibleKnightMoves(pieceMap) {}
 
   afterMove(destination) {
     this.hasMoved = true;

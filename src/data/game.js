@@ -11,34 +11,14 @@ import King from '../modules/pieces/King';
 import Queen from '../modules/pieces/Queen';
 
 import Move from '../modules/Move';
+import Position from '../modules/Position';
 import nextMove from '../modules/nextMove';
 
 const PROBE_DEPTH = 4;
 const COLORS = ['#FFF', '#000'];
-const [R, N, B, K, Q, P] = ['R', 'N', 'B', 'K', 'Q', 'P'];
-const [r, n, b, k, q, p] = ['r', 'n', 'b', 'k', 'q', 'p'];
-const _ = null;
+
 /*eslint-disable */
-// const STARTING_MAP = [
-//   r,n,b,q,k,b,n,r,
-//   p,p,p,p,p,p,p,p,
-//   _,_,_,_,_,_,_,_,
-//   _,_,_,_,_,_,_,_,
-//   _,_,_,_,_,_,_,_,
-//   _,_,_,_,_,_,_,_,
-//   P,P,P,P,P,P,P,P,
-//   R,N,B,Q,K,B,N,R
-// ];
-const STARTING_MAP = [
-  _,_,_,_,_,_,_,_,
-  _,_,P,_,_,_,R,_,
-  _,_,_,_,_,_,_,_,
-  R,_,_,_,_,_,_,_,
-  _,_,_,_,_,_,_,_,
-  _,_,_,_,_,_,_,_,
-  _,_,_,_,_,_,_,_,
-  _,_,q,_,_,_,b,_,
-];
+const STARTING_MAP = `rbbqkbbrpppppppp________________________________PPPPPPPPRBBQKBBR`;
 /*eslint-enable */
 const pieceTypes = {
   p: Pawn,
@@ -56,7 +36,7 @@ class Game {
     north.color = COLORS[1];
 
     this.state = {
-      position: this.instantiatePieces(STARTING_MAP),
+      position: new Position(STARTING_MAP, pieceTypes, this.players),
       moves: [],
       selectedSquare: null
     };
@@ -86,24 +66,9 @@ class Game {
     return player == this.players[0] ? this.players[1] : this.players[0];
   }
 
-  instantiatePieces(map) {
-    let PieceType;
-    // squeareIds range from 0 (NW) to 63 (SE)
-    return map.map((symbol, squareId) => {
-      if (!symbol) {
-        return null;
-      }
-      const player = (symbol == symbol.toLowerCase()) ? this.players[0] : this.players[1];
-      PieceType = pieceTypes[symbol.toLowerCase()];
-      const piece = new PieceType(player);
-      return piece;
-    });
-  }
-
   applyMove(move) {
-    const position = this.state.position;
-    position[move.to] = position[move.from];
-    position[move.from] = null;
+    debugger;
+    this.state.position.applyMove(move);
     this.state.moves.unshift(move);
     this.emitter.emit('gameChange', this.state);
   }
@@ -115,14 +80,14 @@ class Game {
 
   manualMove(from, to) {
     // TODO: verify legal move
-    const player = this.state.position[from].owner;
+    const player = this.state.position.pieceMap[from].owner;
     this.applyMove(new Move(from, to, player));
     // computer move
     this.generateMove(this.getOtherPlayer(player));
   }
 
   squareSelected(location) {
-    const piece = this.state.position[location];
+    const piece = this.state.position.pieceMap[location];
     if (location && !this.state.selectedSquare) {
       if (!piece || piece.owner.computer) {
         // valid piece not selected

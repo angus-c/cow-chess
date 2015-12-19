@@ -1,5 +1,7 @@
 import game from '../data/game';
 
+const movesLookup = {};
+
 const nextMove = (player, position, depth) => {
   return getBestMove(player, position, depth);
 };
@@ -9,7 +11,7 @@ const getBestMove = (player, position, depth) => {
     move.score = deepScore(move, position, depth);
     return move;
   });
-  if (depth == 3) {
+  if (depth == 4) {
     console.log(scoredMoves);
   }
   return scoredMoves.sort(
@@ -17,18 +19,24 @@ const getBestMove = (player, position, depth) => {
 };
 
 const getPossibleMoves = (player, position) => {
+  const {pieceMap, stringMap} = position;
+  const savedMoves = movesLookup[stringMap];
+  if (savedMoves) {
+    // return savedMoves;
+  }
   const pieces = [];
   // excuse the mutation...
-  position.forEach((sq, id) => {
+  pieceMap.forEach((sq, id) => {
     if (sq && sq.owner == player) {
       sq.squareId = id;
       pieces.push(sq);
     }
   });
-  return pieces.reduce((moves, piece) => {
-    moves.push(...piece.possibleMoves(position));
+  const moves = pieces.reduce((moves, piece) => {
+    moves.push(...piece.possibleMoves(pieceMap));
     return moves;
   }, []);
+  return (movesLookup[stringMap] = moves);
 };
 
 const deepScore = (move, position, depth) => {
@@ -36,26 +44,24 @@ const deepScore = (move, position, depth) => {
   if (depth > 0) {
     const bestMove = getBestMove(
       game.getOtherPlayer(move.player),
-      simulateMove(position, move),
+      simulateMove(move, position),
       depth - 1
     );
     move.bestReply = bestMove;
     counterScore = bestMove ? bestMove.score : 0;
   }
-  return score(move, depth, position) - counterScore;
+  return score(move, depth) - counterScore;
 };
 
-const score = (move, depth, position) => {
+const score = (move, depth) => {
   let score = 1;
   move.captures && (score += move.captures.getValue());
-  // negatively weight score according to look ahead distance
-  return score * Math.floor((depth + 1) / 2);
+  return score;
 };
 
-const simulateMove = (position, move) => {
-  const tempPosition = [...position];
-  tempPosition[move.to] = tempPosition[move.from];
-  tempPosition[move.from] = null;
+const simulateMove = (move, position) => {
+  const tempPosition = position.cloneMe();
+  tempPosition.applyMove(move);
   return tempPosition;
 };
 
