@@ -1,5 +1,4 @@
 const south = {
-  pieces: [],
   symbolForPlayer(symbol) {
     return symbol.toUpperCase();
   },
