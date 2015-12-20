@@ -58,17 +58,16 @@ const getPossibleMoves = (player, position) => {
 const deepScore = (move, position, depth) => {
   let counterScore = 0;
   if (depth > 0) {
-    const savedBestMove = bestMoveLookup[depth - 1][move.player.name][position.toStr];
-    const bestMove = savedBestMove || getSortedMoves(
-      game.getOtherPlayer(move.player),
-      simulateMove(move, position),
-      depth - 1
-    )[0];
-    move.bestReply = bestMove;
-    if (!savedBestMove) {
-      bestMoveLookup[depth - 1][move.player.name][position.toStr] = bestMove;
+    const newPosition = simulateMove(move, position);
+    const nextDepth = depth - 1;
+    const nextPlayer = game.getOtherPlayer(move.player);
+    const cachedBestReply = bestMoveLookup[nextDepth][nextPlayer.name][newPosition.toStr];
+    const bestReply = cachedBestReply || getSortedMoves(nextPlayer, newPosition, nextDepth)[0];
+    move.bestReply = bestReply;
+    if (!cachedBestReply) {
+      bestMoveLookup[nextDepth][nextPlayer.name][newPosition.toStr] = bestReply;
     }
-    counterScore = bestMove ? bestMove.score : 0;
+    counterScore = bestReply ? bestReply.score : 0;
   }
   const thisScore = score(move, depth) - counterScore;
   return thisScore;
