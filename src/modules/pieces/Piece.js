@@ -2,7 +2,6 @@ import south from '../players/south';
 
 // TODO: remove subclass reference
 import Pawn from './Pawn';
-import Move from '../Move';
 
 class Piece {
   constructor(player) {
@@ -58,7 +57,7 @@ class Piece {
           ) {
             break;
           }
-          const move = new Move(this.squareId, destinationId, this.owner);
+          const move = {from: this.squareId, to: destinationId, player: this.owner};
           if (destinationPiece) {
             // TODO: make more visible
             move.captures = destinationPiece;
@@ -95,7 +94,7 @@ class Piece {
             ) {
               break;
             }
-            const move = new Move(this.squareId, destinationId, this.owner);
+            const move = {from: this.squareId, to: destinationId, player: this.owner};
             if (destinationPiece) {
               // TODO: make more visible
               move.captures = destinationPiece;

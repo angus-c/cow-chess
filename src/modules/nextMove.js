@@ -1,14 +1,15 @@
 import game from '../data/game';
 import profiler from '../utilities/profiler';
 
-const movesLookup = {
-  north: {},
-  south: {}
-};
+let movesLookup;
 
 let bestScoreSoFar = -100, originalPlayer, requestedDepth;
 
 const nextMove = (player, position, depth) => {
+  movesLookup = {
+    north: {},
+    south: {}
+  };
   originalPlayer = player;
   requestedDepth = depth;
   const timeForNextMove = profiler('timeForNextMove');
@@ -38,8 +39,9 @@ const getPossibleMoves = (player, position) => {
     }
     return moves;
   }, []);
-  return (movesLookup[player.name][position.toStr] = moves);
-  // return moves;
+
+  movesLookup[player.name][position.toStr] = moves;
+  return moves;
 };
 
 const deepScore = (move, position, depth) => {

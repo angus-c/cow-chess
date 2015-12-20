@@ -2,10 +2,7 @@
   perf ideas
   ----------
   - cache known best moves per position
-  - cache key only represents moved pieces
-  -- position is base 64 character
-  - make position a simple hash, move methods to closure scope
-  - make move a simple hash
+  - don't cache after arbitrary cache size reached
 */
 
 import EventEmitter from 'event-emitter';
@@ -20,7 +17,6 @@ import Bishop from '../modules/pieces/Bishop';
 import King from '../modules/pieces/King';
 import Queen from '../modules/pieces/Queen';
 
-import Move from '../modules/Move';
 import nextMove from '../modules/nextMove';
 
 const PROBE_DEPTH = 4;
@@ -42,6 +38,16 @@ const STARTING_MAP = [
   P,P,P,P,P,P,P,P,
   R,_,B,Q,K,B,_,R
 ];
+// const STARTING_MAP = [
+//   _,_,_,_,_,_,_,_,
+//   _,_,_,_,_,_,R,_,
+//   _,_,P,_,_,_,_,_,
+//   _,_,_,_,_,_,_,_,
+//   _,R,_,_,_,_,_,_,
+//   _,_,_,_,_,_,_,_,
+//   _,_,_,_,_,_,b,_,
+//   _,_,q,_,_,_,_,_,
+// ];
 /*eslint-enable */
 
 const pieceTypes = {
@@ -117,6 +123,12 @@ class Game {
     this.emitter.emit('gameChange', this.state);
   }
 
+  readableMove = (move) => {
+    const from = `${move.player.color} [${1 + move.from % 8},${1 + Math.floor(move.from / 8)}]`;
+    const to = `[${1 + move.to % 8},${1 + Math.floor(move.to / 8)}]`;
+    return `${from} -> ${to}`;
+  }
+
   // here be all manner of mutation crimes
   updatePosition(position, move) {
     position[move.to] = position[move.from];
@@ -135,7 +147,7 @@ class Game {
   manualMove(from, to) {
     // TODO: verify legal move
     const player = this.state.position[from].owner;
-    this.applyMove(new Move(from, to, player));
+    this.applyMove({from, to, player});
     // computer move
     this.generateMove(this.getOtherPlayer(player));
   }

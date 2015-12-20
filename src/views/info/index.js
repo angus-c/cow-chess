@@ -5,7 +5,7 @@ import './info.css';
 class Info extends React.Component {
 
   static propTypes = {
-    moves: React.PropTypes.arrayOf(React.object) /* TODO */
+    moves: React.PropTypes.arrayOf(React.PropTypes.string)
   }
 
   render() {
@@ -15,7 +15,7 @@ class Info extends React.Component {
         <div className='recentMoves'>
           <ul>
             {moves.map((move, i) => {
-              return <li key={i}>{move.toString()}</li>;
+              return <li key={i}>{move}</li>;
             })}
           </ul>
         </div>
