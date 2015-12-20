@@ -25,7 +25,7 @@ import nextMove from '../modules/nextMove';
 
 const PROBE_DEPTH = 4;
 const COLORS = ['#FFF', '#000'];
-const UNICODE_OFFSET = 161;
+const UNICODE_OFFSET = 65;
 
 const [R, N, B, K, Q, P] = ['R', 'N', 'B', 'K', 'Q', 'P'];
 const [r, n, b, k, q, p] = ['r', 'n', 'b', 'k', 'q', 'p'];
@@ -33,14 +33,14 @@ const _ = null;
 
 /*eslint-disable */
 const STARTING_MAP = [
-  r,n,b,q,k,b,n,r,
+  r,_,b,q,k,b,_,r,
   p,p,p,p,p,p,p,p,
   _,_,_,_,_,_,_,_,
   _,_,_,_,_,_,_,_,
   _,_,_,_,_,_,_,_,
   _,_,_,_,_,_,_,_,
   P,P,P,P,P,P,P,P,
-  R,N,B,Q,K,B,N,R
+  R,_,B,Q,K,B,_,R
 ];
 /*eslint-enable */
 
@@ -106,8 +106,8 @@ class Game {
       if (!symbol) {
         return null;
       }
-      return symbol + String.fromCharCode(squareId + UNICODE_OFFSET);
-    }).filter(Boolean).join('');
+      return String.fromCharCode(squareId + UNICODE_OFFSET);
+    }).filter(Boolean).join('.');
     return position;
   }
 

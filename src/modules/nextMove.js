@@ -27,10 +27,10 @@ const getSortedMoves = (player, position, depth) => {
 };
 
 const getPossibleMoves = (player, position) => {
-  // const savedMoves = movesLookup[player.name][position.toStr];
-  // if (savedMoves) {
-  //   return savedMoves;
-  // }
+  const savedMoves = movesLookup[player.name][position.toStr];
+  if (savedMoves) {
+    return savedMoves;
+  }
   const moves = position.reduce((moves, sq, id) => {
     if (sq && sq.owner == player) {
       sq.squareId = id;
@@ -38,8 +38,8 @@ const getPossibleMoves = (player, position) => {
     }
     return moves;
   }, []);
-  // return (movesLookup[player.name][position.toStr] = moves);
-  return moves;
+  return (movesLookup[player.name][position.toStr] = moves);
+  // return moves;
 };
 
 const deepScore = (move, position, depth) => {
