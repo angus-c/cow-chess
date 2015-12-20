@@ -6,58 +6,56 @@ const movesLookup = {
   south: {}
 };
 
+let bestScoreSoFar = -100, originalPlayer, requestedDepth;
+
 const nextMove = (player, position, depth) => {
+  originalPlayer = player;
+  requestedDepth = depth;
   const timeForNextMove = profiler('timeForNextMove');
-  const move = getBestMove(player, position, depth);
+  const move = getSortedMoves(player, position, depth)[0];
   timeForNextMove.stop();
   return move;
 };
 
-const getBestMove = (player, position, depth) => {
+const getSortedMoves = (player, position, depth) => {
   const scoredMoves = getPossibleMoves(player, position).map(move => {
     move.score = deepScore(move, position, depth);
     return move;
   });
-  if (depth == 4) {
-    console.log(scoredMoves);
-  }
   return scoredMoves.sort(
-    (a, b) => a.score < b.score ? 1 : -1)[0];
+    (a, b) => a.score < b.score ? 1 : -1);
 };
 
 const getPossibleMoves = (player, position) => {
-  const {pieceMap, stringMap} = position;
-  const savedMoves = movesLookup[player.name][stringMap];
-  if (savedMoves) {
-    return savedMoves;
-  }
-  const pieces = [];
-  // excuse the mutation...
-  pieceMap.forEach((sq, id) => {
+  // const savedMoves = movesLookup[player.name][position.toStr];
+  // if (savedMoves) {
+  //   return savedMoves;
+  // }
+  const moves = position.reduce((moves, sq, id) => {
     if (sq && sq.owner == player) {
       sq.squareId = id;
-      pieces.push(sq);
+      moves.push(...sq.possibleMoves(position));
     }
-  });
-  const moves = pieces.reduce((moves, piece) => {
-    moves.push(...piece.possibleMoves(pieceMap));
     return moves;
   }, []);
-  return (movesLookup[player.name][stringMap] = moves);
+  // return (movesLookup[player.name][position.toStr] = moves);
+  return moves;
 };
 
 const deepScore = (move, position, depth) => {
   let counterScore = 0;
   if (depth > 0) {
-    const bestMove = getBestMove(
+    const bestMove = getSortedMoves(
       game.getOtherPlayer(move.player),
       simulateMove(move, position),
       depth - 1
-    );
+    )[0];
     move.bestReply = bestMove;
     counterScore = bestMove ? bestMove.score : 0;
   }
-  return score(move, depth) - counterScore;
+  const thisScore = score(move, depth) - counterScore;
+  (thisScore > bestScoreSoFar) && (bestScoreSoFar = thisScore);
+  return thisScore;
 };
 
 const score = (move, depth) => {
@@ -67,8 +65,9 @@ const score = (move, depth) => {
 };
 
 const simulateMove = (move, position) => {
-  const tempPosition = position.cloneMe();
-  tempPosition.applyMove(move);
+  const tempPosition = [...position];
+  tempPosition.toStr = position.toStr;
+  game.updatePosition(tempPosition, move);
   return tempPosition;
 };
 
