@@ -1,4 +1,5 @@
 const south = {
+  name: 'south',
   symbolForPlayer(symbol) {
     return symbol.toUpperCase();
   },

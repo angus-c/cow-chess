@@ -67,7 +67,6 @@ class Game {
   }
 
   applyMove(move) {
-    debugger;
     this.state.position.applyMove(move);
     this.state.moves.unshift(move);
     this.emitter.emit('gameChange', this.state);

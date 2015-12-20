@@ -1,9 +1,16 @@
 import game from '../data/game';
+import profiler from '../utilities/profiler';
 
-const movesLookup = {};
+const movesLookup = {
+  north: {},
+  south: {}
+};
 
 const nextMove = (player, position, depth) => {
-  return getBestMove(player, position, depth);
+  const timeForNextMove = profiler('timeForNextMove');
+  const move = getBestMove(player, position, depth);
+  timeForNextMove.stop();
+  return move;
 };
 
 const getBestMove = (player, position, depth) => {
@@ -20,9 +27,9 @@ const getBestMove = (player, position, depth) => {
 
 const getPossibleMoves = (player, position) => {
   const {pieceMap, stringMap} = position;
-  const savedMoves = movesLookup[stringMap];
+  const savedMoves = movesLookup[player.name][stringMap];
   if (savedMoves) {
-    // return savedMoves;
+    return savedMoves;
   }
   const pieces = [];
   // excuse the mutation...
@@ -36,7 +43,7 @@ const getPossibleMoves = (player, position) => {
     moves.push(...piece.possibleMoves(pieceMap));
     return moves;
   }, []);
-  return (movesLookup[stringMap] = moves);
+  return (movesLookup[player.name][stringMap] = moves);
 };
 
 const deepScore = (move, position, depth) => {
