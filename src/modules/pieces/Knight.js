@@ -4,11 +4,7 @@ class Knight extends Piece {
   static symbol = 'n';
   static classStub = 'knight';
   static moveDescriptor = {
-    diagonal: false,
-    cardinal: false,
-    projectable: false,
-    knightwards: true,
-    jumps: true
+    knightwards: true
   }
   getValue() {
     return 3;

@@ -5,10 +5,7 @@ class King extends Piece {
   static classStub = 'king';
   static moveDescriptor = {
     diagonal: true,
-    cardinal: true,
-    projectable: false,
-    knightwards: false,
-    jumps: false
+    cardinal: true
   }
   getValue() {
     return Number.INFINITY;

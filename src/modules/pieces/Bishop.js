@@ -5,10 +5,7 @@ class Bishop extends Piece {
   static classStub = 'bishop';
   static moveDescriptor = {
     diagonal: true,
-    cardinal: false,
-    projectable: true,
-    knightwards: false,
-    jumps: false
+    projectable: true
   }
   getValue() {
     return 3;

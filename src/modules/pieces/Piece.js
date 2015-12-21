@@ -1,4 +1,5 @@
 import south from '../players/south';
+// import profiler from '../../utilities/profiler';
 
 // TODO: remove subclass reference
 import Pawn from './Pawn';
@@ -28,29 +29,23 @@ class Piece {
 
   possibleMoves(pieceMap) {
     let moves = [];
-    let {diagonal, cardinal/* , knightwards, jumps */ } = this.constructor.moveDescriptor;
+    let {diagonal, cardinal, knightwards} = this.constructor.moveDescriptor;
     diagonal && moves.push(...this.possibleDiagonalMoves(pieceMap));
     cardinal && moves.push(...this.possibleCardinalMoves(pieceMap));
-    // knightwards && moves.push(...this.possibleKnightMoves(pieceMap));
+    knightwards && moves.push(...this.possibleKnightMoves(pieceMap));
     return moves;
   }
 
-  // TODO: genericize some of this
   possibleDiagonalMoves(pieceMap) {
-    let column, row, destinationId, moves = [];
+    let column, row, moves = [];
     [-1, 1].forEach(columnDir => {
       [-1, 1].forEach(rowDir => {
         column = this.squareId % 8;
         row = Math.floor(this.squareId / 8);
         while (column += columnDir, row += rowDir, this.isOnBoard(row, column)) {
-          destinationId = column + row * 8;
-          const destinationPiece = pieceMap[destinationId];
-          const isCapture = destinationPiece && (destinationPiece.owner != this.owner);
+          const {destinationId, destinationPiece, isCapture, forwards, projectable} =
+            this.getMoveDetails(column, row, pieceMap, rowDir);
           const diagonal = this.constructor.moveDescriptor.diagonal;
-          const forwards = this.owner.relativeDirection(rowDir) == 1;
-          let projectable = this.constructor.moveDescriptor.projectable;
-          (typeof projectable == 'function') && (projectable = projectable(this.getRank()));
-
           if (
             (destinationPiece && !isCapture) ||
             (typeof diagonal == 'function' && !diagonal(isCapture, forwards))
@@ -72,22 +67,17 @@ class Piece {
     return moves;
   }
 
-  // TODO: genericize some of this
   possibleCardinalMoves(pieceMap) {
-    let column, row, destinationId, moves = [];
+    let column, row, moves = [];
     [-1, 0, 1].forEach(columnDir => {
       [-1, 0, 1].forEach(rowDir => {
         if ((columnDir == 0 || rowDir == 0) && (columnDir != rowDir)) {
           column = this.squareId % 8;
           row = Math.floor(this.squareId / 8);
           while (column += columnDir, row += rowDir, this.isOnBoard(row, column)) {
-            destinationId = column + row * 8;
-            const destinationPiece = pieceMap[destinationId];
-            const isCapture = destinationPiece && (destinationPiece.owner != this.owner);
+            const {destinationId, destinationPiece, isCapture, forwards, projectable} =
+              this.getMoveDetails(column, row, pieceMap, rowDir);
             const cardinal = this.constructor.moveDescriptor.cardinal;
-            const forwards = this.owner.relativeDirection(rowDir) == 1;
-            let projectable = this.constructor.moveDescriptor.projectable;
-            (typeof projectable == 'function') && (projectable = projectable(this.getRank()));
             if (
               (destinationPiece && !isCapture) ||
               (typeof cardinal == 'function' && !cardinal(isCapture, forwards))
@@ -114,7 +104,40 @@ class Piece {
     return moves;
   }
 
-  possibleKnightMoves(pieceMap) {}
+  possibleKnightMoves(pieceMap) {
+    let row, column, moves = [];
+    [-2, -1, 1, 2].forEach(columnDir => {
+      [-2, -1, 1, 2].forEach(rowDir => {
+        if (Math.abs(columnDir) + Math.abs(rowDir) == 3) {
+          column = (this.squareId % 8) + columnDir;
+          row = Math.floor(this.squareId / 8) + rowDir;
+          if (this.isOnBoard(column, row)) {
+            const destinationId = this.squareId + columnDir + (rowDir * 8);
+            const destinationPiece = pieceMap[destinationId];
+            if (destinationPiece && (destinationPiece.owner === this.owner)) {
+              return;
+            }
+            const move = {from: this.squareId, to: destinationId, player: this.owner};
+            if (destinationPiece) {
+              move.captures = destinationPiece;
+            }
+            moves.push(move);
+          }
+        }
+      });
+    });
+    return moves;
+  }
+
+  getMoveDetails(column, row, pieceMap, rowDir) {
+    const destinationId = column + row * 8;
+    const destinationPiece = pieceMap[destinationId];
+    const isCapture = destinationPiece && (destinationPiece.owner != this.owner);
+    const forwards = this.owner.relativeDirection(rowDir) == 1;
+    let projectable = this.constructor.moveDescriptor.projectable;
+    (typeof projectable == 'function') && (projectable = projectable(this.getRank()));
+    return {destinationId, destinationPiece, isCapture, forwards, projectable};
+  }
 
   afterMove(destination) {
     this.hasMoved = true;

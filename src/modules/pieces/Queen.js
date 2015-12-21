@@ -6,9 +6,7 @@ class Queen extends Piece {
   static moveDescriptor = {
     diagonal: move => true,
     cardinal: move => true,
-    projectable: true,
-    knightwards: false,
-    jumps: false
+    projectable: true
   }
   getValue() {
     return 10;
