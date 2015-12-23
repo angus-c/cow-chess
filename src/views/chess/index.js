@@ -13,6 +13,16 @@ class Chess extends React.Component {
     game.emitter.on('gameChange', data => this._update(data));
   }
 
+  componentDidMount() {
+    setTimeout(() => game.nextPlay(), 0);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.nextPlayer != this.state.nextPlayer) {
+      setTimeout(() => game.nextPlay(), 0);
+    }
+  }
+
   render() {
     return (
       <div className='chess'>

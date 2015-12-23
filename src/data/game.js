@@ -66,6 +66,7 @@ class Game {
     north.color = COLORS[1];
 
     this.state = {
+      nextPlayer: this.players.filter(player => player.color == COLORS[0])[0],
       position: this.instantiatePieces(STARTING_MAP),
       moves: [],
       selectedSquare: null
@@ -120,6 +121,7 @@ class Game {
   applyMove(move) {
     this.updatePosition(this.state.position, move);
     this.state.moves.unshift(move);
+    this.state.nextPlayer = this.getOtherPlayer(this.state.nextPlayer);
     this.emitter.emit('gameChange', this.state);
   }
 
@@ -139,6 +141,12 @@ class Game {
     position.toStr = position.toStr.replace(unicodeFrom, unicodeTo);
   }
 
+  nextPlay() {
+    if (this.state.nextPlayer.computer) {
+      this.generateMove(this.state.nextPlayer);
+    }
+  }
+
   generateMove(player) {
     // TODO: tighten up syntax
     this.applyMove(nextMove(player, this.state.position, PROBE_DEPTH));
@@ -148,8 +156,6 @@ class Game {
     // TODO: verify legal move
     const player = this.state.position[from].owner;
     this.applyMove({from, to, player});
-    // computer move
-    this.generateMove(this.getOtherPlayer(player));
   }
 
   squareSelected(location) {
