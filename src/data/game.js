@@ -113,7 +113,7 @@ class Game {
         return null;
       }
       return String.fromCharCode(squareId + UNICODE_OFFSET);
-    }).filter(Boolean).join('.');
+    }).filter(Boolean).join('');
     return position;
   }
 
