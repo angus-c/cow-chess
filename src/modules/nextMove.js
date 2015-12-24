@@ -13,13 +13,16 @@ const nextMove = (player, position, depth) => {
   originalPlayer = player;
   requestedDepth = depth;
   const timeForNextMove = profiler('timeForNextMove');
-  const move = getSortedMoves(player, position, depth)[0];
+  const firstPass = getSortedMoves(player, position, 2);
+  const shortlist = firstPass.slice(0, firstPass.length / 3);
+  const move = getSortedMoves(player, position, depth, shortlist)[0];
   timeForNextMove.stop();
   return move;
 };
 
-const getSortedMoves = (player, position, depth) => {
-  const scoredMoves = getPossibleMoves(player, position).map(move => {
+const getSortedMoves = (player, position, depth, possibleMoves) => {
+  !possibleMoves && (possibleMoves = getPossibleMoves(player, position));
+  const scoredMoves = possibleMoves.map(move => {
     move.score = deepScore(move, position, depth);
     return move;
   });
