@@ -53,10 +53,7 @@ class Piece {
             break;
           }
           const move = {from: this.squareId, to: destinationId, player: this.owner};
-          if (destinationPiece) {
-            // TODO: make more visible
-            move.captures = destinationPiece;
-          }
+          this.addMoveInfo(move, destinationPiece, pieceMap);
           moves.push(move);
           if (destinationPiece || !projectable) {
             break;
@@ -85,10 +82,7 @@ class Piece {
               break;
             }
             const move = {from: this.squareId, to: destinationId, player: this.owner};
-            if (destinationPiece) {
-              // TODO: make more visible
-              move.captures = destinationPiece;
-            }
+            this.addMoveInfo(move, destinationPiece, pieceMap);
             moves.push(move);
             if (
               destinationPiece ||
@@ -118,15 +112,43 @@ class Piece {
               return;
             }
             const move = {from: this.squareId, to: destinationId, player: this.owner};
-            if (destinationPiece) {
-              move.captures = destinationPiece;
-            }
+            this.addMoveInfo(move, destinationPiece, pieceMap);
             moves.push(move);
           }
         }
       });
     });
     return moves;
+  }
+
+  addMoveInfo(move, destinationPiece) {
+    if (destinationPiece) {
+      move.captures = destinationPiece;
+    }
+    const player = move.player;
+    // TODO: attach all this to move
+    const toRow = 1 + Math.floor(move.to / 8);
+    const toColumn = 1 + (move.to % 8);
+    const rowAhead = toRow < 8 ? toRow + player.relativeDirection(1) : null;
+    const rowBehind = toRow > 1 ? toRow - player.relativeDirection(1) : null;
+    const columnLeft = toColumn > 1 ? toColumn - player.relativeDirection(1) : null;
+    const columnRight = toColumn < 8 ? toColumn + player.relativeDirection(1) : null;
+    if (rowAhead) {
+      if (columnLeft) {
+        move.forwardLeft = (rowAhead - 1) * 8 + (columnLeft - 1);
+      }
+      if (move.columnRight) {
+        move.forwardRight = (rowAhead - 1) * 8 + (columnRight - 1);
+      }
+    }
+    if (rowBehind) {
+      if (columnLeft) {
+        move.backwardLeft = (rowBehind - 1) * 8 + (columnLeft - 1);
+      }
+      if (move.columnRight) {
+        move.backwardRight = (rowBehind - 1) * 8 + (columnRight - 1);
+      }
+    }
   }
 
   getMoveDetails(column, row, pieceMap, rowDir) {

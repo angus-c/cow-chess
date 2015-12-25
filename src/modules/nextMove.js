@@ -50,55 +50,35 @@ const getPossibleMoves = (player, position) => {
 };
 
 const deepScore = (move, position, depth) => {
-  let counterScore = 0;
+  let counterScore = 0, sortedReplies;
   if (depth > 0) {
-    const bestMove = getSortedMoves(
+    // TODO: use cached value?
+    sortedReplies = getSortedMoves(
       game.getOtherPlayer(move.player),
       simulateMove(move, position),
       depth - 1
-    )[0];
-    move.bestReply = bestMove;
-    counterScore = bestMove ? bestMove.score : 0;
+    );
+    move.numberOfReplies = sortedReplies.length;
+    counterScore = sortedReplies[0] ? sortedReplies[0].score : 0;
   }
   const thisScore = score(move, position, depth) - counterScore;
   (thisScore > bestScoreSoFar) && (bestScoreSoFar = thisScore);
   return thisScore;
 };
 
-// TODO: this is a mess
 const score = (move, position, depth) => {
-  const player = move.player;
-  // TODO: attach all this to move
-  const newRow = 1 + Math.floor(move.to / 8);
-  const newColumn = 1 + (move.to % 8);
-  const nextRow = newRow < 8 ? newRow + player.relativeDirection(1) : null;
-  const previousRow = newRow > 1 ? newRow - player.relativeDirection(1) : null;
-  const previousColumn = newColumn > 1 ? newColumn - player.relativeDirection(1) : null;
-  const nextColumn = newColumn < 8 ? newColumn + player.relativeDirection(1) : null;
-  let forwardLeft, forwardRight, backwardLeft, backwardRight;
-  if (nextRow) {
-    if (previousColumn) {
-      forwardLeft = (nextRow - 1) * 8 + (previousColumn - 1);
-    }
-    if (nextColumn) {
-      forwardRight = (nextRow - 1) * 8 + (nextColumn - 1);
-    }
-  }
-  if (previousRow) {
-    if (previousColumn) {
-      backwardLeft = (previousRow - 1) * 8 + (previousColumn - 1);
-    }
-    if (nextColumn) {
-      backwardRight = (previousRow - 1) * 8 + (nextColumn - 1);
-    }
-  }
-
   let score = 1;
+  const {player, captures, forwardLeft, forwardRight, backwardLeft, backwardRight} = move;
 
-  if (move.captures) {
-    score += move.captures.getValue();
+  // piece capture
+  if (captures) {
+    score += captures.getValue();
   }
-  // UGH... clean the fuck up
+
+  // number of possible replies
+  score -= (move.numberOfReplies || 0) / 10;
+
+  // pawn support
   if (position[move.from] instanceof Pawn) {
     if (position[forwardLeft] && (position[forwardLeft].owner === player)) {
       score += 1;
