@@ -128,7 +128,8 @@ class Game {
   readableMove = (move) => {
     const from = `${move.player.color} [${1 + move.from % 8},${1 + Math.floor(move.from / 8)}]`;
     const to = `[${1 + move.to % 8},${1 + Math.floor(move.to / 8)}]`;
-    return `${from} -> ${to}`;
+    const time = move.time ? `(${Math.floor(move.time / 1000)} secs)` : ``;
+    return `${from} -> ${to} ${time}`;
   }
 
   // here be all manner of mutation crimes

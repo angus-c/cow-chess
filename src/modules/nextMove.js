@@ -14,11 +14,11 @@ const nextMove = (player, position, depth) => {
   };
   originalPlayer = player;
   requestedDepth = depth;
-  const timeForNextMove = profiler('timeForNextMove');
+  const moveTime = profiler('moveTime');
   const firstPass = getSortedMoves(player, position, 2);
   const shortlist = firstPass.slice(0, firstPass.length / 3);
   const move = getSortedMoves(player, position, depth, shortlist)[0];
-  timeForNextMove.stop();
+  move.time = moveTime.getElapsed();
   return move;
 };
 
