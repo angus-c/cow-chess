@@ -15,12 +15,13 @@ class Info extends React.Component {
         <div className='recentMoves'>
           <ul>
             {moves.map((move, i) => {
+              const {piece, fromTo, capturedPiece, time} = move;
               return (
                 <li key={i}>
-                  <span className='piece'></span>
-                  <span className='fromto'>{move.fromto}</span>
-                  <span className='capture'></span>
-                  <span className='time'>{move.time}</span>
+                  <span className='movePiece'>{piece}</span>
+                  <span className='moveSquares'>{fromTo}</span>
+                  <span className='moveCapture'>{capturedPiece}</span>
+                  <span className='moveTime'>{time}</span>
                 </li>
               );
             })}

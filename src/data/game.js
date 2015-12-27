@@ -19,7 +19,7 @@ import Queen from '../modules/pieces/Queen';
 
 import nextMove from '../modules/nextMove';
 
-const PROBE_DEPTH = 4;
+const PROBE_DEPTH = 3;
 const COLORS = ['#FFF', '#000'];
 const UNICODE_OFFSET = 65;
 
@@ -120,16 +120,21 @@ class Game {
 
   applyMove(move) {
     this.updatePosition(this.state.position, move);
+    move.piece = this.state.position[move.to];
     this.state.moves.unshift(move);
     this.state.nextPlayer = this.getOtherPlayer(this.state.nextPlayer);
     this.emitter.emit('gameChange', this.state);
   }
 
-  readableMove = (move) => {
-    const from = `${move.player.color} [${1 + move.from % 8},${1 + Math.floor(move.from / 8)}]`;
+  getMoveDisplayEntities = (move, position) => {
+    const from = `[${1 + move.from % 8},${1 + Math.floor(move.from / 8)}]`;
     const to = `[${1 + move.to % 8},${1 + Math.floor(move.to / 8)}]`;
+    const fromTo = `${from} -> ${to}`;
     const time = move.time ? `(${Math.floor(move.time / 1000)} secs)` : ``;
-    return `${from} -> ${to} ${time}`;
+    const piece = move.piece ? move.piece.constructor.classStub : ``;
+    const capturedPiece = move.captures ? move.captures.constructor.classStub : ``;
+    console.log(piece + '*');
+    return {fromTo, time, piece, capturedPiece};
   }
 
   // here be all manner of mutation crimes

@@ -24,10 +24,11 @@ class Chess extends React.Component {
   }
 
   render() {
+    const {position, moves} = this.state;
     return (
       <div className='chess'>
-        <Board position={this.state.position} selected={this.state.selectedSquare} />
-        <Info moves={this.state.moves.map(move => game.readableMove(move))} />
+        <Board position={position} selected={this.state.selectedSquare} />
+        <Info moves={moves.map(move => game.getMoveDisplayEntities(move, position))}/>
       </div>
     );
   }
