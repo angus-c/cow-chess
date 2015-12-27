@@ -32,6 +32,14 @@ span.moveCapture {
   flex: 1;
 }
 
-span.time {
+span.moveTime {
   flex: 1;
+}
+
+span.white {
+  color: #aaa
+}
+
+span.black {
+  color: #000
 }

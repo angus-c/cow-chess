@@ -19,8 +19,8 @@ import Queen from '../modules/pieces/Queen';
 
 import nextMove from '../modules/nextMove';
 
-const PROBE_DEPTH = 3;
-const COLORS = ['#FFF', '#000'];
+const PROBE_DEPTH = 4;
+const COLORS = ['white', 'black'];
 const UNICODE_OFFSET = 65;
 
 const [R, N, B, K, Q, P] = ['R', 'N', 'B', 'K', 'Q', 'P'];
@@ -127,14 +127,15 @@ class Game {
   }
 
   getMoveDisplayEntities = (move, position) => {
-    const from = `[${1 + move.from % 8},${1 + Math.floor(move.from / 8)}]`;
-    const to = `[${1 + move.to % 8},${1 + Math.floor(move.to / 8)}]`;
-    const fromTo = `${from} -> ${to}`;
-    const time = move.time ? `(${Math.floor(move.time / 1000)} secs)` : ``;
+    const from = `${1 + move.from % 8},${1 + Math.floor(move.from / 8)}`;
+    const to = `${1 + move.to % 8},${1 + Math.floor(move.to / 8)}`;
+    const fromTo = `${from}->${to}`;
+    const time = move.time ? `(${Math.floor(move.time / 1000)}s)` : ``;
     const piece = move.piece ? move.piece.constructor.classStub : ``;
     const capturedPiece = move.captures ? move.captures.constructor.classStub : ``;
-    console.log(piece + '*');
-    return {fromTo, time, piece, capturedPiece};
+    const myTextClass = move.player.color;
+    const theirTextClass = this.getOtherPlayer(move.player).color;
+    return {fromTo, time, piece, capturedPiece, myTextClass, theirTextClass};
   }
 
   // here be all manner of mutation crimes
