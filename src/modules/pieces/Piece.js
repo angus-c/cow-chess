@@ -121,30 +121,30 @@ class Piece {
     if (destinationPiece) {
       move.captures = destinationPiece;
     }
-    const player = move.player;
+    // const player = move.player;
     // TODO: attach all this to move
-    const toRow = 1 + Math.floor(move.to / 8);
-    const toColumn = 1 + (move.to % 8);
-    const rowAhead = toRow < 8 ? toRow + player.relativeDirection(1) : null;
-    const rowBehind = toRow > 1 ? toRow - player.relativeDirection(1) : null;
-    const columnLeft = toColumn > 1 ? toColumn - player.relativeDirection(1) : null;
-    const columnRight = toColumn < 8 ? toColumn + player.relativeDirection(1) : null;
-    if (rowAhead) {
-      if (columnLeft) {
-        move.forwardLeft = (rowAhead - 1) * 8 + (columnLeft - 1);
-      }
-      if (move.columnRight) {
-        move.forwardRight = (rowAhead - 1) * 8 + (columnRight - 1);
-      }
-    }
-    if (rowBehind) {
-      if (columnLeft) {
-        move.backwardLeft = (rowBehind - 1) * 8 + (columnLeft - 1);
-      }
-      if (move.columnRight) {
-        move.backwardRight = (rowBehind - 1) * 8 + (columnRight - 1);
-      }
-    }
+    // const toRow = 1 + Math.floor(move.to / 8);
+    // const toColumn = 1 + (move.to % 8);
+    // const rowAhead = toRow < 8 ? toRow + player.relativeDirection(1) : null;
+    // const rowBehind = toRow > 1 ? toRow - player.relativeDirection(1) : null;
+    // const columnLeft = toColumn > 1 ? toColumn - player.relativeDirection(1) : null;
+    // const columnRight = toColumn < 8 ? toColumn + player.relativeDirection(1) : null;
+    // if (rowAhead) {
+    //   if (columnLeft) {
+    //     move.forwardLeft = (rowAhead - 1) * 8 + (columnLeft - 1);
+    //   }
+    //   if (move.columnRight) {
+    //     move.forwardRight = (rowAhead - 1) * 8 + (columnRight - 1);
+    //   }
+    // }
+    // if (rowBehind) {
+    //   if (columnLeft) {
+    //     move.backwardLeft = (rowBehind - 1) * 8 + (columnLeft - 1);
+    //   }
+    //   if (move.columnRight) {
+    //     move.backwardRight = (rowBehind - 1) * 8 + (columnRight - 1);
+    //   }
+    // }
   }
 
   getMoveDetails(squareId, pieceMap, rowDir) {

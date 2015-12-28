@@ -15,10 +15,10 @@ const nextMove = (player, position, depth) => {
   originalPlayer = player;
   requestedDepth = depth;
   const moveTime = profiler('moveTime');
-  const firstPass = getSortedMoves(player, position, 2);
-  const shortlist = firstPass.slice(0, firstPass.length / 2);
-  const secondsPass = getSortedMoves(player, position, 3, shortlist);
-  const secondShortlist = secondsPass.slice(0, secondsPass.length / 3);
+  const firstPass = getSortedMoves(player, position, 1);
+  const shortlist = firstPass.slice(0, 5);
+  const secondPass = getSortedMoves(player, position, 3, shortlist);
+  const secondShortlist = secondPass.slice(0, 3);
   const move = getSortedMoves(player, position, depth, secondShortlist)[0];
   move.time = moveTime.getElapsed();
   return move;
@@ -61,6 +61,7 @@ const deepScore = (move, position, depth) => {
       depth - 1
     );
     move.numberOfReplies = sortedReplies.length;
+    move.bestReply = sortedReplies[0];
     counterScore = sortedReplies[0] ? sortedReplies[0].score : 0;
   }
   const thisScore = score(move, position, depth) - counterScore;
@@ -81,26 +82,26 @@ const score = (move, position, depth) => {
   score -= (move.numberOfReplies || 0) / 10;
 
   // pawn support
-  if (position[move.from] instanceof Pawn) {
-    if (position[forwardLeft] && (position[forwardLeft].owner === player)) {
-      score += 1;
-    }
-    if (position[forwardRight] && (position[forwardRight].owner === player)) {
-      score += 1;
-    }
-  }
-  if (
-    position[backwardLeft] &&
-    (position[backwardLeft] instanceof Pawn) &&
-    (position[backwardLeft].owner === player)) {
-      score += 1;
-  }
-  if (
-    position[backwardRight] &&
-    (position[backwardRight] instanceof Pawn) &&
-    (position[backwardRight].owner === player)) {
-      score += 1;
-  }
+  // if (position[move.from] instanceof Pawn) {
+  //   if (position[forwardLeft] && (position[forwardLeft].owner === player)) {
+  //     score += 1;
+  //   }
+  //   if (position[forwardRight] && (position[forwardRight].owner === player)) {
+  //     score += 1;
+  //   }
+  // }
+  // if (
+  //   position[backwardLeft] &&
+  //   (position[backwardLeft] instanceof Pawn) &&
+  //   (position[backwardLeft].owner === player)) {
+  //     score += 1;
+  // }
+  // if (
+  //   position[backwardRight] &&
+  //   (position[backwardRight] instanceof Pawn) &&
+  //   (position[backwardRight].owner === player)) {
+  //     score += 1;
+  // }
 
   return score;
 };
