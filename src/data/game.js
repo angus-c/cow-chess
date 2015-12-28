@@ -19,7 +19,7 @@ import Queen from '../modules/pieces/Queen';
 
 import nextMove from '../modules/nextMove';
 
-const PROBE_DEPTH = 5;
+const PROBE_DEPTH = 4;
 const COLORS = ['white', 'black'];
 const UNICODE_OFFSET = 65;
 
