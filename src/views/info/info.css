@@ -1,14 +1,22 @@
 .info {
   display: flex;
+  flex-direction: column;
   flex: 1;
   height: 100%;
   text-align: left;
 }
 
 .recentMoves {
-  flex: 2;
-  height: 10em;
+  flex: 1 1;
   overflow: auto;
+}
+
+.settings {
+  flex: 1.5;
+}
+
+.numberInput {
+  width: 3em;
 }
 
 li {

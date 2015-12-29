@@ -35,6 +35,46 @@ class Info extends React.Component {
             })}
           </ul>
         </div>
+        <div className='settings'>
+          <ul>
+            <li className='settingsRow'>
+              <span className='settingsLabel'>probe depth</span>
+              <input
+                className='numberInput'
+                ref='probeDepth'
+                type='number'
+                min='0'
+                max='7'
+                defaultValue='4'
+              >
+              </input>
+            </li>
+            <li className='settingsRow'>
+              <span className='settingsLabel'>first pass cut off</span>
+              <input
+                className='numberInput'
+                ref='firstPassProportion'
+                type='number'
+                min='0'
+                max='1'
+                defaultValue='0.5'
+              >
+              </input>
+            </li>
+            <li className='settingsRow'>
+              <span className='settingsLabel'>second pass cut off</span>
+              <input
+                className='numberInput'
+                ref='secondPassProportion'
+                type='number'
+                min='0'
+                max='1'
+                defaultValue='0.5'
+              >
+              </input>
+            </li>
+          </ul>
+        </div>
       </div>
     );
   }
