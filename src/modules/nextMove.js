@@ -9,20 +9,19 @@ let bestScoreSoFar, originalPlayer, requestedDepth;
 // store in closure scope because passing it through recursion is hella messy
 let currentRecursionScore;
 
-const nextMove = (player, position, depth) => {
+const nextMove = (player, position) => {
+  const {probeDepth, cutOffDepth, cutOffProportion} = game.get().config;
   bestScoreSoFar = Number.NEGATIVE_INFINITY;
   movesLookup = {
     north: {},
     south: {}
   };
   originalPlayer = player;
-  requestedDepth = depth;
+  requestedDepth = probeDepth;
   const moveTime = profiler('moveTime');
-  const firstPass = getSortedMoves(player, position, 1);
-  const shortlist = firstPass.slice(0, 3);
-  const secondPass = getSortedMoves(player, position, 3, shortlist);
-  const secondShortlist = secondPass.slice(0, 2);
-  const move = getSortedMoves(player, position, depth, secondShortlist)[0];
+  const firstPass = getSortedMoves(player, position, cutOffDepth);
+  const shortlist = firstPass.slice(0, firstPass.length * cutOffProportion);
+  const move = getSortedMoves(player, position, requestedDepth, shortlist)[0];
   move.time = moveTime.getElapsed();
   return move;
 };

@@ -19,7 +19,6 @@ import Queen from '../modules/pieces/Queen';
 
 import nextMove from '../modules/nextMove';
 
-const PROBE_DEPTH = 4;
 const COLORS = ['white', 'black'];
 const UNICODE_OFFSET = 65;
 
@@ -69,7 +68,12 @@ class Game {
       nextPlayer: this.players.filter(player => player.color == COLORS[0])[0],
       position: this.instantiatePieces(STARTING_MAP),
       moves: [],
-      selectedSquare: null
+      selectedSquare: null,
+      config: {
+        probeDepth: 4,
+        cutOffDepth: 3,
+        cutOffProportion: 0.5
+      }
     };
 
     // // autoplay test
@@ -155,8 +159,7 @@ class Game {
   }
 
   generateMove(player) {
-    // TODO: tighten up syntax
-    this.applyMove(nextMove(player, this.state.position, PROBE_DEPTH));
+    this.applyMove(nextMove(player, this.state.position));
   }
 
   manualMove(from, to) {

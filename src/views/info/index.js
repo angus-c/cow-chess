@@ -5,11 +5,12 @@ import './info.css';
 class Info extends React.Component {
 
   static propTypes = {
-    moves: React.PropTypes.arrayOf(React.PropTypes.object)
+    moves: React.PropTypes.arrayOf(React.PropTypes.object),
+    config: React.PropTypes.object
   }
 
   render() {
-    const moves = this.props.moves;
+    const {moves, config} = this.props;
     return (
       <div className='info'>
         <div className='recentMoves'>
@@ -45,31 +46,31 @@ class Info extends React.Component {
                 type='number'
                 min='0'
                 max='7'
-                defaultValue='4'
+                defaultValue={config.probeDepth}
               >
               </input>
             </li>
             <li className='settingsRow'>
-              <span className='settingsLabel'>first pass cut off</span>
+              <span className='settingsLabel'>cut off depth</span>
               <input
                 className='numberInput'
-                ref='firstPassProportion'
+                ref='cutOffDepth'
                 type='number'
                 min='0'
                 max='1'
-                defaultValue='0.5'
+                defaultValue={config.cutOffDepth}
               >
               </input>
             </li>
             <li className='settingsRow'>
-              <span className='settingsLabel'>second pass cut off</span>
+              <span className='settingsLabel'>cut off proportion</span>
               <input
                 className='numberInput'
-                ref='secondPassProportion'
+                ref='cutOffProportion'
                 type='number'
                 min='0'
                 max='1'
-                defaultValue='0.5'
+                defaultValue={config.cutOffProportion}
               >
               </input>
             </li>

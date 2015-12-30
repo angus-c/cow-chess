@@ -138,7 +138,7 @@
     "quote-props": 0,
     "quotes": [2, "single", "avoid-escape"],
     "radix": 2,
-    "react/forbid-prop-types": 1,
+    "react/forbid-prop-types": 0,
     "react/jsx-boolean-value": 1,
     "react/jsx-closing-bracket-location": 1,
     "react/jsx-curly-spacing": 1,
