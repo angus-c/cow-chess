@@ -1,5 +1,7 @@
 import React from 'react';
 
+import game from '../../data/game';
+
 import './info.css';
 
 class Info extends React.Component {
@@ -38,15 +40,18 @@ class Info extends React.Component {
         </div>
         <div className='settings'>
           <ul>
+            <li key={'header'}>
+              <span className='header'>settings</span>
+            </li>
             <li className='settingsRow'>
               <span className='settingsLabel'>probe depth</span>
               <input
                 className='numberInput'
-                ref='probeDepth'
                 type='number'
                 min='0'
                 max='7'
                 defaultValue={config.probeDepth}
+                onChange={this.settingChanged.bind(this, 'probeDepth')}
               >
               </input>
             </li>
@@ -54,11 +59,11 @@ class Info extends React.Component {
               <span className='settingsLabel'>cut off depth</span>
               <input
                 className='numberInput'
-                ref='cutOffDepth'
                 type='number'
                 min='0'
-                max='1'
+                max='7'
                 defaultValue={config.cutOffDepth}
+                onChange={this.settingChanged.bind(this, 'cutOffDepth')}
               >
               </input>
             </li>
@@ -66,11 +71,12 @@ class Info extends React.Component {
               <span className='settingsLabel'>cut off proportion</span>
               <input
                 className='numberInput'
-                ref='cutOffProportion'
                 type='number'
                 min='0'
                 max='1'
+                step='0.1'
                 defaultValue={config.cutOffProportion}
+                onChange={this.settingChanged.bind(this, 'cutOffProportion')}
               >
               </input>
             </li>
@@ -78,6 +84,13 @@ class Info extends React.Component {
         </div>
       </div>
     );
+  }
+
+  settingChanged(setting, e) {
+    // TODO really need an action here
+    game.set({
+      config: Object.assign({}, this.props.config, {[setting]: Number(e.target.value)})
+    });
   }
 }
 
