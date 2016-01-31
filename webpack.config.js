@@ -12,10 +12,6 @@ module.exports = {
     devtool: 'source-map',
     module: {
       loaders: [
-        // {
-        //   test: /\.js$/,
-        //   loader: 'jsx-loader?harmony'
-        // },
         {
           // es6/7 JavaScript
           test: /\.jsx?$/,
