@@ -9,7 +9,7 @@ class Board extends React.Component {
   static propTypes = {
     position: React.PropTypes.arrayOf(React.PropTypes.object),
     selected: React.PropTypes.number
-  }
+  };
 
   render() {
     const renderCells = (position) =>

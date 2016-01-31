@@ -9,7 +9,7 @@ class Info extends React.Component {
   static propTypes = {
     moves: React.PropTypes.arrayOf(React.PropTypes.object),
     config: React.PropTypes.object
-  }
+  };
 
   render() {
     const {moves, config} = this.props;

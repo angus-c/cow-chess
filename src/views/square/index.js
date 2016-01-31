@@ -12,11 +12,11 @@ class Square extends React.Component {
     piece: React.PropTypes.instanceOf(Piece),
     selected: React.PropTypes.bool,
     shaded: React.PropTypes.bool
-  }
+  };
 
   static defaultValues = {
     shaded: false
-  }
+  };
 
   render() {
     const { selected, shaded, piece } = this.props;

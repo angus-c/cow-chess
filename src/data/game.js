@@ -17,7 +17,7 @@ import Bishop from '../modules/pieces/Bishop';
 import King from '../modules/pieces/King';
 import Queen from '../modules/pieces/Queen';
 
-import nextMove from '../modules/nextMove';
+// import nextMove from '../modules/nextMove';
 
 const COLORS = ['white', 'black'];
 const UNICODE_OFFSET = 65;
@@ -140,7 +140,7 @@ class Game {
     const myTextClass = move.player.color;
     const theirTextClass = this.getOtherPlayer(move.player).color;
     return {fromTo, time, piece, capturedPiece, myTextClass, theirTextClass};
-  }
+  };
 
   // here be all manner of mutation crimes
   updatePosition(position, move) {
@@ -189,7 +189,7 @@ class Game {
     this.emitter.emit('gameChange', this.state);
   }
 
-  emitter = EventEmitter({})
+  emitter = EventEmitter({});
 }
 
 export default new Game();

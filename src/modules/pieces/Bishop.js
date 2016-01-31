@@ -6,7 +6,7 @@ class Bishop extends Piece {
   static moveDescriptor = {
     diagonal: true,
     projectable: true
-  }
+  };
   getValue() {
     return 3;
   }
