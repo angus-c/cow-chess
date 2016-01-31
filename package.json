@@ -26,6 +26,7 @@
     "babel-eslint": "^4.1.6",
     "classnames": "^2.2.1",
     "event-emitter": "^0.3.4",
+    "express": "^4.13.4",
     "react": "^0.14.3",
     "react-dom": "^0.14.3"
   }
