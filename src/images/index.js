@@ -1,0 +1,12 @@
+import './w-pawn.png';
+import './w-knight.png';
+import './w-bishop.png';
+import './w-rook.png';
+import './w-queen.png';
+import './w-king.png';
+import './b-pawn.png';
+import './b-knight.png';
+import './b-bishop.png';
+import './b-rook.png';
+import './b-queen.png';
+import './b-king.png';

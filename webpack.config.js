@@ -1,18 +1,7 @@
 module.exports = {
     entry: [
-      './src/views/chess',
-      './src/images/w-pawn.png',
-      './src/images/w-knight.png',
-      './src/images/w-bishop.png',
-      './src/images/w-rook.png',
-      './src/images/w-queen.png',
-      './src/images/w-king.png',
-      './src/images/b-pawn.png',
-      './src/images/b-knight.png',
-      './src/images/b-bishop.png',
-      './src/images/b-rook.png',
-      './src/images/b-queen.png',
-      './src/images/b-king.png'
+      './src/images',
+      './src/views/chess'
     ],
     output: {
         path: 'bundle',
