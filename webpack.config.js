@@ -1,5 +1,6 @@
 module.exports = {
   entry: [
+    './index.html',
     './src/images',
     './src/views/chess'
   ],
@@ -35,6 +36,11 @@ module.exports = {
         // images
         test: /\.png$/,
         loader: "file-loader?name=./images/[name].[ext]"
+      },
+      {
+        // html
+        test: /\.html$/,
+        loader: "file-loader?name=./[name].[ext]"
       }
     ]
   },

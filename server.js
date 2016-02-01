@@ -2,14 +2,8 @@ var express = require('express');
 var app = express();
 var path = require('path');
 
-
-// revisit for security
-app.use('/', express.static(__dirname + '/'));
-
-//
-// app.get('/', function(req, res) {
-//   res.sendFile(path.join(__dirname + '/index.html'));
-// });
+app.use('/', express.static(__dirname + '/bundle/'));
+app.use('bundle/images', express.static(__dirname + '/bundle/images/'));
 
 app.get('/test', function(req, res) {
   res.send('test ok');
