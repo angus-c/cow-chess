@@ -2,10 +2,10 @@ var express = require('express');
 var app = express();
 var path = require('path');
 
-app.use('/', express.static(__dirname + '/bundle/'));
-app.use('bundle/images', express.static(__dirname + '/bundle/images/'));
+app.use(express.static('bundle'));
+// app.use('/*', express.static(path.join(__dirname, '/bundle/')));
 
-app.get('/test', function(req, res) {
+app.get('/test', function (req, res) {
   res.send('test ok');
 });
 

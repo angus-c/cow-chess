@@ -1,8 +1,8 @@
 module.exports = {
   entry: [
     './index.html',
-    './src/images',
-    './src/views/chess'
+    './src/client/images',
+    './src/client/views/chess'
   ],
   output: {
     path: 'bundle',

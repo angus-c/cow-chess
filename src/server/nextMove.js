@@ -11,6 +11,7 @@ let currentRecursionScore;
 
 const nextMove = (player, position) => {
   const {probeDepth, cutOffDepth, cutOffProportion} = game.get().config;
+  console.trace('hello');
   bestScoreSoFar = Number.NEGATIVE_INFINITY;
   movesLookup = {
     north: {},
