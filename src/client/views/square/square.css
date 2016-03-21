@@ -22,49 +22,49 @@
 }
 
 .w-pawn {
-  background-image: url("../../../../bundle/images/w-pawn.png");
+  background-image: url("../../../../dist-client/images/w-pawn.png");
 }
 
 .w-knight {
-  background-image: url("../../../../bundle/images/w-knight.png");
+  background-image: url("../../../../dist-client/images/w-knight.png");
 }
 
 .w-bishop {
-  background-image: url("../../../../bundle/images/w-bishop.png");
+  background-image: url("../../../../dist-client/images/w-bishop.png");
 }
 
 .w-rook {
-  background-image: url("../../../../bundle/images/w-rook.png");
+  background-image: url("../../../../dist-client/images/w-rook.png");
 }
 
 .w-queen {
-  background-image: url("../../../../bundle/images/w-queen.png");
+  background-image: url("../../../../dist-client/images/w-queen.png");
 }
 
 .w-king {
-  background-image: url("../../../../bundle/images/w-king.png");
+  background-image: url("../../../../dist-client/images/w-king.png");
 }
 
 .b-pawn {
-  background-image: url("../../../../bundle/images/b-pawn.png");
+  background-image: url("../../../../dist-client/images/b-pawn.png");
 }
 
 .b-knight {
-  background-image: url("../../../../bundle/images/b-knight.png");
+  background-image: url("../../../../dist-client/images/b-knight.png");
 }
 
 .b-bishop {
-  background-image: url("../../../../bundle/images/b-bishop.png");
+  background-image: url("../../../../dist-client/images/b-bishop.png");
 }
 
 .b-rook {
-  background-image: url("../../../../bundle/images/b-rook.png");
+  background-image: url("../../../../dist-client/images/b-rook.png");
 }
 
 .b-queen {
-  background-image: url("../../../../bundle/images/b-queen.png");
+  background-image: url("../../../../dist-client/images/b-queen.png");
 }
 
 .b-king {
-  background-image: url("../../../../bundle/images/b-king.png");
+  background-image: url("../../../../dist-client/images/b-king.png");
 }

@@ -17,6 +17,8 @@ import Bishop from '../modules/pieces/Bishop';
 import King from '../modules/pieces/King';
 import Queen from '../modules/pieces/Queen';
 
+import xhr from '../data/xhr';
+
 // import nextMove from '../modules/nextMove';
 
 const COLORS = ['white', 'black'];
@@ -159,7 +161,15 @@ class Game {
   }
 
   generateMove(player) {
-    this.applyMove(nextMove(player, this.state.position));
+    // this.applyMove(nextMove(player, this.state.position));
+    this.applyMove(xhr.post(
+      '/nextMove',
+      {
+        player,
+        position: this.state.position
+      },
+      () => console.log('@@@@ callback here @@@@')
+    ));
   }
 
   manualMove(from, to) {

@@ -1,7 +1,8 @@
-import game from '../data/game';
-import profiler from '../utilities/profiler';
+// TODO: get rid of these client refs
+import game from '../client/data/game';
+import profiler from '../client/utilities/profiler';
 
-import Pawn from './pieces/Pawn';
+import Pawn from '../client/modules/pieces/Pawn';
 
 let movesLookup;
 
