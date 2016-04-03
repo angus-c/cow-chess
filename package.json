@@ -19,11 +19,13 @@
     "file-loader": "^0.8.5",
     "json-loader": "^0.5.1",
     "jsx-loader": "^0.13.2",
+    "source-map-support": "^0.4.0",
     "style-loader": "^0.13.0",
     "webpack": "^1.7.3"
   },
   "dependencies": {
     "babel-eslint": "^4.1.6",
+    "body-parser": "^1.15.0",
     "classnames": "^2.2.1",
     "event-emitter": "^0.3.4",
     "express": "^4.13.4",

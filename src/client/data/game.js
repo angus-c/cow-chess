@@ -17,7 +17,7 @@ import Bishop from '../modules/pieces/Bishop';
 import King from '../modules/pieces/King';
 import Queen from '../modules/pieces/Queen';
 
-import xhr from '../data/xhr';
+import request from 'request';
 
 // import nextMove from '../modules/nextMove';
 
@@ -66,6 +66,7 @@ class Game {
     south.color = COLORS[0];
     north.color = COLORS[1];
 
+    // TODO: move config to DB on server
     this.state = {
       nextPlayer: this.players.filter(player => player.color == COLORS[0])[0],
       position: this.instantiatePieces(STARTING_MAP),
@@ -161,15 +162,30 @@ class Game {
   }
 
   generateMove(player) {
-    // this.applyMove(nextMove(player, this.state.position));
-    this.applyMove(xhr.post(
-      '/nextMove',
-      {
-        player,
-        position: this.state.position
-      },
-      () => console.log('@@@@ callback here @@@@')
-    ));
+    // TODO: derive URL domain
+    // TODO serializable payload
+    // var payload = {player: player.color, position: this.state.position};
+    debugger;
+    // TODO: move pieces to server
+    const serializablePosition = this.state.position.map(piece => {
+      let result = {...piece};
+      delete result.owner;
+      return result;
+    });
+    const payload = {player: player.color, position: serializablePosition};
+    request({
+      method: 'post',
+      url: 'http://localhost:3000/nextMove',
+      body: payload,
+      json: true},
+      (err, data) => {
+        if (err) {
+          throw new Error(err);
+        } else {
+          this.applyMove(data);
+        }
+      }
+    );
   }
 
   manualMove(from, to) {

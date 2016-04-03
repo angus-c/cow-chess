@@ -11,8 +11,10 @@ let bestScoreSoFar, originalPlayer, requestedDepth;
 let currentRecursionScore;
 
 const nextMove = (player, position) => {
+  debugger;
+  console.log('******nextMove******');
+  console.log('player', player, 'position', position);
   const {probeDepth, cutOffDepth, cutOffProportion} = game.get().config;
-  console.trace('hello');
   bestScoreSoFar = Number.NEGATIVE_INFINITY;
   movesLookup = {
     north: {},
@@ -49,7 +51,7 @@ const getSortedMoves = (player, position, depth, possibleMoves) => {
 };
 
 const getPossibleMoves = (player, position) => {
-  const savedMoves = movesLookup[player.name][position.toStr];
+  const savedMoves = movesLookup[player][position.toStr];
   if (savedMoves) {
     return savedMoves;
   }

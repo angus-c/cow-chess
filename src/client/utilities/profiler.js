@@ -1,7 +1,7 @@
 export default id => {
-  const start = window.performance.now();
+  const start = Date.now();
   return {
-    stop: () => console.log(id, window.performance.now() - start),
-    getElapsed: () => window.performance.now() - start
+    stop: () => console.log(id, Date.now() - start),
+    getElapsed: () => Date.now() - start
   };
 };
