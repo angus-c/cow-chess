@@ -12,8 +12,6 @@ let currentRecursionScore;
 
 const nextMove = (player, position) => {
   debugger;
-  console.log('******nextMove******');
-  console.log('player', player, 'position', position);
   const {probeDepth, cutOffDepth, cutOffProportion} = game.get().config;
   bestScoreSoFar = Number.NEGATIVE_INFINITY;
   movesLookup = {
@@ -138,6 +136,15 @@ const simulateMove = (move, position) => {
   tempPosition.toStr = position.toStr;
   game.updatePosition(tempPosition, move);
   return tempPosition;
+};
+
+const possibleMoves = pieceMap => {
+  const moves = [];
+  const {diagonal, cardinal, knightwards} = this.constructor.moveDescriptor;
+  diagonal && moves.push(...this.possibleDiagonalMoves(pieceMap));
+  cardinal && moves.push(...this.possibleCardinalMoves(pieceMap));
+  knightwards && moves.push(...this.possibleKnightMoves(pieceMap));
+  return moves;
 };
 
 export default nextMove;
