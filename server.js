@@ -1,8 +1,15 @@
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
-var nextMove = require('./src/server/nextMove').default;
+var nextMove = require('./src/server/brain/nextMove').default;
+
 require('source-map-support').install();
+
+/* eslint-disable new-cap */
+app.game = new require('./src/server/Game').default();
+/* eslint-enable new-cap */
+
+var port = 3000;
 
 app.config = {
   probeDepth: 4,
@@ -19,17 +26,21 @@ app.get('/test', (req, res) => {
 });
 
 app.post('/config', (req, res) => {
-  // TODO: fix assignment, error check
+  // TODO: fix assignment, error handling
   app.config = {...req.body};
   res.sendStatus(200);
 });
 
-app.post('/nextMove', (req, res) => {
-  var payload = req.body;
-  res.send(JSON.stringify(nextMove(payload.player, payload.position)));
+app.post('/sendMove', (req, res) => {
+  res.sendStatus(app.game.updatePosition(req.body.move));
 });
 
-app.listen(3000);
-console.log('chess listening on 3000');
+app.get('/generateMove', (req, res) => {
+  // TODO: error handling
+  res.send(JSON.stringify(nextMove()));
+});
+
+app.listen(port);
+console.log('chess listening on', port);
 
 module.exports = app;

@@ -163,21 +163,9 @@ class Game {
 
   generateMove(player) {
     // TODO: derive URL domain
-    // TODO serializable payload
-    // var payload = {player: player.color, position: this.state.position};
-    debugger;
-    // TODO: move pieces to server
-    const serializablePosition = this.state.position.map(piece => {
-      let result = {...piece};
-      delete result.owner;
-      return result;
-    });
-    const payload = {player: player.color, position: serializablePosition};
     request({
-      method: 'post',
-      url: 'http://localhost:3000/nextMove',
-      body: payload,
-      json: true},
+      method: 'get',
+      url: 'http://localhost:3000/generateMove',
       (err, data) => {
         if (err) {
           throw new Error(err);

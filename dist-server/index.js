@@ -76,14 +76,18 @@
 	});
 	
 	app.post('/config', function (req, res) {
-	  // TODO: fix assignment, error check
+	  // TODO: fix assignment, error handling
 	  app.config = _extends({}, req.body);
 	  res.sendStatus(200);
 	});
 	
-	app.post('/nextMove', function (req, res) {
-	  var payload = req.body;
-	  res.send(JSON.stringify(nextMove(payload.player, payload.position)));
+	app.post('/sendMove', function (req, res) {
+	  res.sendStatus(applyMove());
+	});
+	
+	app.get('/generateMove', function (req, res) {
+	  // TODO: error handling
+	  res.send(JSON.stringify(nextMove()));
 	});
 	
 	app.listen(3000);
