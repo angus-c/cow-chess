@@ -179,15 +179,15 @@
 	
 	var _game2 = _interopRequireDefault(_game);
 	
-	var _board = __webpack_require__(367);
+	var _board = __webpack_require__(176);
 	
 	var _board2 = _interopRequireDefault(_board);
 	
-	var _info = __webpack_require__(388);
+	var _info = __webpack_require__(200);
 	
 	var _info2 = _interopRequireDefault(_info);
 	
-	__webpack_require__(391);
+	__webpack_require__(203);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -19869,46 +19869,7 @@
 
 /***/ },
 /* 175 */,
-/* 176 */,
-/* 177 */,
-/* 178 */,
-/* 179 */,
-/* 180 */,
-/* 181 */,
-/* 182 */,
-/* 183 */,
-/* 184 */,
-/* 185 */,
-/* 186 */,
-/* 187 */,
-/* 188 */,
-/* 189 */,
-/* 190 */,
-/* 191 */,
-/* 192 */
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	var south = {
-	  name: 'south',
-	  symbolForPlayer: function symbolForPlayer(symbol) {
-	    return symbol.toUpperCase();
-	  },
-	  relativeDirection: function relativeDirection(actualDirection) {
-	    return -actualDirection;
-	  },
-	
-	  computer: false /* default */
-	};
-	
-	exports.default = south;
-
-/***/ },
-/* 193 */
+/* 176 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -19919,9 +19880,15 @@
 	  value: true
 	});
 	
-	var _Piece2 = __webpack_require__(194);
+	var _react = __webpack_require__(16);
 	
-	var _Piece3 = _interopRequireDefault(_Piece2);
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _square = __webpack_require__(177);
+	
+	var _square2 = _interopRequireDefault(_square);
+	
+	__webpack_require__(198);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -19931,42 +19898,202 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var Pawn = function (_Piece) {
-	  _inherits(Pawn, _Piece);
+	var Board = function (_React$Component) {
+	  _inherits(Board, _React$Component);
 	
-	  function Pawn() {
-	    _classCallCheck(this, Pawn);
+	  function Board() {
+	    _classCallCheck(this, Board);
 	
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(Pawn).apply(this, arguments));
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(Board).apply(this, arguments));
 	  }
 	
-	  _createClass(Pawn, [{
-	    key: 'getValue',
-	    value: function getValue() {
-	      return 1;
+	  _createClass(Board, [{
+	    key: 'render',
+	    value: function render() {
+	      var _this2 = this;
+	
+	      var renderCells = function renderCells(position) {
+	        return _react2.default.createElement(
+	          'div',
+	          { className: 'grid' },
+	          [0, 1, 2, 3, 4, 5, 6, 7].map(function (rowId, i) {
+	            return _react2.default.createElement(
+	              'div',
+	              { className: 'row', key: 'r' + i },
+	              [0, 1, 2, 3, 4, 5, 6, 7].map(function (columnId, j) {
+	                var piece = position[rowId * 8 + columnId];
+	                var location = i * 8 + j;
+	                return _react2.default.createElement(_square2.default, {
+	                  key: j,
+	                  location: location,
+	                  piece: piece,
+	                  selected: _this2.props.selected == location,
+	                  shaded: (i + j) % 2 == 1
+	                });
+	              })
+	            );
+	          })
+	        );
+	      };
+	
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'board' },
+	        renderCells(this.props.position)
+	      );
 	    }
 	  }]);
 	
-	  return Pawn;
-	}(_Piece3.default);
+	  return Board;
+	}(_react2.default.Component);
 	
-	Pawn.symbol = 'p';
-	Pawn.classStub = 'pawn';
-	Pawn.moveDescriptor = {
-	  diagonal: function diagonal(isCapture, forwards) {
-	    return isCapture && forwards;
-	  },
-	  cardinal: function cardinal(isCapture, forwards) {
-	    return !isCapture && forwards;
-	  },
-	  projectable: function projectable(rank) {
-	    return rank == 2;
-	  }
+	Board.propTypes = {
+	  position: _react2.default.PropTypes.arrayOf(_react2.default.PropTypes.object),
+	  selected: _react2.default.PropTypes.number
 	};
-	exports.default = Pawn;
+	exports.default = Board;
 
 /***/ },
-/* 194 */
+/* 177 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _react = __webpack_require__(16);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _classnames2 = __webpack_require__(178);
+	
+	var _classnames3 = _interopRequireDefault(_classnames2);
+	
+	var _game = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"../../data/game\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	
+	var _game2 = _interopRequireDefault(_game);
+	
+	var _Piece = __webpack_require__(179);
+	
+	var _Piece2 = _interopRequireDefault(_Piece);
+	
+	__webpack_require__(182);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var Square = function (_React$Component) {
+	  _inherits(Square, _React$Component);
+	
+	  function Square() {
+	    _classCallCheck(this, Square);
+	
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(Square).apply(this, arguments));
+	  }
+	
+	  _createClass(Square, [{
+	    key: 'render',
+	    value: function render() {
+	      var _this2 = this;
+	
+	      var _props = this.props;
+	      var selected = _props.selected;
+	      var shaded = _props.shaded;
+	      var piece = _props.piece;
+	
+	      var className = (0, _classnames3.default)('square', { shaded: shaded }, { piece: piece }, _defineProperty({}, piece && piece.getClassName(), piece), { selected: selected });
+	      return _react2.default.createElement('div', { className: className, onClick: function onClick(e) {
+	          return _this2.squareClicked(e);
+	        } });
+	    }
+	  }, {
+	    key: 'squareClicked',
+	    value: function squareClicked(e) {
+	      _game2.default.squareSelected(this.props.selected ? null : this.props.location);
+	    }
+	  }]);
+	
+	  return Square;
+	}(_react2.default.Component);
+	
+	Square.propTypes = {
+	  location: _react2.default.PropTypes.number,
+	  piece: _react2.default.PropTypes.instanceOf(_Piece2.default),
+	  selected: _react2.default.PropTypes.bool,
+	  shaded: _react2.default.PropTypes.bool
+	};
+	Square.defaultValues = {
+	  shaded: false
+	};
+	exports.default = Square;
+
+/***/ },
+/* 178 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+	  Copyright (c) 2016 Jed Watson.
+	  Licensed under the MIT License (MIT), see
+	  http://jedwatson.github.io/classnames
+	*/
+	/* global define */
+	
+	(function () {
+		'use strict';
+	
+		var hasOwn = {}.hasOwnProperty;
+	
+		function classNames () {
+			var classes = [];
+	
+			for (var i = 0; i < arguments.length; i++) {
+				var arg = arguments[i];
+				if (!arg) continue;
+	
+				var argType = typeof arg;
+	
+				if (argType === 'string' || argType === 'number') {
+					classes.push(arg);
+				} else if (Array.isArray(arg)) {
+					classes.push(classNames.apply(null, arg));
+				} else if (argType === 'object') {
+					for (var key in arg) {
+						if (hasOwn.call(arg, key) && arg[key]) {
+							classes.push(key);
+						}
+					}
+				}
+			}
+	
+			return classes.join(' ');
+		}
+	
+		if (typeof module !== 'undefined' && module.exports) {
+			module.exports = classNames;
+		} else if (true) {
+			// register as 'classnames', consistent with npm package name
+			!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function () {
+				return classNames;
+			}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+		} else {
+			window.classNames = classNames;
+		}
+	}());
+
+
+/***/ },
+/* 179 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -19980,11 +20107,11 @@
 	  value: true
 	});
 	
-	var _south = __webpack_require__(192);
+	var _south = __webpack_require__(180);
 	
 	var _south2 = _interopRequireDefault(_south);
 	
-	var _Pawn = __webpack_require__(193);
+	var _Pawn = __webpack_require__(181);
 	
 	var _Pawn2 = _interopRequireDefault(_Pawn);
 	
@@ -20198,179 +20325,30 @@
 	exports.default = Piece;
 
 /***/ },
-/* 195 */,
-/* 196 */,
-/* 197 */,
-/* 198 */,
-/* 199 */,
-/* 200 */,
-/* 201 */,
-/* 202 */,
-/* 203 */,
-/* 204 */,
-/* 205 */,
-/* 206 */,
-/* 207 */,
-/* 208 */,
-/* 209 */,
-/* 210 */,
-/* 211 */,
-/* 212 */,
-/* 213 */,
-/* 214 */,
-/* 215 */,
-/* 216 */,
-/* 217 */,
-/* 218 */,
-/* 219 */,
-/* 220 */,
-/* 221 */,
-/* 222 */,
-/* 223 */,
-/* 224 */,
-/* 225 */,
-/* 226 */,
-/* 227 */,
-/* 228 */,
-/* 229 */,
-/* 230 */,
-/* 231 */,
-/* 232 */,
-/* 233 */,
-/* 234 */,
-/* 235 */,
-/* 236 */,
-/* 237 */,
-/* 238 */,
-/* 239 */,
-/* 240 */,
-/* 241 */,
-/* 242 */,
-/* 243 */,
-/* 244 */,
-/* 245 */,
-/* 246 */,
-/* 247 */,
-/* 248 */,
-/* 249 */,
-/* 250 */,
-/* 251 */,
-/* 252 */,
-/* 253 */,
-/* 254 */,
-/* 255 */,
-/* 256 */,
-/* 257 */,
-/* 258 */,
-/* 259 */,
-/* 260 */,
-/* 261 */,
-/* 262 */,
-/* 263 */,
-/* 264 */,
-/* 265 */,
-/* 266 */,
-/* 267 */,
-/* 268 */,
-/* 269 */,
-/* 270 */,
-/* 271 */,
-/* 272 */,
-/* 273 */,
-/* 274 */,
-/* 275 */,
-/* 276 */,
-/* 277 */,
-/* 278 */,
-/* 279 */,
-/* 280 */,
-/* 281 */,
-/* 282 */,
-/* 283 */,
-/* 284 */,
-/* 285 */,
-/* 286 */,
-/* 287 */,
-/* 288 */,
-/* 289 */,
-/* 290 */,
-/* 291 */,
-/* 292 */,
-/* 293 */,
-/* 294 */,
-/* 295 */,
-/* 296 */,
-/* 297 */,
-/* 298 */,
-/* 299 */,
-/* 300 */,
-/* 301 */,
-/* 302 */,
-/* 303 */,
-/* 304 */,
-/* 305 */,
-/* 306 */,
-/* 307 */,
-/* 308 */,
-/* 309 */,
-/* 310 */,
-/* 311 */,
-/* 312 */,
-/* 313 */,
-/* 314 */,
-/* 315 */,
-/* 316 */,
-/* 317 */,
-/* 318 */,
-/* 319 */,
-/* 320 */,
-/* 321 */,
-/* 322 */,
-/* 323 */,
-/* 324 */,
-/* 325 */,
-/* 326 */,
-/* 327 */,
-/* 328 */,
-/* 329 */,
-/* 330 */,
-/* 331 */,
-/* 332 */,
-/* 333 */,
-/* 334 */,
-/* 335 */,
-/* 336 */,
-/* 337 */,
-/* 338 */,
-/* 339 */,
-/* 340 */,
-/* 341 */,
-/* 342 */,
-/* 343 */,
-/* 344 */,
-/* 345 */,
-/* 346 */,
-/* 347 */,
-/* 348 */,
-/* 349 */,
-/* 350 */,
-/* 351 */,
-/* 352 */,
-/* 353 */,
-/* 354 */,
-/* 355 */,
-/* 356 */,
-/* 357 */,
-/* 358 */,
-/* 359 */,
-/* 360 */,
-/* 361 */,
-/* 362 */,
-/* 363 */,
-/* 364 */,
-/* 365 */,
-/* 366 */,
-/* 367 */
+/* 180 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var south = {
+	  name: 'south',
+	  symbolForPlayer: function symbolForPlayer(symbol) {
+	    return symbol.toUpperCase();
+	  },
+	  relativeDirection: function relativeDirection(actualDirection) {
+	    return -actualDirection;
+	  },
+	
+	  computer: false /* default */
+	};
+	
+	exports.default = south;
+
+/***/ },
+/* 181 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20381,15 +20359,9 @@
 	  value: true
 	});
 	
-	var _react = __webpack_require__(16);
+	var _Piece2 = __webpack_require__(179);
 	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _square = __webpack_require__(368);
-	
-	var _square2 = _interopRequireDefault(_square);
-	
-	__webpack_require__(386);
+	var _Piece3 = _interopRequireDefault(_Piece2);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -20399,211 +20371,51 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var Board = function (_React$Component) {
-	  _inherits(Board, _React$Component);
+	var Pawn = function (_Piece) {
+	  _inherits(Pawn, _Piece);
 	
-	  function Board() {
-	    _classCallCheck(this, Board);
+	  function Pawn() {
+	    _classCallCheck(this, Pawn);
 	
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(Board).apply(this, arguments));
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(Pawn).apply(this, arguments));
 	  }
 	
-	  _createClass(Board, [{
-	    key: 'render',
-	    value: function render() {
-	      var _this2 = this;
-	
-	      var renderCells = function renderCells(position) {
-	        return _react2.default.createElement(
-	          'div',
-	          { className: 'grid' },
-	          [0, 1, 2, 3, 4, 5, 6, 7].map(function (rowId, i) {
-	            return _react2.default.createElement(
-	              'div',
-	              { className: 'row', key: 'r' + i },
-	              [0, 1, 2, 3, 4, 5, 6, 7].map(function (columnId, j) {
-	                var piece = position[rowId * 8 + columnId];
-	                var location = i * 8 + j;
-	                return _react2.default.createElement(_square2.default, {
-	                  key: j,
-	                  location: location,
-	                  piece: piece,
-	                  selected: _this2.props.selected == location,
-	                  shaded: (i + j) % 2 == 1
-	                });
-	              })
-	            );
-	          })
-	        );
-	      };
-	
-	      return _react2.default.createElement(
-	        'div',
-	        { className: 'board' },
-	        renderCells(this.props.position)
-	      );
+	  _createClass(Pawn, [{
+	    key: 'getValue',
+	    value: function getValue() {
+	      return 1;
 	    }
 	  }]);
 	
-	  return Board;
-	}(_react2.default.Component);
+	  return Pawn;
+	}(_Piece3.default);
 	
-	Board.propTypes = {
-	  position: _react2.default.PropTypes.arrayOf(_react2.default.PropTypes.object),
-	  selected: _react2.default.PropTypes.number
-	};
-	exports.default = Board;
-
-/***/ },
-/* 368 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _react = __webpack_require__(16);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _classnames2 = __webpack_require__(369);
-	
-	var _classnames3 = _interopRequireDefault(_classnames2);
-	
-	var _game = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"../../data/game\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
-	
-	var _game2 = _interopRequireDefault(_game);
-	
-	var _Piece = __webpack_require__(194);
-	
-	var _Piece2 = _interopRequireDefault(_Piece);
-	
-	__webpack_require__(370);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	
-	var Square = function (_React$Component) {
-	  _inherits(Square, _React$Component);
-	
-	  function Square() {
-	    _classCallCheck(this, Square);
-	
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(Square).apply(this, arguments));
+	Pawn.symbol = 'p';
+	Pawn.classStub = 'pawn';
+	Pawn.moveDescriptor = {
+	  diagonal: function diagonal(isCapture, forwards) {
+	    return isCapture && forwards;
+	  },
+	  cardinal: function cardinal(isCapture, forwards) {
+	    return !isCapture && forwards;
+	  },
+	  projectable: function projectable(rank) {
+	    return rank == 2;
 	  }
-	
-	  _createClass(Square, [{
-	    key: 'render',
-	    value: function render() {
-	      var _this2 = this;
-	
-	      var _props = this.props;
-	      var selected = _props.selected;
-	      var shaded = _props.shaded;
-	      var piece = _props.piece;
-	
-	      var className = (0, _classnames3.default)('square', { shaded: shaded }, { piece: piece }, _defineProperty({}, piece && piece.getClassName(), piece), { selected: selected });
-	      return _react2.default.createElement('div', { className: className, onClick: function onClick(e) {
-	          return _this2.squareClicked(e);
-	        } });
-	    }
-	  }, {
-	    key: 'squareClicked',
-	    value: function squareClicked(e) {
-	      _game2.default.squareSelected(this.props.selected ? null : this.props.location);
-	    }
-	  }]);
-	
-	  return Square;
-	}(_react2.default.Component);
-	
-	Square.propTypes = {
-	  location: _react2.default.PropTypes.number,
-	  piece: _react2.default.PropTypes.instanceOf(_Piece2.default),
-	  selected: _react2.default.PropTypes.bool,
-	  shaded: _react2.default.PropTypes.bool
 	};
-	Square.defaultValues = {
-	  shaded: false
-	};
-	exports.default = Square;
+	exports.default = Pawn;
 
 /***/ },
-/* 369 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
-	  Copyright (c) 2016 Jed Watson.
-	  Licensed under the MIT License (MIT), see
-	  http://jedwatson.github.io/classnames
-	*/
-	/* global define */
-	
-	(function () {
-		'use strict';
-	
-		var hasOwn = {}.hasOwnProperty;
-	
-		function classNames () {
-			var classes = [];
-	
-			for (var i = 0; i < arguments.length; i++) {
-				var arg = arguments[i];
-				if (!arg) continue;
-	
-				var argType = typeof arg;
-	
-				if (argType === 'string' || argType === 'number') {
-					classes.push(arg);
-				} else if (Array.isArray(arg)) {
-					classes.push(classNames.apply(null, arg));
-				} else if (argType === 'object') {
-					for (var key in arg) {
-						if (hasOwn.call(arg, key) && arg[key]) {
-							classes.push(key);
-						}
-					}
-				}
-			}
-	
-			return classes.join(' ');
-		}
-	
-		if (typeof module !== 'undefined' && module.exports) {
-			module.exports = classNames;
-		} else if (true) {
-			// register as 'classnames', consistent with npm package name
-			!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function () {
-				return classNames;
-			}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-		} else {
-			window.classNames = classNames;
-		}
-	}());
-
-
-/***/ },
-/* 370 */
+/* 182 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
 	// load the styles
-	var content = __webpack_require__(371);
+	var content = __webpack_require__(183);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(385)(content, {});
+	var update = __webpack_require__(197)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -20620,21 +20432,21 @@
 	}
 
 /***/ },
-/* 371 */
+/* 183 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(372)();
+	exports = module.exports = __webpack_require__(184)();
 	// imports
 	
 	
 	// module
-	exports.push([module.id, ".square {\n  border: 2px solid;\n  border-color: transparent;\n  flex-grow: 0.125;\n  text-align: center;\n  vertical-align: middle;\n  height: 37.5px; /* TODO */\n  width: 0;\n}\n\n.square.shaded {\n  background-color: #eee;\n}\n\n.selected {\n  border-color: #CC0;\n}\n\n.piece {\n  background-repeat: no-repeat;\n  background-size: contain;\n}\n\n.w-pawn {\n  background-image: url(" + __webpack_require__(373) + ");\n}\n\n.w-knight {\n  background-image: url(" + __webpack_require__(374) + ");\n}\n\n.w-bishop {\n  background-image: url(" + __webpack_require__(375) + ");\n}\n\n.w-rook {\n  background-image: url(" + __webpack_require__(376) + ");\n}\n\n.w-queen {\n  background-image: url(" + __webpack_require__(377) + ");\n}\n\n.w-king {\n  background-image: url(" + __webpack_require__(378) + ");\n}\n\n.b-pawn {\n  background-image: url(" + __webpack_require__(379) + ");\n}\n\n.b-knight {\n  background-image: url(" + __webpack_require__(380) + ");\n}\n\n.b-bishop {\n  background-image: url(" + __webpack_require__(381) + ");\n}\n\n.b-rook {\n  background-image: url(" + __webpack_require__(382) + ");\n}\n\n.b-queen {\n  background-image: url(" + __webpack_require__(383) + ");\n}\n\n.b-king {\n  background-image: url(" + __webpack_require__(384) + ");\n}\n", ""]);
+	exports.push([module.id, ".square {\n  border: 2px solid;\n  border-color: transparent;\n  flex-grow: 0.125;\n  text-align: center;\n  vertical-align: middle;\n  height: 37.5px; /* TODO */\n  width: 0;\n}\n\n.square.shaded {\n  background-color: #eee;\n}\n\n.selected {\n  border-color: #CC0;\n}\n\n.piece {\n  background-repeat: no-repeat;\n  background-size: contain;\n}\n\n.w-pawn {\n  background-image: url(" + __webpack_require__(185) + ");\n}\n\n.w-knight {\n  background-image: url(" + __webpack_require__(186) + ");\n}\n\n.w-bishop {\n  background-image: url(" + __webpack_require__(187) + ");\n}\n\n.w-rook {\n  background-image: url(" + __webpack_require__(188) + ");\n}\n\n.w-queen {\n  background-image: url(" + __webpack_require__(189) + ");\n}\n\n.w-king {\n  background-image: url(" + __webpack_require__(190) + ");\n}\n\n.b-pawn {\n  background-image: url(" + __webpack_require__(191) + ");\n}\n\n.b-knight {\n  background-image: url(" + __webpack_require__(192) + ");\n}\n\n.b-bishop {\n  background-image: url(" + __webpack_require__(193) + ");\n}\n\n.b-rook {\n  background-image: url(" + __webpack_require__(194) + ");\n}\n\n.b-queen {\n  background-image: url(" + __webpack_require__(195) + ");\n}\n\n.b-king {\n  background-image: url(" + __webpack_require__(196) + ");\n}\n", ""]);
 	
 	// exports
 
 
 /***/ },
-/* 372 */
+/* 184 */
 /***/ function(module, exports) {
 
 	/*
@@ -20690,79 +20502,79 @@
 
 
 /***/ },
-/* 373 */
+/* 185 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__.p + "./images/w-pawn.png";
 
 /***/ },
-/* 374 */
+/* 186 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__.p + "./images/w-knight.png";
 
 /***/ },
-/* 375 */
+/* 187 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__.p + "./images/w-bishop.png";
 
 /***/ },
-/* 376 */
+/* 188 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__.p + "./images/w-rook.png";
 
 /***/ },
-/* 377 */
+/* 189 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__.p + "./images/w-queen.png";
 
 /***/ },
-/* 378 */
+/* 190 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__.p + "./images/w-king.png";
 
 /***/ },
-/* 379 */
+/* 191 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__.p + "./images/b-pawn.png";
 
 /***/ },
-/* 380 */
+/* 192 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__.p + "./images/b-knight.png";
 
 /***/ },
-/* 381 */
+/* 193 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__.p + "./images/b-bishop.png";
 
 /***/ },
-/* 382 */
+/* 194 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__.p + "./images/b-rook.png";
 
 /***/ },
-/* 383 */
+/* 195 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__.p + "./images/b-queen.png";
 
 /***/ },
-/* 384 */
+/* 196 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__.p + "./images/b-king.png";
 
 /***/ },
-/* 385 */
+/* 197 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -21016,16 +20828,16 @@
 
 
 /***/ },
-/* 386 */
+/* 198 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
 	// load the styles
-	var content = __webpack_require__(387);
+	var content = __webpack_require__(199);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(385)(content, {});
+	var update = __webpack_require__(197)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -21042,10 +20854,10 @@
 	}
 
 /***/ },
-/* 387 */
+/* 199 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(372)();
+	exports = module.exports = __webpack_require__(184)();
 	// imports
 	
 	
@@ -21056,7 +20868,7 @@
 
 
 /***/ },
-/* 388 */
+/* 200 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21075,7 +20887,7 @@
 	
 	var _game2 = _interopRequireDefault(_game);
 	
-	__webpack_require__(389);
+	__webpack_require__(201);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -21264,16 +21076,16 @@
 	exports.default = Info;
 
 /***/ },
-/* 389 */
+/* 201 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
 	// load the styles
-	var content = __webpack_require__(390);
+	var content = __webpack_require__(202);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(385)(content, {});
+	var update = __webpack_require__(197)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -21290,10 +21102,10 @@
 	}
 
 /***/ },
-/* 390 */
+/* 202 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(372)();
+	exports = module.exports = __webpack_require__(184)();
 	// imports
 	
 	
@@ -21304,16 +21116,16 @@
 
 
 /***/ },
-/* 391 */
+/* 203 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
 	// load the styles
-	var content = __webpack_require__(392);
+	var content = __webpack_require__(204);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(385)(content, {});
+	var update = __webpack_require__(197)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -21330,10 +21142,10 @@
 	}
 
 /***/ },
-/* 392 */
+/* 204 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(372)();
+	exports = module.exports = __webpack_require__(184)();
 	// imports
 	
 	

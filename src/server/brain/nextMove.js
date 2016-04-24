@@ -1,5 +1,5 @@
 // TODO: get rid of client refs
-import profiler from '../client/utilities/profiler';
+import profiler from '../utilities/profiler';
 
 import pieces from '../pieces';
 
@@ -10,7 +10,6 @@ let bestScoreSoFar, originalPlayer, requestedDepth;
 let currentRecursionScore;
 
 function nextMove(game) {
-  debugger;
   const {
     position,
     nextPlayer,
