@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../src/server/pieces/bishop.js"],"names":[],"mappings":";;;;;kBAAe;AACb,kBAAgB;AACd,cAAU,IADI;AAEd,iBAAa;AAFC,GADH;AAKb,YAAU;AAAA,WAAM,CAAN;AAAA;AALG,C","file":"bishop.js","sourcesContent":["export default {\n  moveDescriptor: {\n    diagonal: true,\n    projectable: true\n  },\n  getValue: () => 3\n};\n"]}

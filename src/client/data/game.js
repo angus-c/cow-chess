@@ -71,12 +71,7 @@ class Game {
       nextPlayer: this.players.filter(player => player.color == COLORS[0])[0],
       position: this.instantiatePieces(STARTING_MAP),
       moves: [],
-      selectedSquare: null,
-      config: {
-        probeDepth: 4,
-        cutOffDepth: 3,
-        cutOffProportion: 0.5
-      }
+      selectedSquare: null
     };
 
     // // autoplay test
@@ -106,7 +101,7 @@ class Game {
 
   instantiatePieces(map) {
     let PieceType;
-    // squeareIds range from 0 (NW) to 63 (SE)
+    // squareIds range from 0 (NW) to 63 (SE)
     const position = map.map((symbol, squareId) => {
       if (!symbol) {
         return null;
@@ -133,7 +128,7 @@ class Game {
     this.emitter.emit('gameChange', this.state);
   }
 
-  getMoveDisplayEntities = (move, position) => {
+  getMoveDisplayEntities(move, position) {
     const from = `${1 + move.from % 8},${1 + Math.floor(move.from / 8)}`;
     const to = `${1 + move.to % 8},${1 + Math.floor(move.to / 8)}`;
     const fromTo = `${from}->${to}`;
@@ -165,15 +160,15 @@ class Game {
     // TODO: derive URL domain
     request({
       method: 'get',
-      url: 'http://localhost:3000/generateMove',
-      (err, data) => {
-        if (err) {
-          throw new Error(err);
-        } else {
-          this.applyMove(data);
-        }
+      url: 'http://localhost:3000/generateMove'
+    },
+    (err, data) => {
+      if (err) {
+        throw new Error(err);
+      } else {
+        this.applyMove(data);
       }
-    );
+    });
   }
 
   manualMove(from, to) {

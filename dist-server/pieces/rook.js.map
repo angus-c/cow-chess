@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../src/server/pieces/rook.js"],"names":[],"mappings":";;;;;kBAAe;AACb,kBAAgB;AACd,cAAU;AAAA,aAAQ,IAAR;AAAA,KADI;AAEd,iBAAa;AAFC,GADH;AAKb,YAAU;AAAA,WAAM,CAAN;AAAA;AALG,C","file":"rook.js","sourcesContent":["export default {\n  moveDescriptor: {\n    cardinal: move => true,\n    projectable: true\n  },\n  getValue: () => 5\n};\n"]}

@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../src/server/pieces/king.js"],"names":[],"mappings":";;;;;kBAAe;AACb,kBAAgB;AACd,cAAU,IADI;AAEd,cAAU;AAFI,GADH;AAKb,YAAU;AAAA,WAAM,OAAO,QAAb;AAAA;AALG,C","file":"king.js","sourcesContent":["export default {\n  moveDescriptor: {\n    diagonal: true,\n    cardinal: true\n  },\n  getValue: () => Number.INFINITY\n};\n"]}
