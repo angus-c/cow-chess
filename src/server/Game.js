@@ -1,4 +1,9 @@
-// import nextMove from '../modules/nextMove';
+import Pawn from '../modules/pieces/Pawn';
+import Rook from '../modules/pieces/Rook';
+import Knight from '../modules/pieces/Knight';
+import Bishop from '../modules/pieces/Bishop';
+import King from '../modules/pieces/King';
+import Queen from '../modules/pieces/Queen';
 
 const COLORS = ['white', 'black'];
 const UNICODE_OFFSET = 65;
@@ -29,6 +34,15 @@ const STARTING_MAP = [
 //   _,_,B,_,_,_,_,_,
 // ];
 /*eslint-enable */
+
+const pieceTypes = {
+  p: Pawn,
+  r: Rook,
+  n: Knight,
+  b: Bishop,
+  k: King,
+  q: Queen
+};
 
 // players
 const north = {
@@ -90,6 +104,27 @@ export default class Game {
     position[move.to] = position[move.from];
     position[move.from] = null;
     this.set({position});
+  }
+
+  instantiatePieces(map) {
+    let PieceType;
+    // squareIds range from 0 (NW) to 63 (SE)
+    const position = map.map((symbol, squareId) => {
+      if (!symbol) {
+        return null;
+      }
+      const player = (symbol == symbol.toLowerCase()) ? this.players[0] : this.players[1];
+      PieceType = pieceTypes[symbol.toLowerCase()];
+      const piece = new PieceType(player);
+      return piece;
+    });
+    position.toStr = map.map((symbol, squareId) => {
+      if (!symbol) {
+        return null;
+      }
+      return String.fromCharCode(squareId + UNICODE_OFFSET);
+    }).filter(Boolean).join('');
+    return position;
   }
 
   getOtherPlayer(player) {
