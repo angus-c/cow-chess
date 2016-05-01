@@ -67,16 +67,10 @@ export default class Game {
     south.color = COLORS[0];
     north.color = COLORS[1];
 
-    // TODO: move config to DB on server
     this.state = {
       nextPlayer: this.players.filter(player => player.color == COLORS[0])[0],
-      position: STARTING_MAP,
-      moves: [],
-      config: {
-        probeDepth: 4,
-        cutOffDepth: 3,
-        cutOffProportion: 0.5
-      }
+      position: this.instantiatePieces(STARTING_MAP),
+      moves: []
     };
 
     // // autoplay test
@@ -91,12 +85,8 @@ export default class Game {
     // }, 1000);
   }
 
-  get() {
-    return this.state;
-  }
-
-  set(updates) {
-    this.state = Object.assign({}, this.state, updates);
+  getBoard() {
+    return {...this.state};
   }
 
   updatePosition(move) {

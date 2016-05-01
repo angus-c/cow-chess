@@ -33,8 +33,15 @@ app.post('/config', (req, res) => {
   res.sendStatus(200);
 });
 
+app.post('/board', (req, res) => {
+  // TODO: error handling
+  res.send(app.game.getBoard());
+});
+
 app.post('/sendMove', (req, res) => {
-  res.sendStatus(app.game.updatePosition(req.body.move));
+  // TODO: error handling
+  res.send(app.game.updatePosition(req.body.move));
+  res.sendStatus(200);
 });
 
 app.get('/generateMove', (req, res) => {
