@@ -7,7 +7,7 @@ class Queen extends Piece {
     diagonal: move => true,
     cardinal: move => true,
     projectable: true
-  };
+  }
   getValue() {
     return 10;
   }

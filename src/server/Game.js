@@ -1,9 +1,9 @@
-import Pawn from '../modules/pieces/Pawn';
-import Rook from '../modules/pieces/Rook';
-import Knight from '../modules/pieces/Knight';
-import Bishop from '../modules/pieces/Bishop';
-import King from '../modules/pieces/King';
-import Queen from '../modules/pieces/Queen';
+import Pawn from './pieces/Pawn';
+import Rook from './pieces/Rook';
+import Knight from './pieces/Knight';
+import Bishop from './pieces/Bishop';
+import King from './pieces/King';
+import Queen from './pieces/Queen';
 
 const COLORS = ['white', 'black'];
 const UNICODE_OFFSET = 65;
@@ -97,6 +97,7 @@ export default class Game {
   }
 
   instantiatePieces(map) {
+    debugger;
     let PieceType;
     // squareIds range from 0 (NW) to 63 (SE)
     const position = map.map((symbol, squareId) => {

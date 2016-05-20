@@ -6,7 +6,7 @@ class King extends Piece {
   static moveDescriptor = {
     diagonal: true,
     cardinal: true
-  };
+  }
   getValue() {
     return Number.INFINITY;
   }

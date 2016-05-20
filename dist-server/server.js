@@ -50,8 +50,15 @@ app.post('/config', function (req, res) {
   res.sendStatus(200);
 });
 
+app.post('/board', function (req, res) {
+  // TODO: error handling
+  res.send(app.game.getBoard());
+});
+
 app.post('/sendMove', function (req, res) {
-  res.sendStatus(app.game.updatePosition(req.body.move));
+  // TODO: error handling
+  res.send(app.game.updatePosition(req.body.move));
+  res.sendStatus(200);
 });
 
 app.get('/generateMove', function (req, res) {

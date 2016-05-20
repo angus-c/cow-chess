@@ -6,7 +6,7 @@ class Rook extends Piece {
   static moveDescriptor = {
     cardinal: move => true,
     projectable: true
-  };
+  }
   getValue() {
     return 5;
   }

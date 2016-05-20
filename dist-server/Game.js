@@ -8,9 +8,33 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+var _Pawn = require('./pieces/Pawn');
 
-// import nextMove from '../modules/nextMove';
+var _Pawn2 = _interopRequireDefault(_Pawn);
+
+var _Rook = require('./pieces/Rook');
+
+var _Rook2 = _interopRequireDefault(_Rook);
+
+var _Knight = require('./pieces/Knight');
+
+var _Knight2 = _interopRequireDefault(_Knight);
+
+var _Bishop = require('./pieces/Bishop');
+
+var _Bishop2 = _interopRequireDefault(_Bishop);
+
+var _King = require('./pieces/King');
+
+var _King2 = _interopRequireDefault(_King);
+
+var _Queen = require('./pieces/Queen');
+
+var _Queen2 = _interopRequireDefault(_Queen);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var COLORS = ['white', 'black'];
 var UNICODE_OFFSET = 65;
@@ -44,6 +68,15 @@ var STARTING_MAP = [r, n, b, q, k, b, n, r, p, p, p, p, p, p, p, p, _, _, _, _, 
 // ];
 /*eslint-enable */
 
+var pieceTypes = {
+  p: _Pawn2.default,
+  r: _Rook2.default,
+  n: _Knight2.default,
+  b: _Bishop2.default,
+  k: _King2.default,
+  q: _Queen2.default
+};
+
 // players
 var north = {
   name: 'north',
@@ -69,18 +102,12 @@ var Game = function () {
     south.color = COLORS[0];
     north.color = COLORS[1];
 
-    // TODO: move config to DB on server
     this.state = {
       nextPlayer: this.players.filter(function (player) {
         return player.color == COLORS[0];
       })[0],
-      position: STARTING_MAP,
-      moves: [],
-      config: {
-        probeDepth: 4,
-        cutOffDepth: 3,
-        cutOffProportion: 0.5
-      }
+      position: this.instantiatePieces(STARTING_MAP),
+      moves: []
     };
 
     // // autoplay test
@@ -96,14 +123,9 @@ var Game = function () {
   }
 
   _createClass(Game, [{
-    key: 'get',
-    value: function get() {
-      return this.state;
-    }
-  }, {
-    key: 'set',
-    value: function set(updates) {
-      this.state = Object.assign({}, this.state, updates);
+    key: 'getBoard',
+    value: function getBoard() {
+      return _extends({}, this.state);
     }
   }, {
     key: 'updatePosition',
@@ -112,6 +134,31 @@ var Game = function () {
       position[move.to] = position[move.from];
       position[move.from] = null;
       this.set({ position: position });
+    }
+  }, {
+    key: 'instantiatePieces',
+    value: function instantiatePieces(map) {
+      var _this = this;
+
+      debugger;
+      var PieceType = void 0;
+      // squareIds range from 0 (NW) to 63 (SE)
+      var position = map.map(function (symbol, squareId) {
+        if (!symbol) {
+          return null;
+        }
+        var player = symbol == symbol.toLowerCase() ? _this.players[0] : _this.players[1];
+        PieceType = pieceTypes[symbol.toLowerCase()];
+        var piece = new PieceType(player);
+        return piece;
+      });
+      position.toStr = map.map(function (symbol, squareId) {
+        if (!symbol) {
+          return null;
+        }
+        return String.fromCharCode(squareId + UNICODE_OFFSET);
+      }).filter(Boolean).join('');
+      return position;
     }
   }, {
     key: 'getOtherPlayer',

@@ -5,7 +5,7 @@ class Knight extends Piece {
   static classStub = 'knight';
   static moveDescriptor = {
     knightwards: true
-  };
+  }
   getValue() {
     return 3;
   }

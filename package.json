@@ -35,9 +35,11 @@
     "webpack": "^1.7.3"
   },
   "scripts": {
+    "clean": "rm -rf dist-client && rm -rf dist-server",
     "build": "npm run build-client && npm run build-server",
     "build-client": "webpack",
+    "build-client-watch": "webpack --watch",
     "build-server": "babel src/server -i /node_modules/ -d dist-server -s",
-    "start": "node dist-server/index.js"
+    "start": "node server.js"
   }
 }
