@@ -1,8 +1,6 @@
 // TODO: get rid of client refs
 import profiler from '../utilities/profiler';
 
-import pieces from '../pieces';
-
 let movesLookup;
 
 let bestScoreSoFar, originalPlayer, requestedDepth;
@@ -10,6 +8,7 @@ let bestScoreSoFar, originalPlayer, requestedDepth;
 let currentRecursionScore;
 
 function nextMove(game) {
+  debugger;
   const {
     position,
     nextPlayer,
@@ -59,6 +58,7 @@ function nextMove(game) {
       return savedMoves;
     }
     const moves = position.reduce((moves, symbol) => {
+      debugger;
       if (isMyPiece(player, symbol)) {
         moves.push(...getPossibleMoves(pieces(symbol), player));
       }
@@ -149,9 +149,9 @@ function nextMove(game) {
   function getPossibleMoves(piece, player) {
     const moves = [];
     const {diagonal, cardinal, knightwards} = piece.moveDescriptor;
-    diagonal && moves.push(...this.possibleDiagonalMoves(position));
-    cardinal && moves.push(...this.possibleCardinalMoves(position));
-    knightwards && moves.push(...this.possibleKnightMoves(position));
+    diagonal && moves.push(...piece.possibleDiagonalMoves(position));
+    cardinal && moves.push(...piece.possibleCardinalMoves(position));
+    knightwards && moves.push(...piece.possibleKnightMoves(position));
     return moves;
   }
 }

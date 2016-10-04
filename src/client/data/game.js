@@ -15,7 +15,7 @@ import request from 'request';
 const COLORS = ['white', 'black'];
 const UNICODE_OFFSET = 65;
 
-class Game {
+export default class Game {
   constructor() {
     this.players = [north, south];
     south.color = COLORS[0];
@@ -71,18 +71,24 @@ class Game {
   }
 
   setInitialState() {
+    this.set({
+      loading: true
+    });
     // TODO: derive URL domain
     request({
       method: 'get',
-      url: 'http://localhost:3000/board'
+      url: 'http://localhost:3000/board',
+      json: true,
     },
-    (err, data) => {
+    (err, resp) => {
       if (err) {
         throw new Error(err);
       } else {
+        const {nextPlayer, position} = resp.body;
         this.set({
-          nextPlayer: data.nextPlayer,
-          position: data.position,
+          loading: false,
+          nextPlayer,
+          position,
           moves: [],
           selectedSquare: null
         });
@@ -151,5 +157,3 @@ class Game {
 
   emitter = EventEmitter({});
 }
-
-export default new Game();

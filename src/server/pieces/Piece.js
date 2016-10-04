@@ -8,17 +8,13 @@ class Piece {
   constructor(player) {
     this.owner = player;
     this.hasMoved = false;
-  }
-
-  getClassName() {
-    return this.constructor.classStub ?
-      `${this.getColor() == 'white' ? 'w' : 'b'}-${this.constructor.classStub}` :
-      null;
-  }
-
-  getColor() {
-    // TODO: support color switch
-    return this.owner === south ? 'white' : 'black';
+    // TODO support color switch
+    this.color = this.owner === south ? 'white' : 'black';
+    const classStub = this.constructor.classStub;
+    if (classStub) {
+      const colorStub = this.getColor() == 'white' ? 'w' : 'b';
+      this.className = `${colorStub}-${this.constructor.classStub}`;
+    }
   }
 
   getRank(id) {

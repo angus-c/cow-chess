@@ -24,7 +24,7 @@ class Board extends React.Component {
                   <Square
                     key={j}
                     location={location}
-                    piece={piece}
+                    pieceClassName={piece ? piece.className : null}
                     selected={this.props.selected == location}
                     shaded={((i + j) % 2) == 1}
                   />

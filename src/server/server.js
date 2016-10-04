@@ -33,7 +33,7 @@ app.post('/config', (req, res) => {
   res.sendStatus(200);
 });
 
-app.post('/board', (req, res) => {
+app.get('/board', (req, res) => {
   // TODO: error handling
   res.send(app.game.getBoard());
 });

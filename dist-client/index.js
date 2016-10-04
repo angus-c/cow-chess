@@ -183,11 +183,11 @@
 	
 	var _board2 = _interopRequireDefault(_board);
 	
-	var _info = __webpack_require__(383);
+	var _info = __webpack_require__(381);
 	
 	var _info2 = _interopRequireDefault(_info);
 	
-	__webpack_require__(386);
+	__webpack_require__(384);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -205,8 +205,9 @@
 	
 	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Chess).call(this, props));
 	
-	    _this.state = _extends({}, _game2.default.get());
-	    _game2.default.emitter.on('gameChange', function (data) {
+	    _this.game = new _game2.default();
+	    _this.state = _extends({}, _this.game.get());
+	    _this.game.emitter.on('gameChange', function (data) {
 	      return _this._update(data);
 	    });
 	    return _this;
@@ -215,35 +216,49 @@
 	  _createClass(Chess, [{
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
+	      var _this2 = this;
+	
 	      setTimeout(function () {
-	        return _game2.default.nextPlay();
+	        return _this2.game.nextPlay();
 	      }, 100);
 	    }
 	  }, {
 	    key: 'componentDidUpdate',
 	    value: function componentDidUpdate(prevProps, prevState) {
+	      var _this3 = this;
+	
 	      if (prevState.nextPlayer != this.state.nextPlayer) {
 	        setTimeout(function () {
-	          return _game2.default.nextPlay();
+	          return _this3.game.nextPlay();
 	        }, 100);
 	      }
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
+	      var _this4 = this;
+	
 	      var _state = this.state;
+	      var loading = _state.loading;
 	      var position = _state.position;
 	      var moves = _state.moves;
 	
+	      if (loading) {
+	        return _react2.default.createElement(
+	          'div',
+	          null,
+	          'loading...'
+	        );
+	      }
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'chess' },
 	        _react2.default.createElement(_board2.default, { position: position, selected: this.state.selectedSquare }),
 	        _react2.default.createElement(_info2.default, {
 	          moves: moves.map(function (move) {
-	            return _game2.default.getMoveDisplayEntities(move, position);
+	            return _this4.game.getMoveDisplayEntities(move, position);
 	          }),
-	          config: _game2.default.get().config
+	          config: this.game.get().config
 	        })
 	      );
 	    }
@@ -19980,17 +19995,26 @@
 	    value: function setInitialState() {
 	      var _this = this;
 	
+	      this.set({
+	        loading: true
+	      });
 	      // TODO: derive URL domain
 	      (0, _request2.default)({
 	        method: 'get',
-	        url: 'http://localhost:3000/board'
-	      }, function (err, data) {
+	        url: 'http://localhost:3000/board',
+	        json: true
+	      }, function (err, resp) {
 	        if (err) {
 	          throw new Error(err);
 	        } else {
+	          var _resp$body = resp.body;
+	          var nextPlayer = _resp$body.nextPlayer;
+	          var position = _resp$body.position;
+	
 	          _this.set({
-	            nextPlayer: data.nextPlayer,
-	            position: data.position,
+	            loading: false,
+	            nextPlayer: nextPlayer,
+	            position: position,
 	            moves: [],
 	            selectedSquare: null
 	          });
@@ -20066,8 +20090,8 @@
 	
 	  return Game;
 	}();
-	
-	exports.default = new Game();
+
+	exports.default = Game;
 
 /***/ },
 /* 176 */
@@ -61765,7 +61789,7 @@
 	
 	var _square2 = _interopRequireDefault(_square);
 	
-	__webpack_require__(381);
+	__webpack_require__(379);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -61803,7 +61827,7 @@
 	                return _react2.default.createElement(_square2.default, {
 	                  key: j,
 	                  location: location,
-	                  piece: piece,
+	                  pieceClassName: piece ? piece.className : null,
 	                  selected: _this2.props.selected == location,
 	                  shaded: (i + j) % 2 == 1
 	                });
@@ -61846,23 +61870,17 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _classnames2 = __webpack_require__(362);
+	var _classnames = __webpack_require__(362);
 	
-	var _classnames3 = _interopRequireDefault(_classnames2);
+	var _classnames2 = _interopRequireDefault(_classnames);
 	
 	var _game = __webpack_require__(175);
 	
 	var _game2 = _interopRequireDefault(_game);
 	
-	var _Piece = __webpack_require__(363);
-	
-	var _Piece2 = _interopRequireDefault(_Piece);
-	
-	__webpack_require__(365);
+	__webpack_require__(363);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
@@ -61887,9 +61905,10 @@
 	      var _props = this.props;
 	      var selected = _props.selected;
 	      var shaded = _props.shaded;
-	      var piece = _props.piece;
+	      var pieceClassName = _props.pieceClassName;
 	
-	      var className = (0, _classnames3.default)('square', { shaded: shaded }, { piece: piece }, _defineProperty({}, piece && piece.getClassName(), piece), { selected: selected });
+	      debugger;
+	      var className = (0, _classnames2.default)('square', { shaded: shaded }, { pieceClassName: pieceClassName }, { selected: selected });
 	      return _react2.default.createElement('div', { className: className, onClick: function onClick(e) {
 	          return _this2.squareClicked(e);
 	        } });
@@ -61906,7 +61925,7 @@
 	
 	Square.propTypes = {
 	  location: _react2.default.PropTypes.number,
-	  piece: _react2.default.PropTypes.instanceOf(_Piece2.default),
+	  pieceClassName: _react2.default.PropTypes.string,
 	  selected: _react2.default.PropTypes.bool,
 	  shaded: _react2.default.PropTypes.bool
 	};
@@ -61973,303 +61992,13 @@
 /* 363 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
-	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	// import profiler from '../../utilities/profiler';
-	
-	// TODO: remove subclass reference
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _south = __webpack_require__(192);
-	
-	var _south2 = _interopRequireDefault(_south);
-	
-	var _Pawn = __webpack_require__(364);
-	
-	var _Pawn2 = _interopRequireDefault(_Pawn);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	var Piece = function () {
-	  function Piece(player) {
-	    _classCallCheck(this, Piece);
-	
-	    this.owner = player;
-	    this.hasMoved = false;
-	  }
-	
-	  _createClass(Piece, [{
-	    key: 'getClassName',
-	    value: function getClassName() {
-	      return this.constructor.classStub ? (this.getColor() == 'white' ? 'w' : 'b') + '-' + this.constructor.classStub : null;
-	    }
-	  }, {
-	    key: 'getColor',
-	    value: function getColor() {
-	      // TODO: support color switch
-	      return this.owner === _south2.default ? 'white' : 'black';
-	    }
-	  }, {
-	    key: 'getRank',
-	    value: function getRank(id) {
-	      return this.owner === _south2.default ? 8 - Math.floor((id || this.squareId) / 8) : 1 + Math.floor((id || this.squareId) / 8);
-	    }
-	  }, {
-	    key: 'possibleMoves',
-	    value: function possibleMoves(pieceMap) {
-	      var moves = [];
-	      var _constructor$moveDesc = this.constructor.moveDescriptor;
-	      var diagonal = _constructor$moveDesc.diagonal;
-	      var cardinal = _constructor$moveDesc.cardinal;
-	      var knightwards = _constructor$moveDesc.knightwards;
-	
-	      diagonal && moves.push.apply(moves, _toConsumableArray(this.possibleDiagonalMoves(pieceMap)));
-	      cardinal && moves.push.apply(moves, _toConsumableArray(this.possibleCardinalMoves(pieceMap)));
-	      knightwards && moves.push.apply(moves, _toConsumableArray(this.possibleKnightMoves(pieceMap)));
-	      return moves;
-	    }
-	  }, {
-	    key: 'possibleDiagonalMoves',
-	    value: function possibleDiagonalMoves(pieceMap) {
-	      var _this = this;
-	
-	      var moves = [],
-	          squareId = undefined;
-	      [-1, 1].forEach(function (columnDir) {
-	        [-1, 1].forEach(function (rowDir) {
-	          squareId = _this.squareId;
-	          while (squareId += columnDir + rowDir * 8, _this.isOnBoard(squareId, columnDir)) {
-	            var _getMoveDetails = _this.getMoveDetails(squareId, pieceMap, rowDir);
-	
-	            var destinationPiece = _getMoveDetails.destinationPiece;
-	            var isCapture = _getMoveDetails.isCapture;
-	            var forwards = _getMoveDetails.forwards;
-	            var projectable = _getMoveDetails.projectable;
-	
-	            var diagonal = _this.constructor.moveDescriptor.diagonal;
-	            if (destinationPiece && !isCapture || typeof diagonal == 'function' && !diagonal(isCapture, forwards)) {
-	              break;
-	            }
-	            var move = { from: _this.squareId, to: squareId, player: _this.owner };
-	            _this.addMoveInfo(move, destinationPiece, pieceMap);
-	            moves.push(move);
-	            if (destinationPiece || !projectable) {
-	              break;
-	            }
-	          }
-	        });
-	      });
-	      return moves;
-	    }
-	  }, {
-	    key: 'possibleCardinalMoves',
-	    value: function possibleCardinalMoves(pieceMap) {
-	      var _this2 = this;
-	
-	      var moves = [],
-	          squareId = undefined;
-	      [-1, 0, 1].forEach(function (columnDir) {
-	        [-1, 0, 1].forEach(function (rowDir) {
-	          if ((columnDir == 0 || rowDir == 0) && columnDir != rowDir) {
-	            squareId = _this2.squareId;
-	            while (squareId += columnDir + rowDir * 8, _this2.isOnBoard(squareId, columnDir)) {
-	              var _getMoveDetails2 = _this2.getMoveDetails(squareId, pieceMap, rowDir);
-	
-	              var destinationPiece = _getMoveDetails2.destinationPiece;
-	              var isCapture = _getMoveDetails2.isCapture;
-	              var forwards = _getMoveDetails2.forwards;
-	              var projectable = _getMoveDetails2.projectable;
-	
-	              var cardinal = _this2.constructor.moveDescriptor.cardinal;
-	              if (destinationPiece && !isCapture || typeof cardinal == 'function' && !cardinal(isCapture, forwards)) {
-	                break;
-	              }
-	              var move = { from: _this2.squareId, to: squareId, player: _this2.owner };
-	              _this2.addMoveInfo(move, destinationPiece, pieceMap);
-	              moves.push(move);
-	              if (destinationPiece || !projectable || _this2 instanceof _Pawn2.default && _this2.getRank(squareId) == 4 /* TODO */
-	              ) {
-	                  break;
-	                }
-	            }
-	          }
-	        });
-	      });
-	      return moves;
-	    }
-	  }, {
-	    key: 'possibleKnightMoves',
-	    value: function possibleKnightMoves(pieceMap) {
-	      var _this3 = this;
-	
-	      var squareId = undefined,
-	          moves = [];
-	      [-2, -1, 1, 2].forEach(function (columnDir) {
-	        [-2, -1, 1, 2].forEach(function (rowDir) {
-	          if (Math.abs(columnDir) + Math.abs(rowDir) == 3) {
-	            squareId = _this3.squareId + (columnDir + rowDir * 8);
-	            if (_this3.isOnBoard(squareId, columnDir)) {
-	              var destinationPiece = pieceMap[squareId];
-	              if (destinationPiece && destinationPiece.owner === _this3.owner) {
-	                return;
-	              }
-	              var move = { from: _this3.squareId, to: squareId, player: _this3.owner };
-	              _this3.addMoveInfo(move, destinationPiece, pieceMap);
-	              moves.push(move);
-	            }
-	          }
-	        });
-	      });
-	      return moves;
-	    }
-	  }, {
-	    key: 'addMoveInfo',
-	    value: function addMoveInfo(move, destinationPiece) {
-	      if (destinationPiece) {
-	        move.captures = destinationPiece;
-	      }
-	      // const player = move.player;
-	      // TODO: attach all this to move
-	      // const toRow = 1 + Math.floor(move.to / 8);
-	      // const toColumn = 1 + (move.to % 8);
-	      // const rowAhead = toRow < 8 ? toRow + player.relativeDirection(1) : null;
-	      // const rowBehind = toRow > 1 ? toRow - player.relativeDirection(1) : null;
-	      // const columnLeft = toColumn > 1 ? toColumn - player.relativeDirection(1) : null;
-	      // const columnRight = toColumn < 8 ? toColumn + player.relativeDirection(1) : null;
-	      // if (rowAhead) {
-	      //   if (columnLeft) {
-	      //     move.forwardLeft = (rowAhead - 1) * 8 + (columnLeft - 1);
-	      //   }
-	      //   if (move.columnRight) {
-	      //     move.forwardRight = (rowAhead - 1) * 8 + (columnRight - 1);
-	      //   }
-	      // }
-	      // if (rowBehind) {
-	      //   if (columnLeft) {
-	      //     move.backwardLeft = (rowBehind - 1) * 8 + (columnLeft - 1);
-	      //   }
-	      //   if (move.columnRight) {
-	      //     move.backwardRight = (rowBehind - 1) * 8 + (columnRight - 1);
-	      //   }
-	      // }
-	    }
-	  }, {
-	    key: 'getMoveDetails',
-	    value: function getMoveDetails(squareId, pieceMap, rowDir) {
-	      var destinationPiece = pieceMap[squareId];
-	      var isCapture = destinationPiece && destinationPiece.owner != this.owner;
-	      var forwards = this.owner.relativeDirection(rowDir) == 1;
-	      var projectable = this.constructor.moveDescriptor.projectable;
-	      typeof projectable == 'function' && (projectable = projectable(this.getRank()));
-	      return { destinationPiece: destinationPiece, isCapture: isCapture, forwards: forwards, projectable: projectable };
-	    }
-	  }, {
-	    key: 'afterMove',
-	    value: function afterMove(destination) {
-	      this.hasMoved = true;
-	    }
-	  }, {
-	    key: 'isOnBoard',
-	    value: function isOnBoard(squareId, colDir) {
-	      if (squareId < 0 || squareId > 63) {
-	        return false;
-	      }
-	      // check for column wrapping
-	      if (colDir) {
-	        var col = squareId % 8;
-	        if (colDir < 0) {
-	          return col <= 7 + colDir;
-	        }
-	        if (colDir > 0) {
-	          return col >= 0 + colDir;
-	        }
-	      }
-	      return true;
-	    }
-	  }]);
-	
-	  return Piece;
-	}();
-	
-	exports.default = Piece;
-
-/***/ },
-/* 364 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _Piece2 = __webpack_require__(363);
-	
-	var _Piece3 = _interopRequireDefault(_Piece2);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	
-	var Pawn = function (_Piece) {
-	  _inherits(Pawn, _Piece);
-	
-	  function Pawn() {
-	    _classCallCheck(this, Pawn);
-	
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(Pawn).apply(this, arguments));
-	  }
-	
-	  _createClass(Pawn, [{
-	    key: 'getValue',
-	    value: function getValue() {
-	      return 1;
-	    }
-	  }]);
-	
-	  return Pawn;
-	}(_Piece3.default);
-	
-	Pawn.symbol = 'p';
-	Pawn.classStub = 'pawn';
-	Pawn.moveDescriptor = {
-	  diagonal: function diagonal(isCapture, forwards) {
-	    return isCapture && forwards;
-	  },
-	  cardinal: function cardinal(isCapture, forwards) {
-	    return !isCapture && forwards;
-	  },
-	  projectable: function projectable(rank) {
-	    return rank == 2;
-	  }
-	};
-	exports.default = Pawn;
-
-/***/ },
-/* 365 */
-/***/ function(module, exports, __webpack_require__) {
-
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
 	// load the styles
-	var content = __webpack_require__(366);
+	var content = __webpack_require__(364);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(380)(content, {});
+	var update = __webpack_require__(378)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -62286,21 +62015,21 @@
 	}
 
 /***/ },
-/* 366 */
+/* 364 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(367)();
+	exports = module.exports = __webpack_require__(365)();
 	// imports
 	
 	
 	// module
-	exports.push([module.id, ".square {\n  border: 2px solid;\n  border-color: transparent;\n  flex-grow: 0.125;\n  text-align: center;\n  vertical-align: middle;\n  height: 37.5px; /* TODO */\n  width: 0;\n}\n\n.square.shaded {\n  background-color: #eee;\n}\n\n.selected {\n  border-color: #CC0;\n}\n\n.piece {\n  background-repeat: no-repeat;\n  background-size: contain;\n}\n\n.w-pawn {\n  background-image: url(" + __webpack_require__(368) + ");\n}\n\n.w-knight {\n  background-image: url(" + __webpack_require__(369) + ");\n}\n\n.w-bishop {\n  background-image: url(" + __webpack_require__(370) + ");\n}\n\n.w-rook {\n  background-image: url(" + __webpack_require__(371) + ");\n}\n\n.w-queen {\n  background-image: url(" + __webpack_require__(372) + ");\n}\n\n.w-king {\n  background-image: url(" + __webpack_require__(373) + ");\n}\n\n.b-pawn {\n  background-image: url(" + __webpack_require__(374) + ");\n}\n\n.b-knight {\n  background-image: url(" + __webpack_require__(375) + ");\n}\n\n.b-bishop {\n  background-image: url(" + __webpack_require__(376) + ");\n}\n\n.b-rook {\n  background-image: url(" + __webpack_require__(377) + ");\n}\n\n.b-queen {\n  background-image: url(" + __webpack_require__(378) + ");\n}\n\n.b-king {\n  background-image: url(" + __webpack_require__(379) + ");\n}\n", ""]);
+	exports.push([module.id, ".square {\n  border: 2px solid;\n  border-color: transparent;\n  flex-grow: 0.125;\n  text-align: center;\n  vertical-align: middle;\n  height: 37.5px; /* TODO */\n  width: 0;\n}\n\n.square.shaded {\n  background-color: #eee;\n}\n\n.selected {\n  border-color: #CC0;\n}\n\n.piece {\n  background-repeat: no-repeat;\n  background-size: contain;\n}\n\n.w-pawn {\n  background-image: url(" + __webpack_require__(366) + ");\n}\n\n.w-knight {\n  background-image: url(" + __webpack_require__(367) + ");\n}\n\n.w-bishop {\n  background-image: url(" + __webpack_require__(368) + ");\n}\n\n.w-rook {\n  background-image: url(" + __webpack_require__(369) + ");\n}\n\n.w-queen {\n  background-image: url(" + __webpack_require__(370) + ");\n}\n\n.w-king {\n  background-image: url(" + __webpack_require__(371) + ");\n}\n\n.b-pawn {\n  background-image: url(" + __webpack_require__(372) + ");\n}\n\n.b-knight {\n  background-image: url(" + __webpack_require__(373) + ");\n}\n\n.b-bishop {\n  background-image: url(" + __webpack_require__(374) + ");\n}\n\n.b-rook {\n  background-image: url(" + __webpack_require__(375) + ");\n}\n\n.b-queen {\n  background-image: url(" + __webpack_require__(376) + ");\n}\n\n.b-king {\n  background-image: url(" + __webpack_require__(377) + ");\n}\n", ""]);
 	
 	// exports
 
 
 /***/ },
-/* 367 */
+/* 365 */
 /***/ function(module, exports) {
 
 	/*
@@ -62356,79 +62085,79 @@
 
 
 /***/ },
-/* 368 */
+/* 366 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__.p + "./images/w-pawn.png";
 
 /***/ },
-/* 369 */
+/* 367 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__.p + "./images/w-knight.png";
 
 /***/ },
-/* 370 */
+/* 368 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__.p + "./images/w-bishop.png";
 
 /***/ },
-/* 371 */
+/* 369 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__.p + "./images/w-rook.png";
 
 /***/ },
-/* 372 */
+/* 370 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__.p + "./images/w-queen.png";
 
 /***/ },
-/* 373 */
+/* 371 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__.p + "./images/w-king.png";
 
 /***/ },
-/* 374 */
+/* 372 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__.p + "./images/b-pawn.png";
 
 /***/ },
-/* 375 */
+/* 373 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__.p + "./images/b-knight.png";
 
 /***/ },
-/* 376 */
+/* 374 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__.p + "./images/b-bishop.png";
 
 /***/ },
-/* 377 */
+/* 375 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__.p + "./images/b-rook.png";
 
 /***/ },
-/* 378 */
+/* 376 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__.p + "./images/b-queen.png";
 
 /***/ },
-/* 379 */
+/* 377 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__.p + "./images/b-king.png";
 
 /***/ },
-/* 380 */
+/* 378 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -62682,16 +62411,16 @@
 
 
 /***/ },
-/* 381 */
+/* 379 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
 	// load the styles
-	var content = __webpack_require__(382);
+	var content = __webpack_require__(380);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(380)(content, {});
+	var update = __webpack_require__(378)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -62708,10 +62437,10 @@
 	}
 
 /***/ },
-/* 382 */
+/* 380 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(367)();
+	exports = module.exports = __webpack_require__(365)();
 	// imports
 	
 	
@@ -62722,7 +62451,7 @@
 
 
 /***/ },
-/* 383 */
+/* 381 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -62741,7 +62470,7 @@
 	
 	var _game2 = _interopRequireDefault(_game);
 	
-	__webpack_require__(384);
+	__webpack_require__(382);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -62767,7 +62496,8 @@
 	    value: function render() {
 	      var _props = this.props;
 	      var moves = _props.moves;
-	      var config = _props.config;
+	      var _props$config = _props.config;
+	      var config = _props$config === undefined ? {} : _props$config;
 	
 	      return _react2.default.createElement(
 	        'div',
@@ -62930,16 +62660,16 @@
 	exports.default = Info;
 
 /***/ },
-/* 384 */
+/* 382 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
 	// load the styles
-	var content = __webpack_require__(385);
+	var content = __webpack_require__(383);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(380)(content, {});
+	var update = __webpack_require__(378)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -62956,10 +62686,10 @@
 	}
 
 /***/ },
-/* 385 */
+/* 383 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(367)();
+	exports = module.exports = __webpack_require__(365)();
 	// imports
 	
 	
@@ -62970,16 +62700,16 @@
 
 
 /***/ },
-/* 386 */
+/* 384 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
 	// load the styles
-	var content = __webpack_require__(387);
+	var content = __webpack_require__(385);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(380)(content, {});
+	var update = __webpack_require__(378)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -62996,10 +62726,10 @@
 	}
 
 /***/ },
-/* 387 */
+/* 385 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(367)();
+	exports = module.exports = __webpack_require__(365)();
 	// imports
 	
 	

@@ -12,7 +12,7 @@ class Info extends React.Component {
   };
 
   render() {
-    const {moves, config} = this.props;
+    const {moves, config = {}} = this.props;
     return (
       <div className='info'>
         <div className='recentMoves'>

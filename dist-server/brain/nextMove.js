@@ -8,10 +8,6 @@ var _profiler = require('../utilities/profiler');
 
 var _profiler2 = _interopRequireDefault(_profiler);
 
-var _pieces = require('../pieces');
-
-var _pieces2 = _interopRequireDefault(_pieces);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } } // TODO: get rid of client refs
@@ -26,6 +22,7 @@ var bestScoreSoFar = void 0,
 var currentRecursionScore = void 0;
 
 function nextMove(game) {
+  debugger;
   var _game$state = game.state;
   var position = _game$state.position;
   var nextPlayer = _game$state.nextPlayer;
@@ -75,8 +72,9 @@ function nextMove(game) {
       return savedMoves;
     }
     var moves = position.reduce(function (moves, symbol) {
+      debugger;
       if (isMyPiece(player, symbol)) {
-        moves.push.apply(moves, _toConsumableArray(getPossibleMoves((0, _pieces2.default)(symbol), player)));
+        moves.push.apply(moves, _toConsumableArray(getPossibleMoves(pieces(symbol), player)));
       }
       return moves;
     }, []);
@@ -169,9 +167,9 @@ function nextMove(game) {
     var cardinal = _piece$moveDescriptor.cardinal;
     var knightwards = _piece$moveDescriptor.knightwards;
 
-    diagonal && moves.push.apply(moves, _toConsumableArray(this.possibleDiagonalMoves(position)));
-    cardinal && moves.push.apply(moves, _toConsumableArray(this.possibleCardinalMoves(position)));
-    knightwards && moves.push.apply(moves, _toConsumableArray(this.possibleKnightMoves(position)));
+    diagonal && moves.push.apply(moves, _toConsumableArray(piece.possibleDiagonalMoves(position)));
+    cardinal && moves.push.apply(moves, _toConsumableArray(piece.possibleCardinalMoves(position)));
+    knightwards && moves.push.apply(moves, _toConsumableArray(piece.possibleKnightMoves(position)));
     return moves;
   }
 }

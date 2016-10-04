@@ -140,7 +140,6 @@ var Game = function () {
     value: function instantiatePieces(map) {
       var _this = this;
 
-      debugger;
       var PieceType = void 0;
       // squareIds range from 0 (NW) to 63 (SE)
       var position = map.map(function (symbol, squareId) {

@@ -97,7 +97,6 @@ export default class Game {
   }
 
   instantiatePieces(map) {
-    debugger;
     let PieceType;
     // squareIds range from 0 (NW) to 63 (SE)
     const position = map.map((symbol, squareId) => {
