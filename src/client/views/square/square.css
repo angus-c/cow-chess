@@ -1,5 +1,5 @@
 .square {
-  border: 2px solid;
+  border: 0;
   border-color: transparent;
   flex-grow: 0.125;
   text-align: center;

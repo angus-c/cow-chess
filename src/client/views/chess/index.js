@@ -15,12 +15,14 @@ class Chess extends React.Component {
   }
 
   componentDidMount() {
-    setTimeout(() => this.game.nextPlay(), 100);
+    if (!this.state.loading) {
+      this.game.nextPlay();
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState.nextPlayer != this.state.nextPlayer) {
-      setTimeout(() => this.game.nextPlay(), 100);
+      setTimeout(() => this.game.nextPlay(), 0);
     }
   }
 

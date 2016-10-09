@@ -19,11 +19,11 @@ class Square extends React.Component {
 
   render() {
     const { selected, shaded, pieceClassName } = this.props;
-    debugger;
     const className = classnames(
       'square',
+      'piece',
       {shaded},
-      {pieceClassName},
+      pieceClassName,
       {selected}
     );
     return <div className={className} onClick={e=>this.squareClicked(e)}></div>;

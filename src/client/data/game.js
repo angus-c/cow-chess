@@ -78,7 +78,7 @@ export default class Game {
     request({
       method: 'get',
       url: 'http://localhost:3000/board',
-      json: true,
+      json: true
     },
     (err, resp) => {
       if (err) {

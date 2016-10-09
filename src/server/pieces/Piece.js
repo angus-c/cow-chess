@@ -9,10 +9,10 @@ class Piece {
     this.owner = player;
     this.hasMoved = false;
     // TODO support color switch
-    this.color = this.owner === south ? 'white' : 'black';
+    this.color = this.owner.name === south.name ? 'white' : 'black';
     const classStub = this.constructor.classStub;
     if (classStub) {
-      const colorStub = this.getColor() == 'white' ? 'w' : 'b';
+      const colorStub = this.color == 'white' ? 'w' : 'b';
       this.className = `${colorStub}-${this.constructor.classStub}`;
     }
   }

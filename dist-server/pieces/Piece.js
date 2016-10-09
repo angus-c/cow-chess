@@ -30,20 +30,17 @@ var Piece = function () {
 
     this.owner = player;
     this.hasMoved = false;
+    // TODO support color switch
+    this.color = this.owner.name === _south2.default.name ? 'white' : 'black';
+    var classStub = this.constructor.classStub;
+    if (classStub) {
+      var colorStub = this.color == 'white' ? 'w' : 'b';
+      this.className = colorStub + '-' + this.constructor.classStub;
+      console.log(this.color, this.className);
+    }
   }
 
   _createClass(Piece, [{
-    key: 'getClassName',
-    value: function getClassName() {
-      return this.constructor.classStub ? (this.getColor() == 'white' ? 'w' : 'b') + '-' + this.constructor.classStub : null;
-    }
-  }, {
-    key: 'getColor',
-    value: function getColor() {
-      // TODO: support color switch
-      return this.owner === _south2.default ? 'white' : 'black';
-    }
-  }, {
     key: 'getRank',
     value: function getRank(id) {
       return this.owner === _south2.default ? 8 - Math.floor((id || this.squareId) / 8) : 1 + Math.floor((id || this.squareId) / 8);
