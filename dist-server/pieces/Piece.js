@@ -36,7 +36,6 @@ var Piece = function () {
     if (classStub) {
       var colorStub = this.color == 'white' ? 'w' : 'b';
       this.className = colorStub + '-' + this.constructor.classStub;
-      console.log(this.color, this.className);
     }
   }
 

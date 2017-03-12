@@ -130,10 +130,11 @@ var Game = function () {
   }, {
     key: 'updatePosition',
     value: function updatePosition(move) {
+      console.log('*******', move);
       var position = _extends({}, this.state.position);
       position[move.to] = position[move.from];
       position[move.from] = null;
-      this.set({ position: position });
+      this.state.position = position;
     }
   }, {
     key: 'instantiatePieces',

@@ -7,8 +7,9 @@ import './board.css';
 class Board extends React.Component {
 
   static propTypes = {
-    position: React.PropTypes.arrayOf(React.PropTypes.object),
-    selected: React.PropTypes.number
+    position: React.PropTypes.object,
+    selected: React.PropTypes.number,
+    squareSelected: React.PropTypes.func
   };
 
   render() {
@@ -26,6 +27,7 @@ class Board extends React.Component {
                   pieceClassName={piece ? piece.className : null}
                   selected={this.props.selected == location}
                   shaded={((i + j) % 2) == 1}
+                  squareSelected = {this.props.squareSelected}
                 />
               );
             })}

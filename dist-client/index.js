@@ -251,7 +251,11 @@
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'chess' },
-	        _react2.default.createElement(_board2.default, { position: position, selected: this.state.selectedSquare }),
+	        _react2.default.createElement(_board2.default, {
+	          position: position,
+	          selected: this.state.selectedSquare,
+	          squareSelected: this.game.squareSelected.bind(this.game)
+	        }),
 	        _react2.default.createElement(_info2.default, {
 	          moves: moves.map(function (move) {
 	            return _this3.game.getMoveDisplayEntities(move, position);
@@ -19911,7 +19915,7 @@
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
 	var COLORS = ['white', 'black'];
-	var UNICODE_OFFSET = 65;
+	// const UNICODE_OFFSET = 65;
 	
 	var Game = function () {
 	  function Game() {
@@ -19938,6 +19942,11 @@
 	      this.emitter.emit('gameChange', this.state);
 	    }
 	  }, {
+	    key: 'getOtherPlayer',
+	    value: function getOtherPlayer(player) {
+	      return this.players[0] === player ? this.players[0] : this.players[1];
+	    }
+	  }, {
 	    key: 'applyMove',
 	    value: function applyMove(move) {
 	      this.updatePosition(this.state.position, move);
@@ -19958,8 +19967,9 @@
 	      var time = move.time ? '(' + Math.floor(move.time / 1000) + 's)' : '';
 	      var piece = move.piece ? move.piece.constructor.classStub : '';
 	      var capturedPiece = move.captures ? move.captures.constructor.classStub : '';
-	      var myTextClass = move.player.color;
-	      var theirTextClass = this.getOtherPlayer(move.player).color;
+	      var player = this.state.position[move.to].owner;
+	      var myTextClass = player.color;
+	      var theirTextClass = this.getOtherPlayer(player).color;
 	      return { fromTo: fromTo, time: time, piece: piece, capturedPiece: capturedPiece, myTextClass: myTextClass, theirTextClass: theirTextClass };
 	    }
 	  }, {
@@ -19969,14 +19979,11 @@
 	    value: function updatePosition(position, move) {
 	      position[move.to] = position[move.from];
 	      position[move.from] = null;
-	      var unicodeFrom = String.fromCharCode(move.from + UNICODE_OFFSET);
-	      var unicodeTo = String.fromCharCode(move.to + UNICODE_OFFSET);
-	      position.toStr = position.toStr.replace(unicodeTo, '');
-	      position.toStr = position.toStr.replace(unicodeFrom, unicodeTo);
 	    }
 	  }, {
 	    key: 'nextPlay',
 	    value: function nextPlay() {
+	      debugger;
 	      if (this.state.nextPlayer.computer) {
 	        this.fetchMove(this.state.nextPlayer);
 	      }
@@ -20013,8 +20020,8 @@
 	      });
 	    }
 	  }, {
-	    key: 'getMove',
-	    value: function getMove(player) {
+	    key: 'fetchMove',
+	    value: function fetchMove(player) {
 	      var _this2 = this;
 	
 	      // TODO: derive URL domain
@@ -20030,20 +20037,19 @@
 	      });
 	    }
 	  }, {
-	    key: 'postMove',
-	    value: function postMove(move) {
-	      var _this3 = this;
-	
+	    key: 'sendMove',
+	    value: function sendMove(move) {
 	      // TODO: derive URL domain
 	      (0, _request2.default)({
 	        method: 'post',
+	        json: true,
 	        url: 'http://localhost:3000/sendMove',
-	        form: move
+	        body: { move: move }
 	      }, function (err, data) {
 	        if (err) {
 	          throw new Error(err);
 	        } else {
-	          _this3.applyMove(data);
+	          // this.applyMove(data);
 	        }
 	      });
 	    }
@@ -20051,9 +20057,8 @@
 	    key: 'manualMove',
 	    value: function manualMove(from, to) {
 	      // TODO: verify legal move
-	      var player = this.state.position[from].owner;
-	      this.applyMove({ from: from, to: to, player: player });
-	      this.sendMove({ from: from, to: to, player: player });
+	      this.applyMove({ from: from, to: to });
+	      this.sendMove({ from: from, to: to });
 	    }
 	  }, {
 	    key: 'squareSelected',
@@ -61823,7 +61828,8 @@
 	                  location: location,
 	                  pieceClassName: piece ? piece.className : null,
 	                  selected: _this2.props.selected == location,
-	                  shaded: (i + j) % 2 == 1
+	                  shaded: (i + j) % 2 == 1,
+	                  squareSelected: _this2.props.squareSelected
 	                });
 	              })
 	            );
@@ -61843,8 +61849,9 @@
 	}(_react2.default.Component);
 	
 	Board.propTypes = {
-	  position: _react2.default.PropTypes.arrayOf(_react2.default.PropTypes.object),
-	  selected: _react2.default.PropTypes.number
+	  position: _react2.default.PropTypes.object,
+	  selected: _react2.default.PropTypes.number,
+	  squareSelected: _react2.default.PropTypes.func
 	};
 	exports.default = Board;
 
@@ -61867,10 +61874,6 @@
 	var _classnames = __webpack_require__(362);
 	
 	var _classnames2 = _interopRequireDefault(_classnames);
-	
-	var _game = __webpack_require__(174);
-	
-	var _game2 = _interopRequireDefault(_game);
 	
 	__webpack_require__(363);
 	
@@ -61909,7 +61912,12 @@
 	  }, {
 	    key: 'squareClicked',
 	    value: function squareClicked(e) {
-	      _game2.default.squareSelected(this.props.selected ? null : this.props.location);
+	      var _props2 = this.props;
+	      var location = _props2.location;
+	      var selected = _props2.selected;
+	      var squareSelected = _props2.squareSelected;
+	
+	      squareSelected(selected ? null : location);
 	    }
 	  }]);
 	
@@ -61920,7 +61928,8 @@
 	  location: _react2.default.PropTypes.number,
 	  pieceClassName: _react2.default.PropTypes.string,
 	  selected: _react2.default.PropTypes.bool,
-	  shaded: _react2.default.PropTypes.bool
+	  shaded: _react2.default.PropTypes.bool,
+	  squareSelected: _react2.default.PropTypes.func
 	};
 	Square.defaultValues = {
 	  shaded: false

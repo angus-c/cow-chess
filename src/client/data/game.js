@@ -13,7 +13,7 @@ import south from '../modules/players/south';
 import request from 'request';
 
 const COLORS = ['white', 'black'];
-const UNICODE_OFFSET = 65;
+// const UNICODE_OFFSET = 65;
 
 export default class Game {
   constructor() {
@@ -33,6 +33,10 @@ export default class Game {
     this.emitter.emit('gameChange', this.state);
   }
 
+  getOtherPlayer(player) {
+    return this.players[0] === player ? this.players[0] : this.players[1];
+  }
+
   applyMove(move) {
     this.updatePosition(this.state.position, move);
     move.piece = this.state.position[move.to];
@@ -49,8 +53,9 @@ export default class Game {
     const time = move.time ? `(${Math.floor(move.time / 1000)}s)` : ``;
     const piece = move.piece ? move.piece.constructor.classStub : ``;
     const capturedPiece = move.captures ? move.captures.constructor.classStub : ``;
-    const myTextClass = move.player.color;
-    const theirTextClass = this.getOtherPlayer(move.player).color;
+    const player = this.state.position[move.to].owner;
+    const myTextClass = player.color;
+    const theirTextClass = this.getOtherPlayer(player).color;
     return {fromTo, time, piece, capturedPiece, myTextClass, theirTextClass};
   };
 
@@ -58,13 +63,10 @@ export default class Game {
   updatePosition(position, move) {
     position[move.to] = position[move.from];
     position[move.from] = null;
-    const unicodeFrom = String.fromCharCode(move.from + UNICODE_OFFSET);
-    const unicodeTo = String.fromCharCode(move.to + UNICODE_OFFSET);
-    position.toStr = position.toStr.replace(unicodeTo, '');
-    position.toStr = position.toStr.replace(unicodeFrom, unicodeTo);
   }
 
   nextPlay() {
+    debugger;
     if (this.state.nextPlayer.computer) {
       this.fetchMove(this.state.nextPlayer);
     }
@@ -96,7 +98,7 @@ export default class Game {
     });
   }
 
-  getMove(player) {
+  fetchMove(player) {
     // TODO: derive URL domain
     request({
       method: 'get',
@@ -111,27 +113,27 @@ export default class Game {
     });
   }
 
-  postMove(move) {
+  sendMove(move) {
     // TODO: derive URL domain
     request({
       method: 'post',
+      json: true,
       url: 'http://localhost:3000/sendMove',
-      form: move
+      body: {move}
     },
     (err, data) => {
       if (err) {
         throw new Error(err);
       } else {
-        this.applyMove(data);
+        // this.applyMove(data);
       }
     });
   }
 
   manualMove(from, to) {
     // TODO: verify legal move
-    const player = this.state.position[from].owner;
-    this.applyMove({from, to, player});
-    this.sendMove({from, to, player});
+    this.applyMove({from, to});
+    this.sendMove({from, to});
   }
 
   squareSelected(location) {

@@ -58,11 +58,12 @@ app.get('/board', function (req, res) {
 app.post('/sendMove', function (req, res) {
   // TODO: error handling
   res.send(app.game.updatePosition(req.body.move));
-  res.sendStatus(200);
+  // res.sendStatus(200);
 });
 
 app.get('/generateMove', function (req, res) {
   // TODO: error handling
+  console.log('######################');
   res.send(JSON.stringify((0, _nextMove2.default)()));
 });
 

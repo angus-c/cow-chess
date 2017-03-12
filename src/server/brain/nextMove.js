@@ -8,7 +8,6 @@ let bestScoreSoFar, originalPlayer, requestedDepth;
 let currentRecursionScore;
 
 function nextMove(game) {
-  debugger;
   const {
     position,
     nextPlayer,
@@ -58,7 +57,6 @@ function nextMove(game) {
       return savedMoves;
     }
     const moves = position.reduce((moves, symbol) => {
-      debugger;
       if (isMyPiece(player, symbol)) {
         moves.push(...getPossibleMoves(pieces(symbol), player));
       }

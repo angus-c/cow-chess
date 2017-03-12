@@ -1,5 +1,7 @@
 bundle
 node_modules
+dist-client
+dist-server
 
 *.log
 .DS_Store*

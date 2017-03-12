@@ -90,10 +90,11 @@ export default class Game {
   }
 
   updatePosition(move) {
+    console.log('*******', move)
     let position = {...this.state.position};
     position[move.to] = position[move.from];
     position[move.from] = null;
-    this.set({position});
+    this.state.position = position;
   }
 
   instantiatePieces(map) {

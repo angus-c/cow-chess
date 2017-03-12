@@ -33,7 +33,11 @@ class Chess extends React.Component {
     }
     return (
       <div className='chess'>
-        <Board position={position} selected={this.state.selectedSquare} />
+        <Board
+          position={position}
+          selected={this.state.selectedSquare}
+          squareSelected={this.game.squareSelected.bind(this.game)}
+        />
         <Info
           moves={moves.map(move => this.game.getMoveDisplayEntities(move, position))}
           config={this.game.get().config}
